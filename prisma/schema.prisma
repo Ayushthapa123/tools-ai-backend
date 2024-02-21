@@ -11,8 +11,8 @@ datasource db {
 }
 
 
-// Define the User model
-model User {
+// Define the Users model
+model Users {
   id       Int      @id @default(autoincrement())
   username String
   email    String   @unique
