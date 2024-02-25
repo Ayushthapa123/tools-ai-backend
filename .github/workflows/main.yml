@@ -33,10 +33,7 @@ jobs:
 
     - name: Stop and start application with PM2
       run: |
-        # Specify the PM2 home directory and clean up any existing dump files
-        export PM2_HOME=/home/ayush/.pm2
-        rm -f $PM2_HOME/dump.pm2 $PM2_HOME/dump.pm2.bak
-
+   
         # Resurrect PM2 processes
         pm2 resurrect || true
 
@@ -50,4 +47,3 @@ jobs:
       run: sudo service nginx restart
 
 
-      
