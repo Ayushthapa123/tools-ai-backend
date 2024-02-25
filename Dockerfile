@@ -12,7 +12,6 @@ COPY package*.json ./
 # Install dependencies
 RUN yarn install
 
-
 # Copy the rest of your application code
 COPY . .
 
@@ -26,4 +25,4 @@ RUN yarn build
 EXPOSE 3001
 
 # Specify the command to run your app
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
