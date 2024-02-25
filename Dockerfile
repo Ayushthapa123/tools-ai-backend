@@ -23,7 +23,7 @@ COPY .env.example .env
 RUN yarn build
 
 # Expose the port
-EXPOSE 3000
+EXPOSE 3001
 
 # Specify the command to run your app
 CMD [ "yarn", "start" ]
