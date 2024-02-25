@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: Build and Push
 
 on:
   push:
@@ -6,52 +6,18 @@ on:
       - main
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{matrix.node.version}} 
+      uses: actions/setup-node@v1 
+      with: 
+        node-version:${{matrix.node-version}} 
+    - run:  
+        npm i 
+        npm run build
 
-      - name: Login to DigitalOcean Container Registry
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Build and push Docker image
-        run: |
-          echo ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} | doctl registry login --verbose
-          docker build -t registry.digitalocean.com/labresultai/node-core:latest .
-          docker push registry.digitalocean.com/labresultai/node-core:latest
-          docker tag registry.digitalocean.com/labresultai/node-core:latest registry.digitalocean.com/labresultai/node-core:${{ github.sha }}
-          docker push registry.digitalocean.com/labresultai/node-core:${{ github.sha }}
-
-      - name: Checkout another repo
-        uses: actions/checkout@v2
-        with:
-          repository: "BodyBrainAI/docker-ops" # replace with your repository
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Update docker-compose file
-        run: |
-          sed -i "s|image: registry.digitalocean.com/labresultai/node-core:.*$|image: registry.digitalocean.com/labresultai/node-core:${{ github.sha }}|g" docker-compose.yml
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'Github Actions' # replace with your name
-          git config --global user.email 'admin@bodybrian.ai' # replace with your email
-          git add -A
-          git commit -am "Update docker-compose file" || true
-          git push
-
-      - name: SSH and run commands on DigitalOcean Droplet
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DO_DROPLET_IP }} # store your DigitalOcean droplet IP as a secret
-          username: root # replace with your username
-          key: ${{ secrets.DO_SSH_PRIVATE_KEY }} # store your private key as a secret
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
-            cd ~/docker-ops/
-            git checkout .
-            git pull
-            docker compose up -d node-core
+    
+    
