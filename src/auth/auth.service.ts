@@ -84,6 +84,8 @@ export class AuthService {
     const tokens = this.generateJwtTokens(user.id);
 
     // Return the user and tokens if login is successful
+    //! we need to define in schema to be able to access from graphql endpoint.
+    //! also save need to save hashedRefreshToken in UserSchema
     return { user, tokens };
   }
 

@@ -1,6 +1,7 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x"]
@@ -9,21 +10,207 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL") 
-  url="postgresql://doadmin:AVNS_JlGJWOtSDo-ES5UBsGX@db-postgresql-nyc1-92456-do-user-15873826-0.c.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
+  url      = env("DATABASE_URL") 
 
 }
 
 
 // Define the Users model
 model Users {
-  id            Int       @id @default(autoincrement())
-  email         String    @unique
-  passwordHash  String    // Add a field for securely hashed passwords
-  firstName     String
-  lastName      String
-  createdAt     DateTime  @default(now())  // Timestamp for when the user account was created
-  updatedAt     DateTime  @updatedAt        // Timestamp for when the user account was last updated
-  profilePicture String?
-  phoneNumber   String?
+  userId                  Int       @id @default(autoincrement())
+  email               String    @unique
+  passwordHash        String    // Add a field for securely hashed passwords
+  firstName           String
+  lastName            String
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  updatedAt           DateTime  @updatedAt        // Timestamp for when the user account was last updated
+  profilePicture      String?
+  phoneNumber         String? 
+  hashedRefreshToken  String?
+  userType            String    @default("student")  // Set "student" as the default value
 }
+
+model Hostel {
+  hostelId            Int      @id @default(autoincrement())
+  name           String   
+  email          String  
+  phone          String
+  verified        Boolean @default(false)
+  genderType     String
+  capacity        Int?
+  description    String?
+  slug            String   @unique
+  whatsappId     String?
+  telegramId     String? 
+  //foreign keys
+  userId Int
+  addressId Int
+  roomAvailabilityId Int? 
+  pricingId Int? 
+  socialsId Int?
+
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  updatedAt           DateTime  @updatedAt    
+ 
+
+}
+
+model HostelFeatures {
+  hostelFeatureId          Int      @id @default(autoincrement())
+  name        String
+  emojiUrl       String?
+
+}
+model Orders {
+  orderId       Int      @id @default(autoincrement())
+  productId      Int
+  hostelId      Int
+  orderNumber  Int
+  quantity  Int 
+  discountPercent Int? 
+  totalPrice Float 
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  shippingDate          DateTime  // Timestamp for when the user account was created
+  notes String?
+  
+}
+
+
+model Product {
+  productId          Int      @id @default(autoincrement())
+  name        String
+  photo       String?
+  description String?
+  categoryId  Int
+  supplierId  Int
+  stockSize   Int?
+  size   String?
+  color  String? 
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  updatedAt           DateTime  @updatedAt    
+  supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
+
+
+}
+
+model Category {
+  categoryId          Int      @id @default(autoincrement())
+  name        String
+  photo       String?
+  description String?
+
+}
+
+model Suppliers {
+  supplierId          Int      @id @default(autoincrement())
+  name        String
+  companyName       String?
+  addressId Int
+  contactId Int
+  products Product[] 
+
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  updatedAt           DateTime  @updatedAt    
+
+}
+
+
+model Advertisement {
+  adId         Int      @id @default(autoincrement())
+  adPlanId     Int
+  startDate   DateTime
+  endDate     DateTime?
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  budgetedAmount Float
+  paymentStatus Boolean
+} 
+
+model AdPlan {
+  adPlanId          Int      @id @default(autoincrement())
+  name        String
+  cost       Float
+  description     String?
+  features     String[] 
+  createdAt           DateTime  @default(now())  // Timestamp for when the user account was created
+  updatedAt           DateTime  @updatedAt    
+}
+
+model Payments {
+  paymentId       Int      @id @default(autoincrement())
+  adPlanId        Int
+  hostelId        Int 
+  createdAt       DateTime  @default(now())  // Timestamp for when the user account was created
+
+}
+
+
+
+model Pricing {
+  pricingId          Int      @id @default(autoincrement())
+  hostelId       Int//foreign key
+  oneSeater       String?
+  twoSeater       String?
+  threeSeater       String?
+  fourSeater       String? 
+  fiveSeater       String? 
+  attachBathroom      String? 
+
+  updatedAt           DateTime  @updatedAt    
+
+}
+
+
+model RoomAvailability {
+  roomAvailibilityId          Int      @id @default(autoincrement())
+  hostelId       Int//foreign key
+  oneSeater       String?
+  twoSeater       String?
+  threeSeater       String?
+  fourSeater       String? 
+  fiveSeater       String? 
+  attachBathroom      String? 
+  updatedAt           DateTime  @updatedAt    
+
+
+}
+
+model Gallery {
+  galleryId          Int      @id @default(autoincrement())
+  hostelId       Int//foreign key
+  type       String?
+  caption      String?
+  url       String
+
+}
+
+model Socials {
+  socialsId          Int      @id @default(autoincrement())
+  hostelId       Int//foreign key
+  instaGram     String?
+  facebook     String?
+  tiktok    String?
+  map    String?
+  youTube    String?
+}
+
+
+model Address {
+  addressId Int @id @default(autoincrement()) 
+  country String 
+  district String? 
+  city String? 
+  street String?
+  updatedAt           DateTime  @updatedAt    
+
+}
+
+model ContactDetails {
+  contactId          Int      @id @default(autoincrement()) 
+  phone        String
+  altPhone       String?
+  email       String?
+  updatedAt           DateTime  @updatedAt    
+
+
+}
+
