@@ -6,15 +6,17 @@ import { LoginInput } from './dto/login-user.input';
 import { SignupInput } from './dto/signup-user.input';
 
 import { CurrentUser } from './decorators/current-user.decorator';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { ForgotPasswordInput } from './dto/forgot-password.input';
+import { MailerService } from '@src/email/mailer/mailer.service';
 
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
+    // private readonly jwtService: JwtService,
+    private readonly MailerService: MailerService,
   ) {}
 
   @Mutation(() => Users)
@@ -24,7 +26,6 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   async loginUser(@Args('input') loginInput: LoginInput) {
-    console.log('hiiii');
     const user = await this.authService.loginUser(loginInput);
 
     // Return user and token

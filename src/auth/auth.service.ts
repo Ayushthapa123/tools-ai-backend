@@ -1,3 +1,4 @@
+import { MailerService } from '@src/email/mailer/mailer.service';
 // auth.service.ts
 import {
   Injectable,
@@ -16,6 +17,7 @@ import { ForgotPasswordInput } from './dto/forgot-password.input';
 export class AuthService {
   private readonly jwtSecret: string = 'your-secret-key'; // Replace with your own secret key
   private readonly refreshTokenSecret: string = 'your-refresh-secret-key'; // Replace with your own secret key for refresh tokens
+  private readonly MailerService: MailerService;
 
   constructor(private prisma: PrismaService) {}
 
@@ -48,6 +50,17 @@ export class AuthService {
           lastName,
         },
       });
+
+      if (user.email) {
+        console.log(
+          'If user is created send mail to the user for verification',
+        );
+        await (this.MailerService as MailerService).sendEmail(
+          'thapaaayush115@gmail.com',
+          'Hi ayush',
+          'hello',
+        );
+      }
 
       return user;
     } catch (error) {

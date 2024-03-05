@@ -19,10 +19,12 @@ model Users {
   updatedAt           DateTime  @updatedAt
   profilePicture      String?
   phoneNumber         String?
-  hashedRefreshToken  String?
+  hashedRefreshToken  String? 
+  isVerified          Boolean @default(false)
   userType            UserType    @default(STUDENT)
 
   hostel              Hostel?
+
 }
 
 model Hostel {

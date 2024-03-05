@@ -9,14 +9,14 @@ export class MailerService {
 
   constructor() {
     this.mailgun = mailgun({
-      apiKey: 'your-mailgun-api-key', // Replace with your Mailgun API key
-      domain: 'your-mailgun-domain', // Replace with your Mailgun domain
+      apiKey: '0bb0bcbeae204db5daf1e127e4bc3d00-2c441066-14104836', // Replace with your Mailgun API key
+      domain: 'test.coder099.com', // Replace with your Mailgun domain
     });
   }
 
   async sendEmail(to: string, subject: string, text: string): Promise<void> {
     const data = {
-      from: 'your-email@example.com', // Replace with your email address
+      from: 'test123@gmail.com', // Replace with your name
       to,
       subject,
       text,
