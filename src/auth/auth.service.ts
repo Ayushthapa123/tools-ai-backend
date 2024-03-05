@@ -81,7 +81,7 @@ export class AuthService {
     }
 
     // Generate access and refresh tokens
-    const tokens = this.generateJwtTokens(user.id);
+    const tokens = this.generateJwtTokens(user.userId);
 
     // Return the user and tokens if login is successful
     //! we need to define in schema to be able to access from graphql endpoint.
@@ -127,7 +127,7 @@ export class AuthService {
     // Find the user by userId
     const user = await this.prisma.users.findUnique({
       where: {
-        id: userId,
+        userId: userId,
       },
     });
 
@@ -151,7 +151,7 @@ export class AuthService {
     // Update the user's password in the database
     await this.prisma.users.update({
       where: {
-        id: userId,
+        userId: userId,
       },
       data: {
         passwordHash: newPasswordHash,

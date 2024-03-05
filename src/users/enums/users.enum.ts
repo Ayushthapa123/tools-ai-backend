@@ -1,5 +1,4 @@
 // user.enum.ts
-
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum UserType {

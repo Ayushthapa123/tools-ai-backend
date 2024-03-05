@@ -24,6 +24,7 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   async loginUser(@Args('input') loginInput: LoginInput) {
+    console.log('hiiii');
     const user = await this.authService.loginUser(loginInput);
 
     // Return user and token
