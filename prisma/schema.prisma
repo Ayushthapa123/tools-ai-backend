@@ -20,9 +20,9 @@ model Users {
   profilePicture      String?
   phoneNumber         String?
   hashedRefreshToken  String? 
+  
   isVerified          Boolean @default(false)
   userType            UserType    @default(STUDENT)
-
   hostel              Hostel?
 
 }
