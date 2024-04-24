@@ -50,7 +50,7 @@ export class GoogleAuthService {
         data: {
           email,
           fullName: name,
-          userType: 'SINGLE_USER',
+          userType: 'STUDENT',
         },
       });
       // Generate JWT token

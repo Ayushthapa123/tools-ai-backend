@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import * as mailgun from 'mailgun-js';
+import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
-export class MailerService {
-  private mailgun: mailgun.Mailgun;
-
+export class SendGridService {
   constructor() {
-    this.mailgun = mailgun({
-      apiKey: '50944a5ede29cb9ee2bac0e0a7d60ef4-19806d14-00853ef6',
-      domain: 'sandboxecb81858df804d8aa82a9a98aaa5d884.mailgun.org',
-    });
+    sgMail.setApiKey(
+      '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',
+    );
   }
 
   async sendEmail(link: string, to?: string, subject?: string): Promise<void> {
-    await this.mailgun.messages().send({
-      to: 'ayushthapamgr007@gmail.com', //verified emails only
-      from: 'The Art of ren thapaaayush115@gmail.com', //verified email in sendGrid
-      subject: subject ?? 'hello ayush',
-      text: 'text',
+    await sgMail.send({
+      to: to || 'ayushthapamgr007@gmail.com', // Default to a fallback email if `to` is not provided
+      from: { email: '<from>' }, // Replace with your verified email in SendGrid
+      subject: subject ?? 'Hello Ayush',
+      text: 'Text',
       html: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +66,7 @@ export class MailerService {
         <h2>Hello,</h2>
         <p>Thank you for your interest!</p>
         <p>Please click the button below to verify your email address:</p>
-        <a href=${link} class="btn">Verify Email</a>
+        <a href="${link}" class="btn">Verify Email</a>
         <p>If you did not request this verification, you can safely ignore this email.</p>
         <div class="footer">
             Regards,<br>Your Name

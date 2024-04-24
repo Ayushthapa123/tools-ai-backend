@@ -46,8 +46,7 @@ input CreateHostelInput {
 input CreateUserInput {
   createdAt: DateTime!
   email: String!
-  firstName: String!
-  lastName: String!
+  fullName: String!
   passwordHash: String!
   phoneNumber: String
   profilePicture: String
@@ -59,8 +58,8 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input ForgotPasswordInput {
-  email: String!
+type ForgotPasswordResponse {
+  userId: Float!
 }
 
 type Gallery {
@@ -73,7 +72,10 @@ type Gallery {
 
 input GetTokenInput {
   refreshToken: String!
-  userId: Float!
+}
+
+type GoogleOauthUrl {
+  url: String!
 }
 
 type Hostel {
@@ -123,12 +125,14 @@ type Mutation {
   changePassword(input: ChangePasswordInput!): String!
   createHostel(data: CreateHostelInput!): Hostel!
   createUser(input: CreateUserInput!): Users!
-  forgotPassword(input: ForgotPasswordInput!): String!
+  forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
-  logout: String!
   refreshTokens(input: GetTokenInput!): Token!
+  resetPassword(input: ResetPasswordInput!): UsersAndToken!
+  signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+  verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
 }
 
 type Orders {
@@ -153,9 +157,15 @@ type Payments {
 
 type Query {
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
+  getGoogleAuthUrl: GoogleOauthUrl!
   getHostelById(hostelId: Float!): Hostel
   getUser(id: Float!): Users
   getUsers: [Users!]!
+}
+
+input ResetPasswordInput {
+  password: String!
+  token: String!
 }
 
 type RoomAvailability {
@@ -171,10 +181,13 @@ type RoomAvailability {
 
 input SignupInput {
   email: String!
-  firstName: String!
-  lastName: String!
+  fullName: String!
   password: String!
   userType: String!
+}
+
+input SignupWithGoogleInput {
+  token: String!
 }
 
 type Socials {
@@ -212,22 +225,27 @@ input UpdateHostelInput {
 
 type User {
   email: String!
-  firstName: String!
-  lastName: String!
+  fullName: String!
   userId: ID!
 }
 
 type Users {
   email: String!
-  firstName: String!
-  lastName: String!
+  fullName: String!
   userId: ID!
 }
 
 type UsersAndToken {
   email: String!
-  firstName: String!
-  lastName: String!
+  fullName: String!
   token: Token!
   userId: ID!
+}
+
+input VerifyEmailInput {
+  token: String!
+}
+
+type VerifyEmailResponse {
+  userId: Float!
 }

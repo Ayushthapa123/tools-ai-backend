@@ -7,7 +7,7 @@ export class CreateUserInput {
   email: string;
 
   @Field()
-  passwordHash: string;
+  passwordHash?: string;
 
   @Field()
   fullName: string;

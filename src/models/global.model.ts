@@ -101,7 +101,7 @@ export class Users {
   email: string;
 
   @Field()
-  passwordHash: string;
+  passwordHash?: string;
 
   @Field()
   fullName: string;
