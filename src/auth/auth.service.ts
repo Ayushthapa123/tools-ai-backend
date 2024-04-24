@@ -1,4 +1,5 @@
 import { MailerService } from '@src/email/mailer/mailer.service';
+import { SendGridService } from '@src/email/mailer/sendGrid.service';
 // auth.service.ts
 import {
   Injectable,
@@ -11,19 +12,23 @@ import { LoginInput } from './dto/login-user.input';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ChangePasswordInput } from './dto/change-password.input';
-import { ForgotPasswordInput } from './dto/forgot-password.input';
+import { ResetPasswordInput } from './dto/get-token.input';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string = 'Hello@123'; // Replace with your own secret key
-  private readonly refreshTokenSecret: string = '!ayushh123#!,'; // Replace with your own secret key for refresh tokens
-  private readonly MailerService: MailerService;
+  private readonly jwtSecret: string = process.env.JWT_SECRET;
+  private readonly refreshTokenSecret: string =
+    process.env.REFRESH_TOKEN_SECRET;
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly mailerService: MailerService,
+    private readonly sendgridService: SendGridService,
+  ) {}
 
   //SignUp Logic
   async signupUser(signupInput: SignupInput) {
-    const { email, password, firstName, lastName } = signupInput;
+    const { email, password, fullName } = signupInput;
 
     // Check whether email already exists
     const userWithEmail = await this.prisma.users.findFirst({
@@ -46,8 +51,7 @@ export class AuthService {
         data: {
           email,
           passwordHash,
-          firstName,
-          lastName,
+          fullName,
         },
       });
 
@@ -55,11 +59,15 @@ export class AuthService {
         console.log(
           'If user is created send mail to the user for verification',
         );
-        // await (this.MailerService as MailerService).sendEmail(
-        //   'thapaaayush115@gmail.com',
-        //   'Hi ayush please verify your email',
-        //   'hello',
-        // );
+        const verificationToken = this.generateVerificationToken(user.userId);
+        const verificationLink = `${process.env.WEB_ADDRESS}/verify-email?token=${verificationToken}`;
+
+        await this.mailerService.sendEmail(
+          verificationLink,
+          'ayushthapamgr007@gmail.com',
+          'hello body',
+        );
+        // await this.sendgridService.sendEmail(verificationLink);
       }
 
       // Generate JWT tokens
@@ -72,8 +80,9 @@ export class AuthService {
 
       return { ...user, token: { accessToken, refreshToken } };
     } catch (error) {
+      console.log('eeeeeeeeee', error);
       // Handle any database-related errors
-      throw new Error('Error creating user');
+      // throw new Error('Error creating user');
     }
   }
 
@@ -112,6 +121,75 @@ export class AuthService {
     return { ...user, token: { accessToken, refreshToken } };
   }
 
+  async verifyEmail(token: string) {
+    try {
+      // Verify the token using jwtSecret
+      const decoded = jwt.verify(token, this.jwtSecret);
+
+      // Update the user's verification status in the database
+      const userId = decoded.sub;
+      await this.prisma.users.update({
+        where: { userId: Number(userId) },
+        data: { isVerified: true },
+      });
+
+      return { userId: Number(decoded.sub) }; // Return the decoded user ID
+    } catch (error) {
+      // Token verification failed
+      throw new NotFoundException('token not found');
+    }
+  }
+
+  async sendResetPasswordLink(email: string) {
+    try {
+      // Verify the token using jwtSecret
+
+      const user = await this.prisma.users.findUnique({
+        where: { email: email },
+      });
+
+      //create a reset link and send through email
+      const verificationToken = this.generateVerificationToken(user.userId);
+      const verificationLink = `${process.env.WEB_ADDRESS}/reset-password?token=${verificationToken}`;
+
+      await this.mailerService.sendEmail(
+        verificationLink,
+        'ayushthapamgr007@gmail.com',
+        'hello body',
+      );
+
+      return { userId: Number(user.userId) }; // Return the decoded user ID
+    } catch (error) {
+      // Token verification failed
+      throw new NotFoundException('user not found');
+    }
+  }
+
+  async resetPassword(input: ResetPasswordInput) {
+    try {
+      // Verify the token using jwtSecret
+      const decoded = jwt.verify(input.token, this.jwtSecret);
+
+      // Update the user's verification status in the database
+      const userId = decoded.sub;
+      // Hash the password before saving it
+      const passwordHash = await bcrypt.hash(input.password, 10);
+      const { accessToken, refreshToken } = this.generateJwtTokens(
+        Number(userId),
+      );
+
+      const user = await this.prisma.users.update({
+        where: { userId: Number(userId) },
+        data: { passwordHash: passwordHash, hashedRefreshToken: refreshToken },
+      });
+
+      return { ...user, token: { accessToken, refreshToken } };
+    } catch (error) {
+      // Token verification failed
+      throw new NotFoundException('token not found');
+    }
+  }
+
   private generateJwtTokens(userId: number) {
     const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
       expiresIn: '50m',
@@ -121,24 +199,30 @@ export class AuthService {
     });
     return { accessToken, refreshToken };
   }
+  private generateVerificationToken(userId: number) {
+    // Generate a token using the user's ID and jwtSecret
+    const token = jwt.sign({ sub: userId }, this.jwtSecret, {
+      expiresIn: '1 day',
+    });
+    return token;
+  }
 
   //RefreshToken Logic
-  async refreshTokens(refreshToken: string, userId: number) {
+  async refreshTokens(refreshToken: string) {
     try {
-      // Retrieve the refresh token from your database based on the token received but it's lengthy so comment for now
+      const decoded = jwt.verify(refreshToken, this.refreshTokenSecret);
+      const userId = decoded.sub;
+
       const user = await this.prisma.users.findFirst({
-        where: { userId: userId },
+        where: { userId: Number(userId) },
       });
 
       // Verify the refresh token's signature
-      console.log(refreshToken);
-      const decoded = jwt.verify(refreshToken, this.refreshTokenSecret);
-      console.log('dddddddd', decoded);
 
       // Ensure that the refresh token is still valid and matches the stored token
       if (
         typeof decoded === 'object' &&
-        user.userId === userId &&
+        user &&
         decoded.hasOwnProperty('sub')
       ) {
         // Generate a new access token with appropriate claims
@@ -201,29 +285,5 @@ export class AuthService {
 
     // Return a success message or any additional information as needed
     return 'Password changed successfully';
-  }
-
-  //Forgot password logic
-
-  async forgotPassword(forgotPasswordInput: ForgotPasswordInput) {
-    const { email } = forgotPasswordInput;
-
-    // Find the user by email
-    const user = await this.prisma.users.findFirst({
-      where: {
-        email,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Generate a token for resetting the password
-
-    // Send an email to the user with the reset password link, including the resetPasswordToken
-
-    // Return a success message or any additional information as needed
-    return 'Reset password email sent successfully';
   }
 }

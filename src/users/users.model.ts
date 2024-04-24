@@ -9,11 +9,7 @@ export class Users {
   userId: number;
 
   @Field()
-  firstName: string;
-
-  @Field()
-  lastName: string;
-
+  fullName: string;
   @Field()
   email: string;
 }

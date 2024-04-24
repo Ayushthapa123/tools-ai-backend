@@ -19,8 +19,7 @@ export class HostelService {
           select: {
             userId: true,
             email: true,
-            firstName: true,
-            lastName: true,
+            fullName: true,
           },
         },
       },
@@ -36,8 +35,8 @@ export class HostelService {
             // Specify the fields you want from the Users model
             userId: true,
             email: true,
-            firstName: true,
-            lastName: true,
+            fullName: true,
+
             // Add other fields you need
           },
         },

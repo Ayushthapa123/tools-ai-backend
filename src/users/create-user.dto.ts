@@ -10,10 +10,7 @@ export class CreateUserInput {
   passwordHash: string;
 
   @Field()
-  firstName: string;
-
-  @Field()
-  lastName: string;
+  fullName: string;
 
   @Field()
   createdAt: Date;

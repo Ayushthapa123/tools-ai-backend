@@ -1,6 +1,6 @@
 // auth.dto.ts
 import { InputType, Field } from '@nestjs/graphql';
-import { UserType } from '@src/users/enums/users.enum';
+import { UserType } from '@prisma/client';
 
 @InputType()
 export class SignupInput {
@@ -11,10 +11,8 @@ export class SignupInput {
   password: string;
 
   @Field()
-  firstName: string;
+  fullName: string;
 
   @Field()
-  lastName: string;
-  @Field()
-  userType: UserType;
+  userType?: UserType;
 }

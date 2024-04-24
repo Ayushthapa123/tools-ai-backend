@@ -8,10 +8,7 @@ export class User {
   @Field()
   email: string;
   @Field()
-  firstName: string;
-
-  @Field()
-  lastName: string;
+  fullName: string;
 }
 
 @ObjectType()
@@ -24,15 +21,22 @@ export class Token {
 }
 
 @ObjectType()
+export class VerifyEmailResponse {
+  @Field()
+  userId: number;
+}
+@ObjectType()
+export class ForgotPasswordResponse {
+  @Field()
+  userId: number;
+}
+@ObjectType()
 export class UsersAndToken {
   @Field(() => ID)
   userId: number;
 
   @Field()
-  firstName: string;
-
-  @Field()
-  lastName: string;
+  fullName: string;
 
   @Field()
   email: string;
