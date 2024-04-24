@@ -1,0 +1,86 @@
+# # src/graphql/schema.graphql
+
+# type User {
+#   userId: Int!
+#   name: String!
+#   email: String!
+#   # Add other fields as needed
+# }
+
+# type Hostel {
+#   hostelId: Int!
+#   name: String!
+#   email: String!
+#   phone: String!
+#   verified: Boolean!
+#   genderType: String!
+#   capacity: Int
+#   description: String
+#   slug: String!
+#   whatsappId: String
+#   telegramId: String
+#   userId: Int!
+#   addressId: Int!
+#   contactId: Int!
+#   roomAvailabilityId: Int
+#   pricingId: Int
+#   socialsId: Int
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   owner: User!
+# #   roomAvailability: RoomAvailability
+# #   pricing: Pricing
+# #   socials: Socials
+# #   address: Address
+# #   contact: ContactDetails
+# #   orders: [Order]
+# #   payments: [Payment]
+# #   gallery: [Gallery]
+# #   suppliers: [HostelSupplier]
+# }
+
+# type RoomAvailability {
+#   # Define the RoomAvailability type
+# }
+
+# type Pricing {
+#   # Define the Pricing type
+# }
+
+# type Socials {
+#   # Define the Socials type
+# }
+
+# type Address {
+#   # Define the Address type
+# }
+
+# type ContactDetails {
+#   # Define the ContactDetails type
+# }
+
+# type Order {
+#   # Define the Order type
+# }
+
+# type Payment {
+#   # Define the Payment type
+# }
+
+# type Gallery {
+#   # Define the Gallery type
+# }
+
+# type HostelSupplier {
+#   # Define the HostelSupplier type
+# }
+
+# type DateTime {
+#   # Define the DateTime scalar
+# }
+
+# type Query {
+#   getHostelById(hostelId: Int!): Hostel
+# }
+
+# # Add other queries and mutations as needed

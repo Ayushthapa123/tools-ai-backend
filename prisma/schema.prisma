@@ -10,248 +10,259 @@ datasource db {
 
 // Define the Users model
 model Users {
-  userId              Int       @id @default(autoincrement()) @unique
-  email               String    @unique
-  passwordHash        String
-  firstName           String
-  lastName            String
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  profilePicture      String?
-  phoneNumber         String?
-  hashedRefreshToken  String? 
-  
-  isVerified          Boolean @default(false)
-  userType            UserType    @default(STUDENT)
-  hostel              Hostel?
+  userId             Int      @id @unique @default(autoincrement())
+  email              String   @unique
+  passwordHash       String?
+  firstName          String
+  lastName           String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  profilePicture     String?
+  phoneNumber        String?
+  hashedRefreshToken String?
 
+  isVerified Boolean  @default(false)
+  userType   UserType @default(STUDENT)
+  hostel     Hostel?
 }
 
 model Hostel {
-  hostelId            Int       @id @default(autoincrement()) @unique
-  name                String
-  email               String
-  phone               String
-  verified            Boolean   @default(false)
-  genderType          String
-  capacity            Int?
-  description         String?
-  slug                String   @unique
-  whatsappId          String?
-  telegramId          String?
-  userId              Int       @unique
-  addressId           Int       @unique
-  contactId           Int       @unique
+  hostelId    Int     @id @unique @default(autoincrement())
+  name        String
+  email       String
+  phone       String
+  verified    Boolean @default(false)
+  genderType  String
+  capacity    Int?
+  description String?
+  slug        String  @unique
+  whatsappId  String?
+  telegramId  String?
+  userId      Int     @unique
+  addressId   Int     @unique
+  contactId   Int     @unique
 
-  roomAvailabilityId  Int?      @unique
-  pricingId           Int?  @unique
-  socialsId           Int?  @unique
-
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Define a relation to Users
-  owner               Users @relation(fields: [userId], references: [userId])
+  owner            Users             @relation(fields: [userId], references: [userId])
+  address          Address           @relation(fields: [addressId], references: [addressId])
+  contact          ContactDetails    @relation(fields: [contactId], references: [contactId])
   // Define relations to other models
-  roomAvailability    RoomAvailability? @relation(fields: [roomAvailabilityId], references: [roomAvailabilityId])
-  pricing             Pricing?          @relation(fields: [pricingId], references: [pricingId])
-  socials             Socials?          @relation(fields: [socialsId], references: [socialsId])
-  address             Address           @relation(fields: [addressId], references: [addressId])
-  contact             ContactDetails        @relation(fields: [contactId], references: [contactId])
+  roomAvailability RoomAvailability?
+  dailyPricing     DailyPricing?
 
-  orders              Orders[]      
-  payments            Payments[] 
-  gallery             Gallery[]
+  socials        Socials?
+  MonthlyPricing MonthlyPricing?
+
+  orders    Orders[]
+  payments  Payments[]
+  gallery   Gallery[]
   suppliers HostelSuppliers[]
 }
 
 model HostelFeatures {
-  hostelFeatureId     Int       @id @default(autoincrement()) @unique
-  name                String
-  emojiUrl            String?
-
+  hostelFeatureId Int     @id @unique @default(autoincrement())
+  name            String
+  emojiUrl        String?
 }
 
 model Orders {
-  orderId             Int       @id @default(autoincrement()) @unique
-  productId           Int
-  hostelId            Int
-  orderNumber         Int
-  quantity            Int
-  discountPercent     Int?
-  totalPrice          Float
-  createdAt           DateTime  @default(now())
-  shippingDate        DateTime
-  notes               String?
+  orderId         Int      @id @unique @default(autoincrement())
+  productId       Int
+  hostelId        Int
+  orderNumber     Int
+  quantity        Int
+  discountPercent Int?
+  totalPrice      Float
+  createdAt       DateTime @default(now())
+  shippingDate    DateTime
+  notes           String?
 
   // Define a relation to Hostel
-  hostel              Hostel   @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
 }
 
 model Product {
-  productId           Int       @id @default(autoincrement()) @unique
-  name                String
-  photo               String?
-  description         String?
-  categoryId          Int
-  supplierId          Int
-  stockSize           Int?
-  size                String?
-  color               String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  productId   Int      @id @unique @default(autoincrement())
+  name        String
+  photo       String?
+  description String?
+  categoryId  Int
+  supplierId  Int
+  stockSize   Int?
+  size        String?
+  color       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Define a relation to Suppliers
-  supplier            Suppliers @relation(fields: [supplierId], references: [supplierId])
+  supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
 }
 
 model Category {
-  categoryId          Int       @id @default(autoincrement()) @unique
-  name                String
-  photo               String?
-  description         String?
+  categoryId  Int     @id @unique @default(autoincrement())
+  name        String
+  photo       String?
+  description String?
 }
 
 model Suppliers {
-  supplierId          Int       @id @default(autoincrement()) @unique
-  name                String
-  companyName         String?
-  addressId           Int
-  contactId           Int
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  supplierId  Int      @id @unique @default(autoincrement())
+  name        String
+  companyName String?
+  addressId   Int
+  contactId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Define a relation to Products
-  products            Product[]
-  hostel HostelSuppliers[]
+  products Product[]
+  hostel   HostelSuppliers[]
 }
 
 model HostelSuppliers {
-  id       Int    @id @default(autoincrement())
-  hostelId Int
-  supplierId Int
-  createdAt DateTime @default(now())
+  supplierId         Int      @id @default(autoincrement())
+  hostelId   Int
+  createdAt  DateTime @default(now())
 
-  hostel    Hostel   @relation(fields: [hostelId], references: [hostelId])
-  supplier  Suppliers @relation(fields: [supplierId], references: [supplierId])
+  hostel   Hostel    @relation(fields: [hostelId], references: [hostelId])
+  supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
 
   @@unique([hostelId, supplierId])
 }
 
 model Advertisement {
-  adId                Int       @id @default(autoincrement()) @unique
-  adPlanId            Int       @unique
-  startDate           DateTime
-  endDate             DateTime?
-  createdAt           DateTime  @default(now())
-  budgetedAmount      Float
-  paymentStatus       Boolean
+  adId           Int       @id @unique @default(autoincrement())
+  adPlanId       Int       @unique
+  startDate      DateTime
+  endDate        DateTime?
+  createdAt      DateTime  @default(now())
+  budgetedAmount Float
+  paymentStatus  Boolean
 
   // Define a relation to AdPlan
-  adPlan              AdPlan? @relation(fields: [adPlanId],references: [adPlanId])
+  adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
 }
 
 model AdPlan {
-  adPlanId            Int       @id @default(autoincrement()) @unique
-  name                String
-  cost                Float
-  description         String?
-  features            String[]
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  advertisement       Advertisement?  // One-to-one relationship 
-  payments           Payments[]
+  adPlanId      Int            @id @unique @default(autoincrement())
+  name          String
+  cost          Float
+  description   String?
+  features      String[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  advertisement Advertisement? // One-to-one relationship 
+  payments      Payments[]
 }
-
 
 model Payments {
-  paymentId           Int       @id @default(autoincrement()) @unique
-  adPlanId            Int
-  hostelId            Int
-  createdAt           DateTime  @default(now())
+  paymentId Int      @id @unique @default(autoincrement())
+  adPlanId  Int
+  hostelId  Int
+  createdAt DateTime @default(now())
 
   // Define relations to other models
-  adPlan              AdPlan @relation(fields: [adPlanId],references: [adPlanId])
-  hostel              Hostel @relation(fields: [hostelId],references: [hostelId])
+  adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
+  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
 }
 
-model Pricing {
-  pricingId           Int       @id @default(autoincrement()) @unique
-  oneSeater           String?
-  twoSeater           String?
-  threeSeater         String?
-  fourSeater          String?
-  fiveSeater          String?
-  attachBathroom      String?
-  updatedAt           DateTime  @updatedAt
+model MonthlyPricing {
+  monthlyPricingId Int      @id @unique @default(autoincrement())
+  oneSeater        String?
+  twoSeater        String?
+  threeSeater      String?
+  fourSeater       String?
+  fiveSeater       String?
+  attachBathroom   String?
+  updatedAt        DateTime @updatedAt
+  hostelId         Int      @unique
 
   // Define a relation to Hostel
-  hostel              Hostel?
+  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
+}
+
+model DailyPricing {
+  dailyPricingId Int      @id @unique @default(autoincrement())
+  oneSeater      String?
+  twoSeater      String?
+  threeSeater    String?
+  fourSeater     String?
+  fiveSeater     String?
+  attachBathroom String?
+  updatedAt      DateTime @updatedAt
+  hostelId       Int      @unique
+
+  // Define a relation to Hostel
+  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 }
 
 model RoomAvailability {
-  roomAvailabilityId  Int       @id @default(autoincrement()) @unique
-  oneSeater           String?
-  twoSeater           String?
-  threeSeater         String?
-  fourSeater          String?
-  fiveSeater          String?
-  attachBathroom      String?
-  updatedAt           DateTime  @updatedAt
+  roomAvailabilityId Int      @id @unique @default(autoincrement())
+  oneSeater          String?
+  twoSeater          String?
+  threeSeater        String?
+  fourSeater         String?
+  fiveSeater         String?
+  attachBathroom     String?
+  updatedAt          DateTime @updatedAt
+  hostelId           Int      @unique
 
   // Define a relation to Hostel
-  hostel              Hostel?
+  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 }
 
 model Gallery {
-  galleryId           Int       @id @default(autoincrement()) @unique
-  hostelId            Int
-  type                String?
-  caption             String?
-  url                 String
+  galleryId Int     @id @unique @default(autoincrement())
+  hostelId  Int
+  type      String?
+  caption   String?
+  url       String
 
   // Define a relation to Hostel
-  hostel              Hostel? @relation(fields: [hostelId],references: [hostelId])
+  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 }
 
 model Socials {
-  socialsId           Int       @id @default(autoincrement()) @unique
-  instaGram           String?
-  facebook            String?
-  tiktok              String?
-  map                 String?
-  youTube             String?
+  socialsId Int     @id @unique @default(autoincrement())
+  instaGram String?
+  facebook  String?
+  tiktok    String?
+  map       String?
+  youTube   String?
+  hostelId  Int     @unique
+  hostel    Hostel? @relation(fields: [hostelId], references: [hostelId])
 
   // Define a relation to Hostel
-  hostel              Hostel?
 }
 
 model Address {
-  addressId           Int       @id @default(autoincrement()) @unique
-  country             String
-  district            String?
-  city                String?
-  street              String?
-  updatedAt           DateTime  @updatedAt 
-  hostel              Hostel?
+  addressId Int      @id @unique @default(autoincrement())
+  country   String
+  district  String?
+  city      String?
+  street    String?
+  updatedAt DateTime @updatedAt
+  hostel    Hostel?
 }
 
 model ContactDetails {
-  contactId           Int       @id @default(autoincrement()) @unique
-  phone               String
-  altPhone            String?
-  email               String?
-  updatedAt           DateTime  @updatedAt
+  contactId Int      @id @unique @default(autoincrement())
+  phone     String
+  altPhone  String?
+  email     String?
+  updatedAt DateTime @updatedAt
 
   // Define a relation to Hostel
-  hostel              Hostel?
+  hostel Hostel?
 }
-
-
 
 //Enums 
 enum UserType {
-  STUDENT 
+  STUDENT
   HOSTEL_OWNER
   SUPPLIERS
+  OTHERS
 }

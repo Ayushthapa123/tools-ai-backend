@@ -2,14 +2,45 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type Address {
+  addressId: ID!
+  city: String
+  country: String!
+  district: String
+  street: String
+  updatedAt: DateTime!
 }
 
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
+}
+
+type ContactDetails {
+  altPhone: String
+  contactId: ID!
+  email: String
+  phone: String!
+  updatedAt: DateTime!
+}
+
+input CreateHostelInput {
+  addressId: Int!
+  capacity: Int
+  contactId: Int!
+  description: String
+  email: String!
+  genderType: String!
+  name: String!
+  phone: String!
+  pricingId: Int
+  roomAvailabilityId: Int
+  slug: String!
+  socialsId: Int
+  telegramId: String
+  userId: Int!
+  verified: Boolean!
+  whatsappId: String
 }
 
 input CreateUserInput {
@@ -21,7 +52,6 @@ input CreateUserInput {
   phoneNumber: String
   profilePicture: String
   updatedAt: DateTime!
-  username: String!
 }
 
 """
@@ -33,6 +63,57 @@ input ForgotPasswordInput {
   email: String!
 }
 
+type Gallery {
+  caption: String
+  galleryId: ID!
+  hostelId: Int!
+  type: String
+  url: String!
+}
+
+input GetTokenInput {
+  refreshToken: String!
+  userId: Float!
+}
+
+type Hostel {
+  address: Address!
+  addressId: Int!
+  capacity: Int
+  contact: ContactDetails!
+  contactId: Int!
+  createdAt: DateTime!
+  description: String
+  email: String!
+  gallery: [Gallery!]!
+  genderType: String!
+  hostelId: ID!
+  name: String!
+  orders: [Orders!]!
+  owner: User!
+  payments: [Payments!]!
+  phone: String!
+  pricingId: Int
+  roomAvailability: RoomAvailability
+  roomAvailabilityId: Int
+  slug: String!
+  socials: Socials
+  socialsId: Int
+  suppliers: [HostelSuppliers!]!
+  telegramId: String
+  updatedAt: DateTime!
+  userId: Int!
+  verified: Int!
+  whatsappId: String
+}
+
+type HostelSuppliers {
+  createdAt: DateTime!
+  hostelId: Int!
+  id: ID!
+  supplierId: Int!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -40,17 +121,52 @@ input LoginInput {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!): String!
+  createHostel(data: CreateHostelInput!): Hostel!
   createUser(input: CreateUserInput!): Users!
   forgotPassword(input: ForgotPasswordInput!): String!
-  loginUser(input: LoginInput!): Auth!
+  loginUser(input: LoginInput!): UsersAndToken!
   logout: String!
-  refreshTokens(refreshToken: String!): Auth!
-  signupUser(input: SignupInput!): Users!
+  refreshTokens(input: GetTokenInput!): Token!
+  signupUser(input: SignupInput!): UsersAndToken!
+  updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+}
+
+type Orders {
+  createdAt: DateTime!
+  discountPercent: Int
+  hostelId: Int!
+  notes: String
+  orderId: ID!
+  orderNumber: Int!
+  productId: Int!
+  quantity: Int!
+  shippingDate: DateTime!
+  totalPrice: Float!
+}
+
+type Payments {
+  adPlanId: Int!
+  createdAt: DateTime!
+  hostelId: Int!
+  paymentId: ID!
 }
 
 type Query {
+  getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
+  getHostelById(hostelId: Float!): Hostel
   getUser(id: Float!): Users
   getUsers: [Users!]!
+}
+
+type RoomAvailability {
+  attachBathroom: String
+  fiveSeater: String
+  fourSeater: String
+  oneSeater: String
+  roomAvailabilityId: ID!
+  threeSeater: String
+  twoSeater: String
+  updatedAt: DateTime!
 }
 
 input SignupInput {
@@ -58,10 +174,60 @@ input SignupInput {
   firstName: String!
   lastName: String!
   password: String!
+  userType: String!
+}
+
+type Socials {
+  facebook: String
+  instaGram: String
+  map: String
+  socialsId: ID!
+  tiktok: String
+  youTube: String
+}
+
+type Token {
+  accessToken: ID!
+  refreshToken: String!
+}
+
+input UpdateHostelInput {
+  addressId: Int
+  capacity: Int
+  contactId: Int
+  description: String
+  email: String
+  genderType: String
+  name: String
+  phone: String
+  pricingId: Int
+  roomAvailabilityId: Int
+  slug: String
+  socialsId: Int
+  telegramId: String
+  userId: Int
+  verified: Boolean
+  whatsappId: String
+}
+
+type User {
+  email: String!
+  firstName: String!
+  lastName: String!
+  userId: ID!
 }
 
 type Users {
   email: String!
-  id: ID!
-  username: String!
+  firstName: String!
+  lastName: String!
+  userId: ID!
+}
+
+type UsersAndToken {
+  email: String!
+  firstName: String!
+  lastName: String!
+  token: Token!
+  userId: ID!
 }

@@ -1,5 +1,6 @@
 // auth.dto.ts
 import { InputType, Field } from '@nestjs/graphql';
+import { UserType } from '@src/users/enums/users.enum';
 
 @InputType()
 export class SignupInput {
@@ -14,4 +15,6 @@ export class SignupInput {
 
   @Field()
   lastName: string;
+  @Field()
+  userType: UserType;
 }

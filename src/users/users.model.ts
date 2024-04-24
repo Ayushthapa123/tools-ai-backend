@@ -2,16 +2,18 @@
 
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 
+//this obj is directly linked with playground
 @ObjectType()
 export class Users {
   @Field(() => ID)
-  id: number;
+  userId: number;
 
   @Field()
-  username: string;
+  firstName: string;
+
+  @Field()
+  lastName: string;
 
   @Field()
   email: string;
-
-  // Add other user fields as needed
 }

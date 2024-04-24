@@ -5,6 +5,8 @@ export enum UserType {
   STUDENT = 'student',
   HOSTEL_OWNER = 'hostelOwner',
   ADMIN = 'admin',
+  SUPPLIER = 'supplier',
+  OTHER = 'other',
 }
 
 registerEnumType(UserType, {

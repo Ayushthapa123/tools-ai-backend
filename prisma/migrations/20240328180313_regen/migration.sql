@@ -1,22 +1,23 @@
-/*
-  Warnings:
-
-  - The primary key for the `Users` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - You are about to drop the column `id` on the `Users` table. All the data in the column will be lost.
-  - The `userType` column on the `Users` table would be dropped and recreated. This will lead to data loss if there is data in the column.
-  - A unique constraint covering the columns `[userId]` on the table `Users` will be added. If there are existing duplicate values, this will fail.
-
-*/
 -- CreateEnum
-CREATE TYPE "UserType" AS ENUM ('STUDENT', 'HOSTEL_OWNER', 'SUPPLIERS');
+CREATE TYPE "UserType" AS ENUM ('STUDENT', 'HOSTEL_OWNER', 'SUPPLIERS', 'OTHERS');
 
--- AlterTable
-ALTER TABLE "Users" DROP CONSTRAINT "Users_pkey",
-DROP COLUMN "id",
-ADD COLUMN     "userId" SERIAL NOT NULL,
-DROP COLUMN "userType",
-ADD COLUMN     "userType" "UserType" NOT NULL DEFAULT 'STUDENT',
-ADD CONSTRAINT "Users_pkey" PRIMARY KEY ("userId");
+-- CreateTable
+CREATE TABLE "Users" (
+    "userId" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "profilePicture" TEXT,
+    "phoneNumber" TEXT,
+    "hashedRefreshToken" TEXT,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "userType" "UserType" NOT NULL DEFAULT 'STUDENT',
+
+    CONSTRAINT "Users_pkey" PRIMARY KEY ("userId")
+);
 
 -- CreateTable
 CREATE TABLE "Hostel" (
@@ -34,9 +35,6 @@ CREATE TABLE "Hostel" (
     "userId" INTEGER NOT NULL,
     "addressId" INTEGER NOT NULL,
     "contactId" INTEGER NOT NULL,
-    "roomAvailabilityId" INTEGER,
-    "pricingId" INTEGER,
-    "socialsId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -110,12 +108,11 @@ CREATE TABLE "Suppliers" (
 
 -- CreateTable
 CREATE TABLE "HostelSuppliers" (
-    "id" SERIAL NOT NULL,
+    "supplierId" SERIAL NOT NULL,
     "hostelId" INTEGER NOT NULL,
-    "supplierId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "HostelSuppliers_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "HostelSuppliers_pkey" PRIMARY KEY ("supplierId")
 );
 
 -- CreateTable
@@ -155,8 +152,8 @@ CREATE TABLE "Payments" (
 );
 
 -- CreateTable
-CREATE TABLE "Pricing" (
-    "pricingId" SERIAL NOT NULL,
+CREATE TABLE "MonthlyPricing" (
+    "monthlyPricingId" SERIAL NOT NULL,
     "oneSeater" TEXT,
     "twoSeater" TEXT,
     "threeSeater" TEXT,
@@ -164,8 +161,24 @@ CREATE TABLE "Pricing" (
     "fiveSeater" TEXT,
     "attachBathroom" TEXT,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "hostelId" INTEGER NOT NULL,
 
-    CONSTRAINT "Pricing_pkey" PRIMARY KEY ("pricingId")
+    CONSTRAINT "MonthlyPricing_pkey" PRIMARY KEY ("monthlyPricingId")
+);
+
+-- CreateTable
+CREATE TABLE "DailyPricing" (
+    "dailyPricingId" SERIAL NOT NULL,
+    "oneSeater" TEXT,
+    "twoSeater" TEXT,
+    "threeSeater" TEXT,
+    "fourSeater" TEXT,
+    "fiveSeater" TEXT,
+    "attachBathroom" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "hostelId" INTEGER NOT NULL,
+
+    CONSTRAINT "DailyPricing_pkey" PRIMARY KEY ("dailyPricingId")
 );
 
 -- CreateTable
@@ -178,6 +191,7 @@ CREATE TABLE "RoomAvailability" (
     "fiveSeater" TEXT,
     "attachBathroom" TEXT,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "hostelId" INTEGER NOT NULL,
 
     CONSTRAINT "RoomAvailability_pkey" PRIMARY KEY ("roomAvailabilityId")
 );
@@ -201,6 +215,7 @@ CREATE TABLE "Socials" (
     "tiktok" TEXT,
     "map" TEXT,
     "youTube" TEXT,
+    "hostelId" INTEGER NOT NULL,
 
     CONSTRAINT "Socials_pkey" PRIMARY KEY ("socialsId")
 );
@@ -229,6 +244,12 @@ CREATE TABLE "ContactDetails" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Users_userId_key" ON "Users"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Hostel_hostelId_key" ON "Hostel"("hostelId");
 
 -- CreateIndex
@@ -242,15 +263,6 @@ CREATE UNIQUE INDEX "Hostel_addressId_key" ON "Hostel"("addressId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Hostel_contactId_key" ON "Hostel"("contactId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Hostel_roomAvailabilityId_key" ON "Hostel"("roomAvailabilityId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Hostel_pricingId_key" ON "Hostel"("pricingId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Hostel_socialsId_key" ON "Hostel"("socialsId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "HostelFeatures_hostelFeatureId_key" ON "HostelFeatures"("hostelFeatureId");
@@ -283,10 +295,22 @@ CREATE UNIQUE INDEX "AdPlan_adPlanId_key" ON "AdPlan"("adPlanId");
 CREATE UNIQUE INDEX "Payments_paymentId_key" ON "Payments"("paymentId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Pricing_pricingId_key" ON "Pricing"("pricingId");
+CREATE UNIQUE INDEX "MonthlyPricing_monthlyPricingId_key" ON "MonthlyPricing"("monthlyPricingId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "MonthlyPricing_hostelId_key" ON "MonthlyPricing"("hostelId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DailyPricing_dailyPricingId_key" ON "DailyPricing"("dailyPricingId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DailyPricing_hostelId_key" ON "DailyPricing"("hostelId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RoomAvailability_roomAvailabilityId_key" ON "RoomAvailability"("roomAvailabilityId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "RoomAvailability_hostelId_key" ON "RoomAvailability"("hostelId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Gallery_galleryId_key" ON "Gallery"("galleryId");
@@ -295,25 +319,16 @@ CREATE UNIQUE INDEX "Gallery_galleryId_key" ON "Gallery"("galleryId");
 CREATE UNIQUE INDEX "Socials_socialsId_key" ON "Socials"("socialsId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Socials_hostelId_key" ON "Socials"("hostelId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Address_addressId_key" ON "Address"("addressId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ContactDetails_contactId_key" ON "ContactDetails"("contactId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Users_userId_key" ON "Users"("userId");
-
 -- AddForeignKey
 ALTER TABLE "Hostel" ADD CONSTRAINT "Hostel_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Hostel" ADD CONSTRAINT "Hostel_roomAvailabilityId_fkey" FOREIGN KEY ("roomAvailabilityId") REFERENCES "RoomAvailability"("roomAvailabilityId") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Hostel" ADD CONSTRAINT "Hostel_pricingId_fkey" FOREIGN KEY ("pricingId") REFERENCES "Pricing"("pricingId") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Hostel" ADD CONSTRAINT "Hostel_socialsId_fkey" FOREIGN KEY ("socialsId") REFERENCES "Socials"("socialsId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Hostel" ADD CONSTRAINT "Hostel_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("addressId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -343,4 +358,16 @@ ALTER TABLE "Payments" ADD CONSTRAINT "Payments_adPlanId_fkey" FOREIGN KEY ("adP
 ALTER TABLE "Payments" ADD CONSTRAINT "Payments_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "MonthlyPricing" ADD CONSTRAINT "MonthlyPricing_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DailyPricing" ADD CONSTRAINT "DailyPricing_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RoomAvailability" ADD CONSTRAINT "RoomAvailability_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Gallery" ADD CONSTRAINT "Gallery_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Socials" ADD CONSTRAINT "Socials_hostelId_fkey" FOREIGN KEY ("hostelId") REFERENCES "Hostel"("hostelId") ON DELETE RESTRICT ON UPDATE CASCADE;

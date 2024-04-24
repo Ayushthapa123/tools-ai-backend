@@ -15,8 +15,8 @@ import { ForgotPasswordInput } from './dto/forgot-password.input';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string = 'your-secret-key'; // Replace with your own secret key
-  private readonly refreshTokenSecret: string = 'your-refresh-secret-key'; // Replace with your own secret key for refresh tokens
+  private readonly jwtSecret: string = 'Hello@123'; // Replace with your own secret key
+  private readonly refreshTokenSecret: string = '!ayushh123#!,'; // Replace with your own secret key for refresh tokens
   private readonly MailerService: MailerService;
 
   constructor(private prisma: PrismaService) {}
@@ -55,14 +55,22 @@ export class AuthService {
         console.log(
           'If user is created send mail to the user for verification',
         );
-        await (this.MailerService as MailerService).sendEmail(
-          'thapaaayush115@gmail.com',
-          'Hi ayush',
-          'hello',
-        );
+        // await (this.MailerService as MailerService).sendEmail(
+        //   'thapaaayush115@gmail.com',
+        //   'Hi ayush please verify your email',
+        //   'hello',
+        // );
       }
 
-      return user;
+      // Generate JWT tokens
+      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId);
+      // Save refreshToken in the database
+      await this.prisma.users.update({
+        where: { userId: user.userId }, // Specify the user to update
+        data: { hashedRefreshToken: refreshToken }, // Update refreshToken field
+      });
+
+      return { ...user, token: { accessToken, refreshToken } };
     } catch (error) {
       // Handle any database-related errors
       throw new Error('Error creating user');
@@ -93,18 +101,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Generate access and refresh tokens
-    const tokens = this.generateJwtTokens(user.userId);
+    // Generate JWT tokens
+    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId);
+    // Save refreshToken in the database
+    await this.prisma.users.update({
+      where: { userId: user.userId }, // Specify the user to update
+      data: { hashedRefreshToken: refreshToken }, // Update refreshToken field
+    });
 
-    // Return the user and tokens if login is successful
-    //! we need to define in schema to be able to access from graphql endpoint.
-    //! also save need to save hashedRefreshToken in UserSchema
-    return { user, tokens };
+    return { ...user, token: { accessToken, refreshToken } };
   }
 
   private generateJwtTokens(userId: number) {
     const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
-      expiresIn: '45m',
+      expiresIn: '50m',
     });
     const refreshToken = jwt.sign({ sub: userId }, this.refreshTokenSecret, {
       expiresIn: '30d',
@@ -113,22 +123,40 @@ export class AuthService {
   }
 
   //RefreshToken Logic
-  async refreshTokens(refreshToken: string) {
+  async refreshTokens(refreshToken: string, userId: number) {
     try {
-      // Verify the refresh token
-      const decoded = jwt.verify(refreshToken, this.refreshTokenSecret);
-
-      // If valid, generate a new access token
-      const newAccessToken = jwt.sign({ sub: decoded.sub }, this.jwtSecret, {
-        expiresIn: '15m',
+      // Retrieve the refresh token from your database based on the token received but it's lengthy so comment for now
+      const user = await this.prisma.users.findFirst({
+        where: { userId: userId },
       });
 
-      // Return the new access token
-      return { accessToken: newAccessToken };
+      // Verify the refresh token's signature
+      console.log(refreshToken);
+      const decoded = jwt.verify(refreshToken, this.refreshTokenSecret);
+      console.log('dddddddd', decoded);
+
+      // Ensure that the refresh token is still valid and matches the stored token
+      if (
+        typeof decoded === 'object' &&
+        user.userId === userId &&
+        decoded.hasOwnProperty('sub')
+      ) {
+        // Generate a new access token with appropriate claims
+        const newAccessToken = jwt.sign({ sub: decoded.sub }, this.jwtSecret, {
+          expiresIn: '50m', // Set appropriate expiration time
+        });
+
+        // Return the new access token
+        return { accessToken: newAccessToken, refreshToken };
+      } else {
+        throw new UnauthorizedException('Invalid refresh tokenn');
+      }
     } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+      // Handle invalid refresh tokens or other errors
+      throw new UnauthorizedException('Invalid refresh token catch error');
     }
   }
+
   //Change password logic
 
   async changePassword(

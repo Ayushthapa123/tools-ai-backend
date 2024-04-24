@@ -10,6 +10,8 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { ForgotPasswordInput } from './dto/forgot-password.input';
 import { MailerService } from '@src/email/mailer/mailer.service';
+import { Token, UsersAndToken } from './models/user.model';
+import { GetTokenInput } from './dto/get-token.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -19,17 +21,26 @@ export class AuthResolver {
     private readonly MailerService: MailerService,
   ) {}
 
-  @Mutation(() => Users)
+  @Mutation(() => UsersAndToken)
   async signupUser(@Args('input') signupInput: SignupInput) {
     return this.authService.signupUser(signupInput);
   }
 
-  @Mutation(() => Auth)
+  @Mutation(() => UsersAndToken)
   async loginUser(@Args('input') loginInput: LoginInput) {
-    const user = await this.authService.loginUser(loginInput);
+    return this.authService.loginUser(loginInput);
+  }
 
-    // Return user and token
-    return { user };
+  @Mutation(() => Token)
+  async refreshTokens(@Args('input') tokenInput: GetTokenInput) {
+    // Refresh access token using refresh token
+    const tokens = await this.authService.refreshTokens(
+      tokenInput.refreshToken,
+      tokenInput.userId,
+    );
+
+    // Return the new access token
+    return tokens;
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -39,22 +50,13 @@ export class AuthResolver {
     console.log('user just logged out', user);
     return 'Logged out successfully';
   }
-
-  @Mutation(() => Auth)
-  async refreshTokens(@Args('refreshToken') refreshToken: string) {
-    // Refresh access token using refresh token
-    const tokens = await this.authService.refreshTokens(refreshToken);
-
-    // Return the new access token
-    return { tokens };
-  }
   //Change Password logic
   @Mutation(() => String)
   async changePassword(
     @CurrentUser() user: Users,
     @Args('input') changePasswordInput: ChangePasswordInput,
   ) {
-    return this.authService.changePassword(user.id, changePasswordInput);
+    return this.authService.changePassword(user.userId, changePasswordInput);
   }
 
   //Forgot password logic
