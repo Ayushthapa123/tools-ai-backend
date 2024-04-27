@@ -13,7 +13,7 @@ model Users {
   userId             Int      @id @unique @default(autoincrement())
   email              String   @unique
   passwordHash       String?
-  fullName          String
+  fullName           String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   profilePicture     String?
@@ -31,34 +31,38 @@ model Hostel {
   email       String
   phone       String
   verified    Boolean @default(false)
-  genderType  String
+  genderType  GenderType
   capacity    Int?
   description String?
   slug        String  @unique
   whatsappId  String?
   telegramId  String?
   userId      Int     @unique
-  addressId   Int     @unique
-  contactId   Int     @unique
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Define a relation to Users
-  owner            Users             @relation(fields: [userId], references: [userId])
-  address          Address           @relation(fields: [addressId], references: [addressId])
-  contact          ContactDetails    @relation(fields: [contactId], references: [contactId])
+  owner            Users?             @relation(fields: [userId], references: [userId])
+
   // Define relations to other models
   roomAvailability RoomAvailability?
   dailyPricing     DailyPricing?
 
   socials        Socials?
+  address        Address?
+  contact        ContactDetails?
+
+
   MonthlyPricing MonthlyPricing?
 
   orders    Orders[]
   payments  Payments[]
   gallery   Gallery[]
   suppliers HostelSuppliers[]
+
+  @@index([userId,hostelId,slug])
 }
 
 model HostelFeatures {
@@ -110,9 +114,11 @@ model Category {
 model Suppliers {
   supplierId  Int      @id @unique @default(autoincrement())
   name        String
-  companyName String?
-  addressId   Int
-  contactId   Int
+  companyName String
+  fullAddress   String
+  phone        String 
+  altPhone     String?
+  email        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -176,6 +182,8 @@ model MonthlyPricing {
   fourSeater       String?
   fiveSeater       String?
   attachBathroom   String?
+  createdAt   DateTime @default(now())
+
   updatedAt        DateTime @updatedAt
   hostelId         Int      @unique
 
@@ -191,6 +199,8 @@ model DailyPricing {
   fourSeater     String?
   fiveSeater     String?
   attachBathroom String?
+  createdAt   DateTime @default(now())
+
   updatedAt      DateTime @updatedAt
   hostelId       Int      @unique
 
@@ -200,12 +210,14 @@ model DailyPricing {
 
 model RoomAvailability {
   roomAvailabilityId Int      @id @unique @default(autoincrement())
-  oneSeater          String?
-  twoSeater          String?
-  threeSeater        String?
-  fourSeater         String?
-  fiveSeater         String?
-  attachBathroom     String?
+  oneSeater          Boolean?
+  twoSeater          Boolean?
+  threeSeater        Boolean?
+  fourSeater         Boolean?
+  fiveSeater         Boolean?
+  attachBathroom     Boolean?
+  createdAt   DateTime @default(now())
+
   updatedAt          DateTime @updatedAt
   hostelId           Int      @unique
 
@@ -220,6 +232,10 @@ model Gallery {
   caption   String?
   url       String
 
+  createdAt   DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+
   // Define a relation to Hostel
   hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 }
@@ -232,6 +248,9 @@ model Socials {
   map       String?
   youTube   String?
   hostelId  Int     @unique
+
+  createdAt   DateTime @default(now())
+  updatedAt          DateTime @updatedAt
   hostel    Hostel? @relation(fields: [hostelId], references: [hostelId])
 
   // Define a relation to Hostel
@@ -242,20 +261,27 @@ model Address {
   country   String
   district  String?
   city      String?
+  tole      String?
   street    String?
+  createdAt   DateTime @default(now())
+
   updatedAt DateTime @updatedAt
-  hostel    Hostel?
+  hostelId  Int @unique
+  hostel    Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
 
 model ContactDetails {
   contactId Int      @id @unique @default(autoincrement())
   phone     String
   altPhone  String?
-  email     String?
+  email     String
+  createdAt   DateTime @default(now())
+
   updatedAt DateTime @updatedAt
+  hostelId  Int @unique
 
   // Define a relation to Hostel
-  hostel Hostel?
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
 
 //Enums 
@@ -264,4 +290,10 @@ enum UserType {
   HOSTEL_OWNER
   SUPPLIERS
   OTHERS
+}
+
+enum GenderType {
+  BOYS
+  GIRLS
+  BOTH
 }

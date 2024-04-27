@@ -24,23 +24,44 @@ type ContactDetails {
   updatedAt: DateTime!
 }
 
+input CreateContactInput {
+  altPhone: String
+  email: String!
+  hostelId: Float!
+  phone: String!
+}
+
 input CreateHostelInput {
-  addressId: Int!
   capacity: Int
-  contactId: Int!
   description: String
   email: String!
   genderType: String!
   name: String!
   phone: String!
-  pricingId: Int
-  roomAvailabilityId: Int
   slug: String!
-  socialsId: Int
   telegramId: String
   userId: Int!
   verified: Boolean!
   whatsappId: String
+}
+
+input CreateRoomAvailibilityInput {
+  attachBathroom: Boolean
+  fiveSeater: Boolean
+  fourSeater: Boolean
+  hostelId: Float!
+  oneSeater: Boolean
+  threeSeater: Boolean
+  twoSeater: Boolean
+}
+
+input CreateSocialsInput {
+  facebook: String
+  hostelId: Float!
+  instaGram: String
+  map: String
+  tiktok: String
+  youtube: String
 }
 
 input CreateUserInput {
@@ -50,6 +71,17 @@ input CreateUserInput {
   passwordHash: String!
   phoneNumber: String
   profilePicture: String
+  updatedAt: DateTime!
+}
+
+type DailyPricing {
+  attachBathroom: String
+  fiveSeater: String
+  fourSeater: String
+  oneSeater: String
+  pricingId: ID!
+  threeSeater: String
+  twoSeater: String
   updatedAt: DateTime!
 }
 
@@ -79,33 +111,29 @@ type GoogleOauthUrl {
 }
 
 type Hostel {
-  address: Address!
-  addressId: Int!
-  capacity: Int
-  contact: ContactDetails!
-  contactId: Int!
+  address: Address
+  capacity: Float
+  contact: ContactDetails
   createdAt: DateTime!
+  dailyPricing: DailyPricing
   description: String
   email: String!
-  gallery: [Gallery!]!
+  gallery: [Gallery!]
   genderType: String!
   hostelId: ID!
+  monthlyPricing: MonthlyPricing
   name: String!
-  orders: [Orders!]!
-  owner: User!
-  payments: [Payments!]!
+  orders: [Orders!]
+  owner: Users!
+  payments: [Payments!]
   phone: String!
-  pricingId: Int
   roomAvailability: RoomAvailability
-  roomAvailabilityId: Int
   slug: String!
   socials: Socials
-  socialsId: Int
-  suppliers: [HostelSuppliers!]!
+  suppliers: [HostelSuppliers!]
   telegramId: String
   updatedAt: DateTime!
-  userId: Int!
-  verified: Int!
+  verified: Boolean!
   whatsappId: String
 }
 
@@ -121,9 +149,23 @@ input LoginInput {
   password: String!
 }
 
+type MonthlyPricing {
+  attachBathroom: String
+  fiveSeater: String
+  fourSeater: String
+  oneSeater: String
+  pricingId: ID!
+  threeSeater: String
+  twoSeater: String
+  updatedAt: DateTime!
+}
+
 type Mutation {
   changePassword(input: ChangePasswordInput!): String!
+  createAddress(data: CreateRoomAvailibilityInput!): RoomAvailability!
+  createContact(data: CreateContactInput!): ContactDetails!
   createHostel(data: CreateHostelInput!): Hostel!
+  createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
@@ -131,7 +173,10 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
+  updateAddress(addressId: Float!, data: UpdateRoomAvailibilityInput!): RoomAvailability!
+  updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetails!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+  updateSocials(addressId: Float!, data: UpdateSocialsInput!): Socials!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
 }
 
@@ -156,9 +201,13 @@ type Payments {
 }
 
 type Query {
+  getAddressByHostelId(hostelId: Float!): RoomAvailability
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
+  getContactByHostelId(hostelId: Float!): ContactDetails
   getGoogleAuthUrl: GoogleOauthUrl!
   getHostelById(hostelId: Float!): Hostel
+  getHostelBySlug(slug: String!): Hostel
+  getSocialsByHostelId(hostelId: Float!): Socials
   getUser(id: Float!): Users
   getUsers: [Users!]!
 }
@@ -169,13 +218,13 @@ input ResetPasswordInput {
 }
 
 type RoomAvailability {
-  attachBathroom: String
-  fiveSeater: String
-  fourSeater: String
-  oneSeater: String
+  attachBathroom: Boolean
+  fiveSeater: Boolean
+  fourSeater: Boolean
+  oneSeater: Boolean
   roomAvailabilityId: ID!
-  threeSeater: String
-  twoSeater: String
+  threeSeater: Boolean
+  twoSeater: Boolean
   updatedAt: DateTime!
 }
 
@@ -204,34 +253,53 @@ type Token {
   refreshToken: String!
 }
 
+input UpdateContactInput {
+  altPhone: String
+  email: String
+  phone: String
+}
+
 input UpdateHostelInput {
-  addressId: Int
   capacity: Int
-  contactId: Int
   description: String
   email: String
   genderType: String
   name: String
   phone: String
-  pricingId: Int
-  roomAvailabilityId: Int
   slug: String
-  socialsId: Int
   telegramId: String
   userId: Int
   verified: Boolean
   whatsappId: String
 }
 
-type User {
-  email: String!
-  fullName: String!
-  userId: ID!
+input UpdateRoomAvailibilityInput {
+  attachBathroom: Boolean
+  fiveSeater: Boolean
+  fourSeater: Boolean
+  oneSeater: Boolean
+  threeSeater: Boolean
+  twoSeater: Boolean
+}
+
+input UpdateSocialsInput {
+  facebook: String
+  instaGram: String
+  map: String
+  tiktok: String
+  youtube: String
 }
 
 type Users {
+  createdAt: DateTime!
   email: String!
   fullName: String!
+  hashedRefreshToken: String!
+  isVerified: Boolean!
+  passwordHash: String!
+  phoneNumber: String
+  profilePicture: String
+  updatedAt: DateTime!
   userId: ID!
 }
 

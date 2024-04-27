@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
 import { HostelService } from './hostel.service';
-import { Hostel } from './models/hostel.model';
+import { Hostel } from '@src/models/global.model';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { UpdateHostelInput } from './dtos/update-hostel.input';
 
@@ -26,6 +26,11 @@ export class HostelResolver {
     return this.hostelService.getHostelById(hostelId);
   }
 
+  @Query(() => Hostel, { nullable: true })
+  async getHostelBySlug(@Args('slug') slug: string): Promise<Hostel | null> {
+    return this.hostelService.getHostelBySlug(slug);
+  }
+
   @Mutation(() => Hostel)
   async createHostel(@Args('data') data: CreateHostelInput): Promise<Hostel> {
     return this.hostelService.createHostel(data);
@@ -42,10 +47,5 @@ export class HostelResolver {
   // @Mutation(() => Hostel)
   // async deleteHostel(@Args('hostelId') hostelId: number): Promise<Hostel> {
   //   return this.hostelService.deleteHostel(hostelId);
-  // }
-
-  // @ResolveField(() => Hostel)
-  // async hostel(@Parent() hostel: Hostel) {
-  //   return hostel;
   // }
 }

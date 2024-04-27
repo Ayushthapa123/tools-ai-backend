@@ -59,17 +59,18 @@ export class AuthService {
         console.log(
           'If user is created send mail to the user for verification',
         );
-        const verificationToken = this.generateVerificationToken(user.userId);
-        const verificationLink = `${process.env.WEB_ADDRESS}/verify-email?token=${verificationToken}`;
+        // const verificationToken = this.generateVerificationToken(user.userId);
+        // const verificationLink = `${process.env.WEB_ADDRESS}/verify-email?token=${verificationToken}`;
 
-        await this.mailerService.sendEmail(
-          verificationLink,
-          'ayushthapamgr007@gmail.com',
-          'hello body',
-        );
+        // await this.mailerService.sendEmail(
+        //   verificationLink,
+        //   'ayushthapamgr007@gmail.com',
+        //   'hello body',
+        // );
         // await this.sendgridService.sendEmail(verificationLink);
       }
 
+      console.log('uuuuuuuuu', user);
       // Generate JWT tokens
       const { accessToken, refreshToken } = this.generateJwtTokens(user.userId);
       // Save refreshToken in the database

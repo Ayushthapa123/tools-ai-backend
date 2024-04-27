@@ -3,96 +3,6 @@
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 
 @ObjectType()
-export class Hostel {
-  @Field(() => ID)
-  hostelId: number;
-
-  @Field()
-  name: string;
-
-  @Field()
-  email: string;
-
-  @Field()
-  phone: string;
-
-  @Field(() => Int)
-  verified: boolean;
-
-  @Field()
-  genderType: string;
-
-  @Field(() => Int, { nullable: true })
-  capacity?: number;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field()
-  slug: string;
-
-  @Field({ nullable: true })
-  whatsappId?: string;
-
-  @Field({ nullable: true })
-  telegramId?: string;
-
-  @Field(() => Int)
-  userId: number;
-
-  @Field(() => Int)
-  addressId: number;
-
-  @Field(() => Int)
-  contactId: number;
-
-  @Field(() => Int, { nullable: true })
-  roomAvailabilityId?: number;
-
-  @Field(() => Int, { nullable: true })
-  pricingId?: number;
-
-  @Field(() => Int, { nullable: true })
-  socialsId?: number;
-
-  @Field()
-  createdAt: Date;
-
-  @Field()
-  updatedAt: Date;
-
-  //   @Field(() => Users)
-  //   owner: Users;
-
-  //   @Field(() => RoomAvailability, { nullable: true })
-  //   roomAvailability?: RoomAvailability;
-
-  //   @Field(() => Pricing, { nullable: true })
-  //   pricing?: Pricing;
-
-  //   @Field(() => Socials, { nullable: true })
-  //   socials?: Socials;
-
-  //   @Field(() => Address)
-  //   address: Address;
-
-  //   @Field(() => ContactDetails)
-  //   contact: ContactDetails;
-
-  //   @Field(() => [Orders])
-  //   orders: Orders[];
-
-  //   @Field(() => [Payments])
-  //   payments: Payments[];
-
-  //   @Field(() => [Gallery])
-  //   gallery: Gallery[];
-
-  //   @Field(() => [HostelSuppliers])
-  //   suppliers: HostelSuppliers[];
-}
-
-@ObjectType()
 export class Users {
   @Field(() => ID)
   userId: number;
@@ -395,22 +305,22 @@ export class DailyPricing {
   pricingId: number;
 
   @Field({ nullable: true })
-  oneSeater?: string;
+  oneSeater?: number;
 
   @Field({ nullable: true })
-  twoSeater?: string;
+  twoSeater?: number;
 
   @Field({ nullable: true })
-  threeSeater?: string;
+  threeSeater?: number;
 
   @Field({ nullable: true })
-  fourSeater?: string;
+  fourSeater?: number;
 
   @Field({ nullable: true })
-  fiveSeater?: string;
+  fiveSeater?: number;
 
   @Field({ nullable: true })
-  attachBathroom?: string;
+  attachBathroom?: number;
 
   @Field(() => Date)
   updatedAt: Date;
@@ -422,22 +332,22 @@ export class RoomAvailability {
   roomAvailabilityId: number;
 
   @Field({ nullable: true })
-  oneSeater?: string;
+  oneSeater?: boolean;
 
   @Field({ nullable: true })
-  twoSeater?: string;
+  twoSeater?: boolean;
 
   @Field({ nullable: true })
-  threeSeater?: string;
+  threeSeater?: boolean;
 
   @Field({ nullable: true })
-  fourSeater?: string;
+  fourSeater?: boolean;
 
   @Field({ nullable: true })
-  fiveSeater?: string;
+  fiveSeater?: boolean;
 
   @Field({ nullable: true })
-  attachBathroom?: string;
+  attachBathroom?: boolean;
 
   @Field(() => Date)
   updatedAt: Date;
@@ -534,4 +444,81 @@ export class ContactDetails {
 
   //   @Field(() => Hostel, { nullable: true })
   //   hostel?: Hostel;
+}
+
+@ObjectType()
+export class Hostel {
+  @Field(() => ID)
+  hostelId: number;
+
+  @Field()
+  name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  phone: string;
+
+  @Field()
+  verified: boolean;
+
+  @Field()
+  genderType: string; // Assuming GenderType is a string type
+
+  @Field({ nullable: true })
+  capacity?: number;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field()
+  slug: string;
+
+  @Field({ nullable: true })
+  whatsappId?: string;
+
+  @Field({ nullable: true })
+  telegramId?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
+
+  // Define a field for owner (assuming it's a User type)
+  @Field(() => Users)
+  owner?: Users;
+
+  // Define optional fields for relations to other models
+  @Field(() => RoomAvailability, { nullable: true })
+  roomAvailability?: RoomAvailability;
+
+  @Field(() => DailyPricing, { nullable: true })
+  dailyPricing?: DailyPricing;
+
+  @Field(() => Socials, { nullable: true })
+  socials?: Socials;
+
+  @Field(() => Address, { nullable: true })
+  address?: Address;
+
+  @Field(() => ContactDetails, { nullable: true })
+  contact?: ContactDetails;
+
+  @Field(() => MonthlyPricing, { nullable: true })
+  monthlyPricing?: MonthlyPricing;
+
+  @Field(() => [Orders], { nullable: true })
+  orders?: Orders[];
+
+  @Field(() => [Payments], { nullable: true })
+  payments?: Payments[];
+
+  @Field(() => [Gallery], { nullable: true })
+  gallery?: Gallery[];
+
+  @Field(() => [HostelSuppliers], { nullable: true })
+  suppliers?: HostelSuppliers[];
 }

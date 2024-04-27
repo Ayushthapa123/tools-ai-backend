@@ -1,0 +1,15 @@
+// src/hostel/dto/update-hostel.input.ts
+
+import { InputType, Field } from '@nestjs/graphql';
+
+@InputType()
+export class UpdateContactInput {
+  @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
+  phone?: string;
+
+  @Field({ nullable: true })
+  altPhone?: string;
+}
