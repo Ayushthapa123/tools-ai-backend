@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
 import { HostelModule } from './hostel/hostel.module';
+import { ImageController } from './image/image.controller';
+// import { ImageModule } from './image/image.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -20,9 +22,10 @@ import { HostelModule } from './hostel/hostel.module';
     UsersModule,
     EmailModule,
     HostelModule,
+    // ImageModule,
   ],
 
-  controllers: [AppController], //we don't need it now
+  controllers: [AppController, ImageController], //we don't need it now
   providers: [AppService], //we dont need it now
 })
 export class AppModule {}

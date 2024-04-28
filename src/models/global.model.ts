@@ -275,34 +275,7 @@ export class Payments {
 @ObjectType()
 export class MonthlyPricing {
   @Field(() => ID)
-  pricingId: number;
-
-  @Field({ nullable: true })
-  oneSeater?: string;
-
-  @Field({ nullable: true })
-  twoSeater?: string;
-
-  @Field({ nullable: true })
-  threeSeater?: string;
-
-  @Field({ nullable: true })
-  fourSeater?: string;
-
-  @Field({ nullable: true })
-  fiveSeater?: string;
-
-  @Field({ nullable: true })
-  attachBathroom?: string;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class DailyPricing {
-  @Field(() => ID)
-  pricingId: number;
+  monthlyPricingId: number;
 
   @Field({ nullable: true })
   oneSeater?: number;
@@ -321,6 +294,39 @@ export class DailyPricing {
 
   @Field({ nullable: true })
   attachBathroom?: number;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class DailyPricing {
+  @Field(() => ID)
+  dailyPricingId: number;
+
+  @Field({ nullable: true })
+  oneSeater?: number;
+
+  @Field({ nullable: true })
+  twoSeater?: number;
+
+  @Field({ nullable: true })
+  threeSeater?: number;
+
+  @Field({ nullable: true })
+  fourSeater?: number;
+
+  @Field({ nullable: true })
+  fiveSeater?: number;
+
+  @Field({ nullable: true })
+  attachBathroom?: number;
+
+  @Field(() => Date)
+  createdAt: Date;
 
   @Field(() => Date)
   updatedAt: Date;

@@ -1,3 +1,4 @@
+
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x"]
@@ -176,12 +177,12 @@ model Payments {
 
 model MonthlyPricing {
   monthlyPricingId Int      @id @unique @default(autoincrement())
-  oneSeater        String?
-  twoSeater        String?
-  threeSeater      String?
-  fourSeater       String?
-  fiveSeater       String?
-  attachBathroom   String?
+   oneSeater      Int?
+  twoSeater      Int?
+  threeSeater    Int?
+  fourSeater     Int?
+  fiveSeater     Int?
+  attachBathroom Int?
   createdAt   DateTime @default(now())
 
   updatedAt        DateTime @updatedAt
@@ -193,12 +194,12 @@ model MonthlyPricing {
 
 model DailyPricing {
   dailyPricingId Int      @id @unique @default(autoincrement())
-  oneSeater      String?
-  twoSeater      String?
-  threeSeater    String?
-  fourSeater     String?
-  fiveSeater     String?
-  attachBathroom String?
+  oneSeater      Int?
+  twoSeater      Int?
+  threeSeater    Int?
+  fourSeater     Int?
+  fiveSeater     Int?
+  attachBathroom Int?
   createdAt   DateTime @default(now())
 
   updatedAt      DateTime @updatedAt
@@ -228,7 +229,7 @@ model RoomAvailability {
 model Gallery {
   galleryId Int     @id @unique @default(autoincrement())
   hostelId  Int
-  type      String?
+  type      GalleryType @default(ROOM)
   caption   String?
   url       String
 
@@ -297,3 +298,16 @@ enum GenderType {
   GIRLS
   BOTH
 }
+
+enum GalleryType {
+  PROFILE
+  COVER
+  ROOM 
+  BATHROOM 
+  BUILDING 
+  KITCHEN 
+  CELEBRATIONS
+  REVIEW
+  OTHER
+}
+

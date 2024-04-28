@@ -7,6 +7,9 @@ import { ContactModule } from './contact/contact.module';
 import { AddressModule } from './address/address.module';
 import { SocialsModule } from './socials/socials.module';
 import { RoomAvailibilityModule } from './roomAvailability/roomAvalibility.module';
+import { DailyPricingModule } from './dailyPricing/dailyPricing.module';
+import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { RoomAvailibilityModule } from './roomAvailability/roomAvalibility.modul
     AddressModule,
     SocialsModule,
     RoomAvailibilityModule,
+    DailyPricingModule,
+    MonthlyPricingModule,
+    GalleryModule,
   ],
   providers: [HostelResolver, HostelService, PrismaService],
 })
