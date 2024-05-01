@@ -17,6 +17,11 @@ export class UsersResolver {
     return this.usersService.getUserById(id);
   }
 
+  @Query(() => Users, { nullable: true })
+  async getUserByAccessToken(@Args('accessToken') accessToken: string) {
+    return this.usersService.getUserByToken(accessToken);
+  }
+
   @Mutation(() => Users)
   async createUser(@Args('input') input: CreateUserInput) {
     return this.usersService.createUser(input);

@@ -10,6 +10,7 @@ import { RoomAvailibilityModule } from './roomAvailability/roomAvalibility.modul
 import { DailyPricingModule } from './dailyPricing/dailyPricing.module';
 import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
 import { GalleryModule } from './gallery/gallery.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { GalleryModule } from './gallery/gallery.module';
     MonthlyPricingModule,
     GalleryModule,
   ],
-  providers: [HostelResolver, HostelService, PrismaService],
+  providers: [HostelResolver, HostelService, PrismaService, JwtService],
 })
 export class HostelModule {}

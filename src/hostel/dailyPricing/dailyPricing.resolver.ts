@@ -27,9 +27,9 @@ export class DailyPricingResolver {
 
   @Mutation(() => DailyPricing)
   async updateDailyPricing(
-    @Args('addressId') addressId: number,
+    @Args('dailyPricingId') dailyPricingId: number,
     @Args('data') data: UpdateDailyPricingInput,
   ): Promise<DailyPricing> {
-    return this.pricingService.updatedailyPricing(addressId, data);
+    return this.pricingService.updatedailyPricing(dailyPricingId, data);
   }
 }

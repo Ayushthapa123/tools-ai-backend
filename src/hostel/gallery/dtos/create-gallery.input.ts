@@ -1,6 +1,5 @@
-// src/hostel/dto/create-hostel.input.ts
-
 import { InputType, Field } from '@nestjs/graphql';
+import { GalleryType } from '@prisma/client';
 
 @InputType()
 export class CreateGalleryInput {
@@ -8,7 +7,7 @@ export class CreateGalleryInput {
   hostelId: number;
 
   @Field({ nullable: true })
-  type: string;
+  type: GalleryType;
 
   @Field({ nullable: true })
   caption: string;

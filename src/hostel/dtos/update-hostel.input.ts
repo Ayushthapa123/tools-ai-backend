@@ -9,12 +9,6 @@ export class UpdateHostelInput {
   name?: string;
 
   @Field({ nullable: true })
-  email?: string;
-
-  @Field({ nullable: true })
-  phone?: string;
-
-  @Field({ nullable: true })
   verified?: boolean;
 
   @Field({ nullable: true })

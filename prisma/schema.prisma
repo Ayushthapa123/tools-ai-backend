@@ -29,8 +29,6 @@ model Users {
 model Hostel {
   hostelId    Int     @id @unique @default(autoincrement())
   name        String
-  email       String
-  phone       String
   verified    Boolean @default(false)
   genderType  GenderType
   capacity    Int?
@@ -70,6 +68,14 @@ model HostelFeatures {
   hostelFeatureId Int     @id @unique @default(autoincrement())
   name            String
   emojiUrl        String?
+  type             String?
+}
+
+model HostelRules {
+  hostelRulesId Int     @id @unique @default(autoincrement())
+  name            String
+  description     String?
+
 }
 
 model Orders {
@@ -183,6 +189,8 @@ model MonthlyPricing {
   fourSeater     Int?
   fiveSeater     Int?
   attachBathroom Int?
+  deposite       Int?
+  admission      Int?
   createdAt   DateTime @default(now())
 
   updatedAt        DateTime @updatedAt
@@ -228,13 +236,15 @@ model RoomAvailability {
 
 model Gallery {
   galleryId Int     @id @unique @default(autoincrement())
-  hostelId  Int
   type      GalleryType @default(ROOM)
   caption   String?
   url       String
 
   createdAt   DateTime @default(now())
   updatedAt          DateTime @updatedAt
+
+  hostelId  Int     
+
 
 
   // Define a relation to Hostel

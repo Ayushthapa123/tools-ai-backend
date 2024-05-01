@@ -422,6 +422,9 @@ export class Address {
   city?: string;
 
   @Field({ nullable: true })
+  tole?: string;
+
+  @Field({ nullable: true })
   street?: string;
 
   @Field(() => Date)
@@ -457,14 +460,11 @@ export class Hostel {
   @Field(() => ID)
   hostelId: number;
 
+  @Field(() => ID)
+  userId: number;
+
   @Field()
   name: string;
-
-  @Field()
-  email: string;
-
-  @Field()
-  phone: string;
 
   @Field()
   verified: boolean;

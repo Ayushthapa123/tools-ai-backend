@@ -27,9 +27,9 @@ export class SocialsResolver {
 
   @Mutation(() => Socials)
   async updateSocials(
-    @Args('addressId') addressId: number,
+    @Args('socialsId') socialsId: number,
     @Args('data') data: UpdateSocialsInput,
   ): Promise<Socials> {
-    return this.socialsService.updateSocials(addressId, data);
+    return this.socialsService.updateSocials(socialsId, data);
   }
 }

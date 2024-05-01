@@ -1,8 +1,10 @@
-import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int, Mutation, Context } from '@nestjs/graphql';
 import { HostelService } from './hostel.service';
 import { Hostel } from '@src/models/global.model';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { UpdateHostelInput } from './dtos/update-hostel.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@src/guards/auth.guard';
 
 // import { Controller } from '@nestjs/common';
 
@@ -27,13 +29,26 @@ export class HostelResolver {
   }
 
   @Query(() => Hostel, { nullable: true })
+  @UseGuards(AuthGuard)
+  async getHostelByToken(@Context() ctx: any) {
+    const userId = Number(ctx.user.sub);
+
+    return this.hostelService.getHostelBytoken(userId);
+  }
+
+  @Query(() => Hostel, { nullable: true })
   async getHostelBySlug(@Args('slug') slug: string): Promise<Hostel | null> {
     return this.hostelService.getHostelBySlug(slug);
   }
 
   @Mutation(() => Hostel)
-  async createHostel(@Args('data') data: CreateHostelInput): Promise<Hostel> {
-    return this.hostelService.createHostel(data);
+  @UseGuards(AuthGuard)
+  async createHostel(
+    @Context() ctx: any,
+    @Args('data') data: CreateHostelInput,
+  ): Promise<Hostel> {
+    const userId = Number(ctx.user.sub);
+    return this.hostelService.createHostel(userId, data);
   }
 
   @Mutation(() => Hostel)

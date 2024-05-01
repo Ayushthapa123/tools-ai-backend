@@ -27,9 +27,9 @@ export class MonthlyPricingResolver {
 
   @Mutation(() => MonthlyPricing)
   async updateMonthlyPricing(
-    @Args('addressId') addressId: number,
+    @Args('monthlyPricingId') monthlyPricingId: number,
     @Args('data') data: UpdateMonthlyPricingInput,
   ): Promise<MonthlyPricing> {
-    return this.pricingService.updatemonthlyPricing(addressId, data);
+    return this.pricingService.updatemonthlyPricing(monthlyPricingId, data);
   }
 }

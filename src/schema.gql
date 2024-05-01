@@ -8,6 +8,7 @@ type Address {
   country: String!
   district: String
   street: String
+  tole: String
   updatedAt: DateTime!
 }
 
@@ -22,6 +23,15 @@ type ContactDetails {
   email: String
   phone: String!
   updatedAt: DateTime!
+}
+
+input CreateAddressInput {
+  city: String
+  country: String!
+  district: String!
+  hostelId: Float!
+  street: String
+  tole: String
 }
 
 input CreateContactInput {
@@ -51,15 +61,8 @@ input CreateGalleryInput {
 input CreateHostelInput {
   capacity: Int
   description: String
-  email: String!
   genderType: String!
   name: String!
-  phone: String!
-  slug: String!
-  telegramId: String
-  userId: Int!
-  verified: Boolean!
-  whatsappId: String
 }
 
 input CreateMonthlyPricingInput {
@@ -70,6 +73,16 @@ input CreateMonthlyPricingInput {
   oneSeater: Float
   threeSeater: Float
   twoSeater: Float
+}
+
+input CreateRoomAvailibilityInput {
+  attachBathroom: Boolean
+  fiveSeater: Boolean
+  fourSeater: Boolean
+  hostelId: Float!
+  oneSeater: Boolean
+  threeSeater: Boolean
+  twoSeater: Boolean
 }
 
 input CreateSocialsInput {
@@ -135,7 +148,6 @@ type Hostel {
   createdAt: DateTime!
   dailyPricing: DailyPricing
   description: String
-  email: String!
   gallery: [Gallery!]
   genderType: String!
   hostelId: ID!
@@ -144,13 +156,13 @@ type Hostel {
   orders: [Orders!]
   owner: Users!
   payments: [Payments!]
-  phone: String!
   roomAvailability: RoomAvailability
   slug: String!
   socials: Socials
   suppliers: [HostelSuppliers!]
   telegramId: String
   updatedAt: DateTime!
+  userId: ID!
   verified: Boolean!
   whatsappId: String
 }
@@ -181,11 +193,13 @@ type MonthlyPricing {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!): String!
-  createAddress(data: CreateGalleryInput!): Gallery!
+  createAddress(data: CreateAddressInput!): Address!
   createContact(data: CreateContactInput!): ContactDetails!
   createDailyPricing(data: CreateDailyPricingInput!): DailyPricing!
+  createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
+  createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
   createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
   forgotPassword(email: String!): ForgotPasswordResponse!
@@ -194,12 +208,14 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
-  updateAddress(data: UpdateGalleryInput!, galleryId: Float!): Gallery!
+  updateAddress(addressId: Float!, data: UpdateAddressInput!): Address!
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetails!
-  updateDailyPricing(addressId: Float!, data: UpdateDailyPricingInput!): DailyPricing!
+  updateDailyPricing(dailyPricingId: Float!, data: UpdateDailyPricingInput!): DailyPricing!
+  updateGallery(data: UpdateGalleryInput!, galleryId: Float!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
-  updateMonthlyPricing(addressId: Float!, data: UpdateMonthlyPricingInput!): MonthlyPricing!
-  updateSocials(addressId: Float!, data: UpdateSocialsInput!): Socials!
+  updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
+  updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
+  updateSocials(data: UpdateSocialsInput!, socialsId: Float!): Socials!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
 }
 
@@ -224,16 +240,20 @@ type Payments {
 }
 
 type Query {
-  getAddressByHostelId(hostelId: Float!): [Gallery!]
+  getAddressByHostelId(hostelId: Float!): Address
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
+  getGalleryByHostelId(hostelId: Float!): [Gallery!]
   getGoogleAuthUrl: GoogleOauthUrl!
   getHostelById(hostelId: Float!): Hostel
   getHostelBySlug(slug: String!): Hostel
+  getHostelByToken: Hostel
   getMonthlyPricingByHostelId(hostelId: Float!): MonthlyPricing
+  getRoomAvailibilityByHostelId(hostelId: Float!): RoomAvailability
   getSocialsByHostelId(hostelId: Float!): Socials
   getUser(id: Float!): Users
+  getUserByAccessToken(accessToken: String!): Users
   getUsers: [Users!]!
 }
 
@@ -278,6 +298,14 @@ type Token {
   refreshToken: String!
 }
 
+input UpdateAddressInput {
+  city: String
+  country: String
+  district: String
+  street: String
+  tole: String
+}
+
 input UpdateContactInput {
   altPhone: String
   email: String
@@ -304,10 +332,8 @@ input UpdateGalleryInput {
 input UpdateHostelInput {
   capacity: Int
   description: String
-  email: String
   genderType: String
   name: String
-  phone: String
   slug: String
   telegramId: String
   userId: Int
@@ -323,6 +349,15 @@ input UpdateMonthlyPricingInput {
   oneSeater: Float
   threeSeater: Float
   twoSeater: Float
+}
+
+input UpdateRoomAvailibilityInput {
+  attachBathroom: Boolean
+  fiveSeater: Boolean
+  fourSeater: Boolean
+  oneSeater: Boolean
+  threeSeater: Boolean
+  twoSeater: Boolean
 }
 
 input UpdateSocialsInput {

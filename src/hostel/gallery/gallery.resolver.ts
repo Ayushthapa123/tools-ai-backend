@@ -12,21 +12,21 @@ export class GalleryResolver {
   constructor(private readonly galleryService: GalleryService) {}
 
   @Query(() => [Gallery], { nullable: true })
-  async getAddressByHostelId(
+  async getGalleryByHostelId(
     @Args('hostelId') hostelId: number,
   ): Promise<Gallery[] | null> {
     return this.galleryService.getGAllerysByHostelId(hostelId);
   }
 
   @Mutation(() => Gallery)
-  async createAddress(
+  async createGallery(
     @Args('data') data: CreateGalleryInput,
   ): Promise<Gallery> {
     return this.galleryService.createGallery(data);
   }
 
   @Mutation(() => Gallery)
-  async updateAddress(
+  async updateGallery(
     @Args('galleryId') galleryId: number,
     @Args('data') data: UpdateGalleryInput,
   ): Promise<Gallery> {

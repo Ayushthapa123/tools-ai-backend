@@ -1,5 +1,5 @@
 import { UpdateHostelInput } from './dtos/update-hostel.input';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { Hostel } from '@src/models/global.model';
@@ -50,8 +50,23 @@ export class HostelService {
     });
   }
 
-  async createHostel(data: CreateHostelInput) {
-    return this.prisma.hostel.create({ data });
+  async getHostelBytoken(userId: number) {
+    try {
+      const hostel = await this.prisma.hostel.findUnique({
+        where: { userId: Number(userId) },
+      });
+
+      return hostel; // Return the decoded user ID
+    } catch (error) {
+      // Token verification failed
+      throw new NotFoundException('token not found');
+    }
+  }
+
+  async createHostel(userId: number, data: CreateHostelInput) {
+    console.log('uuuuuuuuuuu', userId);
+    const slug = data.name;
+    return this.prisma.hostel.create({ data: { ...data, slug: slug, userId } });
   }
 
   async updateHostel(hostelId: number, data: UpdateHostelInput) {

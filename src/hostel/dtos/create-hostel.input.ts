@@ -9,15 +9,6 @@ export class CreateHostelInput {
   name: string;
 
   @Field()
-  email: string;
-
-  @Field()
-  phone: string;
-
-  @Field()
-  verified?: boolean;
-
-  @Field()
   genderType: GenderType;
 
   @Field(() => Int, { nullable: true })
@@ -25,16 +16,4 @@ export class CreateHostelInput {
 
   @Field({ nullable: true })
   description?: string;
-
-  @Field()
-  slug: string;
-
-  @Field({ nullable: true })
-  whatsappId?: string;
-
-  @Field({ nullable: true })
-  telegramId?: string;
-
-  @Field(() => Int)
-  userId: number;
 }

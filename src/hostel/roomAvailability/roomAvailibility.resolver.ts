@@ -15,24 +15,27 @@ export class RoomAvailibilityResolver {
   ) {}
 
   @Query(() => RoomAvailability, { nullable: true })
-  async getAddressByHostelId(
+  async getRoomAvailibilityByHostelId(
     @Args('hostelId') hostelId: number,
   ): Promise<RoomAvailability | null> {
     return this.roomAvailibilityService.getRoomAvailibilityByHostelId(hostelId);
   }
 
   @Mutation(() => RoomAvailability)
-  async createAddress(
+  async createRoomAvailibility(
     @Args('data') data: CreateRoomAvailibilityInput,
   ): Promise<RoomAvailability> {
     return this.roomAvailibilityService.createRoomAvailibility(data);
   }
 
   @Mutation(() => RoomAvailability)
-  async updateAddress(
-    @Args('addressId') addressId: number,
+  async updateRoomAvailibility(
+    @Args('roomAvailibilityId') roomAvailibilityId: number,
     @Args('data') data: UpdateRoomAvailibilityInput,
   ): Promise<RoomAvailability> {
-    return this.roomAvailibilityService.updateRoomAvailibility(addressId, data);
+    return this.roomAvailibilityService.updateRoomAvailibility(
+      roomAvailibilityId,
+      data,
+    );
   }
 }
