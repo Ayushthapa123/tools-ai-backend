@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { Hostel } from '@src/models/global.model';
+import { generateSlug } from '@src/helpers/generateSlug';
 
 @Injectable()
 export class HostelService {
@@ -69,8 +70,7 @@ export class HostelService {
 
   async createHostel(userId: number, data: CreateHostelInput) {
     console.log('uuuuuuuuuuu', userId);
-    //!needs to be changed
-    const slug = data.name;
+    const slug = generateSlug(data.name);
 
     try {
       const res = await this.prisma.hostel.create({

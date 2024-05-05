@@ -20,6 +20,8 @@ model Users {
   profilePicture     String?
   phoneNumber        String?
   hashedRefreshToken String?
+  verified    Boolean @default(false)
+
 
   hostelId      Int?     @unique
 

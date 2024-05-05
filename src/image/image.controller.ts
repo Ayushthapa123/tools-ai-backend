@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as AWS from 'aws-sdk';
+// import * as AWS from 'aws-sdk';
 
 // import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
