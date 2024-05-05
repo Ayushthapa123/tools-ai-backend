@@ -62,11 +62,14 @@ input CreateHostelInput {
   capacity: Int
   description: String
   genderType: String!
+  hostelType: String!
   name: String!
 }
 
 input CreateMonthlyPricingInput {
+  admission: Float
   attachBathroom: Float
+  deposite: Float
   fiveSeater: Float
   fourSeater: Float
   hostelId: Float!
@@ -151,6 +154,7 @@ type Hostel {
   gallery: [Gallery!]
   genderType: String!
   hostelId: ID!
+  hostelType: String!
   monthlyPricing: MonthlyPricing
   name: String!
   orders: [Orders!]
@@ -202,9 +206,10 @@ type Mutation {
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
   createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
+  deleteGallery(galleryId: Float!): Gallery!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
-  refreshTokens(input: GetTokenInput!): Token!
+  refreshTokens(input: GetTokenInput!): UsersHostelIdAndToken!
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
@@ -244,7 +249,7 @@ type Query {
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
-  getGalleryByHostelId(hostelId: Float!): [Gallery!]
+  getGalleryByHostelId(galleryType: String!, hostelId: Float!): [Gallery!]
   getGoogleAuthUrl: GoogleOauthUrl!
   getHostelById(hostelId: Float!): Hostel
   getHostelBySlug(slug: String!): Hostel
@@ -324,7 +329,6 @@ input UpdateDailyPricingInput {
 
 input UpdateGalleryInput {
   caption: String
-  galleryId: Float!
   type: String
   url: String
 }
@@ -333,6 +337,7 @@ input UpdateHostelInput {
   capacity: Int
   description: String
   genderType: String
+  hostelType: String
   name: String
   slug: String
   telegramId: String
@@ -342,7 +347,9 @@ input UpdateHostelInput {
 }
 
 input UpdateMonthlyPricingInput {
+  admission: Float
   attachBathroom: Float
+  deposite: Float
   fiveSeater: Float
   fourSeater: Float
   instaGram: String
@@ -373,6 +380,7 @@ type Users {
   email: String!
   fullName: String!
   hashedRefreshToken: String!
+  hostelId: Float
   isVerified: Boolean!
   passwordHash: String!
   phoneNumber: String
@@ -386,6 +394,11 @@ type UsersAndToken {
   fullName: String!
   token: Token!
   userId: ID!
+}
+
+type UsersHostelIdAndToken {
+  token: Token!
+  user: Users!
 }
 
 input VerifyEmailInput {

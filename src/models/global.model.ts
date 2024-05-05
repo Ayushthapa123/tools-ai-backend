@@ -7,6 +7,9 @@ export class Users {
   @Field(() => ID)
   userId: number;
 
+  @Field({ nullable: true })
+  hostelId?: number;
+
   @Field()
   email: string;
 
@@ -471,6 +474,9 @@ export class Hostel {
 
   @Field()
   genderType: string; // Assuming GenderType is a string type
+
+  @Field()
+  hostelType: string; // Assuming GenderType is a string type
 
   @Field({ nullable: true })
   capacity?: number;

@@ -3,6 +3,7 @@ import { GalleryService } from './gallery.service';
 import { Gallery } from '@src/models/global.model';
 import { CreateGalleryInput } from './dtos/create-gallery.input';
 import { UpdateGalleryInput } from './dtos/update-gallery.input';
+import { GalleryType } from '@prisma/client';
 
 // import { Controller } from '@nestjs/common';
 
@@ -14,8 +15,9 @@ export class GalleryResolver {
   @Query(() => [Gallery], { nullable: true })
   async getGalleryByHostelId(
     @Args('hostelId') hostelId: number,
+    @Args('galleryType') galleryType: GalleryType,
   ): Promise<Gallery[] | null> {
-    return this.galleryService.getGAllerysByHostelId(hostelId);
+    return this.galleryService.getGAllerysByHostelId(hostelId, galleryType);
   }
 
   @Mutation(() => Gallery)
@@ -23,6 +25,11 @@ export class GalleryResolver {
     @Args('data') data: CreateGalleryInput,
   ): Promise<Gallery> {
     return this.galleryService.createGallery(data);
+  }
+
+  @Mutation(() => Gallery)
+  async deleteGallery(@Args('galleryId') galleryId: number): Promise<Gallery> {
+    return this.galleryService.deleteGallery(galleryId);
   }
 
   @Mutation(() => Gallery)

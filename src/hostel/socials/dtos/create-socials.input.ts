@@ -8,10 +8,10 @@ export class CreateSocialsInput {
   hostelId: number;
 
   @Field({ nullable: true })
-  instaGram: string;
+  instaGram?: string;
 
   @Field({ nullable: true })
-  facebook: string;
+  facebook?: string;
 
   @Field({ nullable: true })
   tiktok?: string;

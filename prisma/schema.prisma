@@ -21,6 +21,9 @@ model Users {
   phoneNumber        String?
   hashedRefreshToken String?
 
+  hostelId      Int?     @unique
+
+
   isVerified Boolean  @default(false)
   userType   UserType @default(STUDENT)
   hostel     Hostel?
@@ -31,12 +34,15 @@ model Hostel {
   name        String
   verified    Boolean @default(false)
   genderType  GenderType
+  hostelType  HostelType @default(STAY)
   capacity    Int?
+  currencyId  Int?
+
   description String?
   slug        String  @unique
   whatsappId  String?
   telegramId  String?
-  userId      Int     @unique
+  userId      Int?     @unique//! hostel don't need to have userId
 
 
   createdAt DateTime @default(now())
@@ -249,6 +255,8 @@ model Gallery {
 
   // Define a relation to Hostel
   hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
+
+  @@index([hostelId])
 }
 
 model Socials {
@@ -308,9 +316,14 @@ enum GenderType {
   GIRLS
   BOTH
 }
+enum HostelType {
+  STAY
+  TRAVELS
+  BOTH
+}
 
 enum GalleryType {
-  PROFILE
+  PROFILE//no need
   COVER
   ROOM 
   BATHROOM 
@@ -318,6 +331,7 @@ enum GalleryType {
   KITCHEN 
   CELEBRATIONS
   REVIEW
+  FOOD
   OTHER
 }
 

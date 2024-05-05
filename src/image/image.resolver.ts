@@ -8,7 +8,7 @@ import { Gallery } from '@src/models/global.model';
 @Resolver(() => Gallery)
 export class ImageResolver {
   @Mutation(() => UploadImageModel)
-  async uploadImage(@Args('file') file: any): Promise<UploadImageModel> {
+  async uploadImage(@Args('file') file): Promise<UploadImageModel> {
     // Configure AWS SDK
     const s3 = new AWS.S3({
       accessKeyId: 'DO00DRWRCUMNXUM4GWTF',

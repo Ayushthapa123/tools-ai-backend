@@ -11,8 +11,8 @@ import { ChangePasswordInput } from './dto/change-password.input';
 import { MailerService } from '@src/email/mailer/mailer.service';
 import {
   ForgotPasswordResponse,
-  Token,
   UsersAndToken,
+  UsersHostelIdAndToken,
   VerifyEmailResponse,
 } from './models/user.model';
 import {
@@ -39,7 +39,7 @@ export class AuthResolver {
     return this.authService.loginUser(loginInput);
   }
 
-  @Mutation(() => Token)
+  @Mutation(() => UsersHostelIdAndToken)
   async refreshTokens(@Args('input') tokenInput: GetTokenInput) {
     // Refresh access token using refresh token
     const tokens = await this.authService.refreshTokens(

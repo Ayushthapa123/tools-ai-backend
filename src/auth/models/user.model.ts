@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Users } from '@src/models/global.model';
 
 @ObjectType()
 export class User {
@@ -40,6 +41,16 @@ export class UsersAndToken {
 
   @Field()
   email: string;
+
+  @Field()
+  token?: Token;
+}
+
+@ObjectType()
+export class UsersHostelIdAndToken {
+  @Field()
+  user: Users;
+
   @Field()
   token?: Token;
 }

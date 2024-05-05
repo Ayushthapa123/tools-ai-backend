@@ -232,7 +232,7 @@ export class AuthService {
         });
 
         // Return the new access token
-        return { accessToken: newAccessToken, refreshToken };
+        return { user, token: { accessToken: newAccessToken, refreshToken } };
       } else {
         throw new UnauthorizedException('Invalid refresh tokenn');
       }

@@ -14,7 +14,6 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const ctx = gqlContext.getContext();
-    console.log('context', ctx);
     // Check if headers exist in the context
     const authorizationHeader = ctx.req?.headers?.authorization;
     console.log('authheader', authorizationHeader);

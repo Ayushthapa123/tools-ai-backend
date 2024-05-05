@@ -1,5 +1,9 @@
 import { UpdateHostelInput } from './dtos/update-hostel.input';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { Hostel } from '@src/models/global.model';
@@ -65,8 +69,27 @@ export class HostelService {
 
   async createHostel(userId: number, data: CreateHostelInput) {
     console.log('uuuuuuuuuuu', userId);
+    //!needs to be changed
     const slug = data.name;
-    return this.prisma.hostel.create({ data: { ...data, slug: slug, userId } });
+
+    try {
+      const res = await this.prisma.hostel.create({
+        data: { ...data, slug: slug, userId },
+      });
+      console.log('create hostel response', res);
+      if (res.hostelId) {
+        const user = await this.prisma.users.update({
+          where: { userId },
+          data: { hostelId: res.hostelId },
+        });
+        console.log('update user response', user);
+        return res;
+      } else {
+        throw new ForbiddenException('not allowed');
+      }
+    } catch (error) {
+      throw new ForbiddenException('not allowed');
+    }
   }
 
   async updateHostel(hostelId: number, data: UpdateHostelInput) {

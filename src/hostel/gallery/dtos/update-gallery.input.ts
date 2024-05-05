@@ -5,9 +5,6 @@ import { GalleryType } from '@prisma/client';
 
 @InputType()
 export class UpdateGalleryInput {
-  @Field()
-  galleryId: number;
-
   @Field({ nullable: true })
   type: GalleryType;
 

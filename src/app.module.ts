@@ -11,6 +11,7 @@ import { EmailModule } from './email/email.module';
 import { HostelModule } from './hostel/hostel.module';
 import { ImageController } from './image/image.controller';
 // import { ImageModule } from './image/image.module';
+// import { ImageModule } from './image/image.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
