@@ -1,5 +1,5 @@
-// import { MailerService } from '@src/email/mailer/mailer.service';
-// import { SendGridService } from '@src/email/mailer/sendGrid.service';
+import { MailerService } from '@src/email/mailer/mailer.service';
+import { SendGridService } from '@src/email/mailer/sendGrid.service';
 // auth.service.ts
 import {
   Injectable,
@@ -22,8 +22,8 @@ export class AuthService {
 
   constructor(
     private prisma: PrismaService,
-    // private readonly mailerService: MailerService,
-    // private readonly sendgridService: SendGridService,
+    private readonly mailerService: MailerService,
+    private readonly sendgridService: SendGridService,
   ) {}
 
   //SignUp Logic
@@ -153,11 +153,11 @@ export class AuthService {
       const verificationToken = this.generateVerificationToken(user.userId);
       const verificationLink = `${process.env.WEB_ADDRESS}/reset-password?token=${verificationToken}`;
 
-      // await this.mailerService.sendEmail(
-      //   verificationLink,
-      //   'ayushthapamgr007@gmail.com',
-      //   'hello body',
-      // );
+      await this.mailerService.sendEmail(
+        verificationLink,
+        'ayushthapamgr007@gmail.com',
+        'hello body',
+      );
 
       return { userId: Number(user.userId) }; // Return the decoded user ID
     } catch (error) {

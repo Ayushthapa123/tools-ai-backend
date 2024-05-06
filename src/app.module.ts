@@ -7,7 +7,7 @@ import { join } from 'path';
 
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-// import { EmailModule } from './email/email.module';
+import { EmailModule } from './email/email.module';
 import { HostelModule } from './hostel/hostel.module';
 import { ImageController } from './image/image.controller';
 // import { ImageModule } from './image/image.module';
@@ -21,7 +21,7 @@ import { ImageController } from './image/image.controller';
     }),
     AuthModule,
     UsersModule,
-    // EmailModule,
+    EmailModule,
     HostelModule,
     // ImageModule,
   ],

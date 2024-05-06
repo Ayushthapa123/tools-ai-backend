@@ -37,12 +37,14 @@
     "google-auth-library": "^9.9.0",
     "googleapis": "^134.0.0",
     "graphql": "^16.8.1",
+    "http": "^0.0.1-security",
     "mailgun-js": "^0.22.0",
     "passport": "^0.7.0",
     "prisma": "^5.9.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vercel": "^34.1.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
