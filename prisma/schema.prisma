@@ -71,7 +71,6 @@ model Hostel {
 
   @@index([userId,hostelId,slug])
 }
-
 model HostelFeatures {
   hostelFeatureId Int     @id @unique @default(autoincrement())
   name            String
