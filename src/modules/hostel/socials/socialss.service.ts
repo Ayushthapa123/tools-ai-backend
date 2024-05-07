@@ -1,4 +1,4 @@
-import { Socials } from '../../models/global.model';
+import { Socials } from '../../../models/global.model';
 import { UpdateSocialsInput } from './dtos/update-socials.input';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';

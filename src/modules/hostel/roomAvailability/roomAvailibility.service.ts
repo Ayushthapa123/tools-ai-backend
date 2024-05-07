@@ -1,4 +1,4 @@
-import { RoomAvailability } from '../../models/global.model';
+import { RoomAvailability } from '../../../models/global.model';
 import { UpdateRoomAvailibilityInput } from './dtos/update-room-availibility.input';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';

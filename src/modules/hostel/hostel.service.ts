@@ -4,7 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { Hostel } from '@src/models/global.model';
 import { generateSlug } from '@src/helpers/generateSlug';

@@ -1,4 +1,4 @@
-import { Gallery } from '../../models/global.model';
+import { Gallery } from '../../../models/global.model';
 import { UpdateGalleryInput } from './dtos/update-gallery.input';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';

@@ -4,7 +4,7 @@ import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { GoogleAuthService } from './googleauth.service';
 import { GoogleOauthUrl } from './google.model';
 import { SignupWithGoogleInput } from './google.dto';
-import { UsersAndToken } from '@src/auth/models/user.model';
+import { UsersAndToken } from '@src/modules/auth/models/user.model';
 
 @Resolver()
 export class GoogleAuthResolver {

@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.controller';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { MailerService } from '@src/email/mailer/mailer.service';
-import { EmailModule } from '@src/email/email.module';
+import { MailerService } from '@src/modules/email/mailer/mailer.service';
+import { EmailModule } from '@src/modules/email/email.module';
 import { GoogleAuthResolver } from './oauth/google/googleauth.controller';
 import { GoogleAuthService } from './oauth/google/googleauth.service';
 

@@ -422,7 +422,7 @@ export class Address {
   city?: string;
 
   @Field({ nullable: true })
-  tole?: string;
+  subCity?: string;
 
   @Field({ nullable: true })
   street?: string;
@@ -467,7 +467,7 @@ export class SearchQuerys {
   city: string;
 
   @Field({ nullable: true })
-  tole?: string;
+  subCity?: string;
 }
 
 @ObjectType()

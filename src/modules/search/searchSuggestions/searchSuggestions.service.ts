@@ -10,7 +10,7 @@ export class SearchSuggestionsService {
   async getSearchSuggestions(query: string): Promise<SearchQuerys[] | null> {
     const suggestions = await this.prisma.searchQueries.findMany({
       where: {
-        OR: [{ city: { contains: query } }, { tole: { contains: query } }],
+        OR: [{ city: { contains: query } }, { subCity: { contains: query } }],
       },
       take: 5,
     });
@@ -18,8 +18,8 @@ export class SearchSuggestionsService {
     // Sort suggestions
     const sortedSuggestions = suggestions.sort((a, b) => {
       // Check if either suggestion contains tole
-      const aHasTole = !!a.tole;
-      const bHasTole = !!b.tole;
+      const aHasTole = !!a.subCity;
+      const bHasTole = !!b.subCity;
 
       // Sort based on whether tole exists or not
       if (aHasTole && !bHasTole) {
@@ -38,7 +38,7 @@ export class SearchSuggestionsService {
     const suggestions = await this.prisma.searchQueries.findMany({
       where: {
         city: { contains: query },
-        NOT: { tole: { not: null } }, // Filter out suggestions with tole
+        NOT: { subCity: { not: null } }, // Filter out suggestions with tole
       },
       take: 5,
     });
@@ -49,7 +49,7 @@ export class SearchSuggestionsService {
   async getToleSuggestions(query: string): Promise<SearchQuerys[] | null> {
     const suggestions = await this.prisma.searchQueries.findMany({
       where: {
-        tole: { contains: query },
+        subCity: { contains: query },
       },
       take: 10,
     });

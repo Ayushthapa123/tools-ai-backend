@@ -1,7 +1,7 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { RoomAvailibilityService } from './roomAvailibility.service';
 
-import { RoomAvailability } from '../../models/global.model';
+import { RoomAvailability } from '../../../models/global.model';
 import { CreateRoomAvailibilityInput } from './dtos/create-room-availibility.input';
 import { UpdateRoomAvailibilityInput } from './dtos/update-room-availibility.input';
 

@@ -1,4 +1,4 @@
-import { Address } from './../../models/global.model';
+import { Address } from '../../../models/global.model';
 import { UpdateAddressInput } from './dtos/update-address.input';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';

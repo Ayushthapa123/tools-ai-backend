@@ -1,4 +1,4 @@
-import { ContactDetails } from './../../models/global.model';
+import { ContactDetails } from '../../../models/global.model';
 import { UpdateContactInput } from './dtos/update-contact.input';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';

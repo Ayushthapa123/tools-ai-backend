@@ -2,13 +2,10 @@ import { Module } from '@nestjs/common';
 
 import { SearchSuggestionsService } from './searchSuggestions.service';
 import { SearchSuggestionsResolver } from './searchSuggestions.resolver';
-import { PrismaService } from '@src/prisma/prisma.service';
+import { DatabaseModule } from '@src/modules/databaseModule/database.module';
 
 @Module({
-  providers: [
-    SearchSuggestionsResolver,
-    SearchSuggestionsService,
-    PrismaService,
-  ],
+  providers: [SearchSuggestionsResolver, SearchSuggestionsService],
+  imports: [DatabaseModule],
 })
 export class SearchSuggestionsModule {}

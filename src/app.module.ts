@@ -5,12 +5,12 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 // import { EmailModule } from './email/email.module';
-import { HostelModule } from './hostel/hostel.module';
-import { ImageController } from './image/image.controller';
-import { SearchSuggestionsModule } from './searchSuggestions/searchSuggestions.module';
+import { HostelModule } from './modules/hostel/hostel.module';
+import { ImageController } from './modules/image/image.controller';
+import { SearchModule } from './modules/search/search.module';
 // import { ImageModule } from './image/image.module';
 // import { ImageModule } from './image/image.module';
 @Module({
@@ -24,7 +24,7 @@ import { SearchSuggestionsModule } from './searchSuggestions/searchSuggestions.m
     UsersModule,
     // EmailModule,
     HostelModule,
-    SearchSuggestionsModule,
+    SearchModule,
     // ImageModule,
   ],
 

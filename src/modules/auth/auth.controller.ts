@@ -8,7 +8,7 @@ import { SignupInput } from './dto/signup-user.input';
 import { CurrentUser } from './decorators/current-user.decorator';
 // import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordInput } from './dto/change-password.input';
-import { MailerService } from '@src/email/mailer/mailer.service';
+import { MailerService } from '@src/modules/email/mailer/mailer.service';
 import {
   ForgotPasswordResponse,
   UsersAndToken,

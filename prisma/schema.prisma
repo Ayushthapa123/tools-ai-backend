@@ -280,7 +280,7 @@ model Address {
   addressId Int      @id @unique @default(autoincrement())
   country   String
   city      String?
-  tole      String?
+  subCity      String?
   street    String?
   createdAt   DateTime @default(now())
 
@@ -296,7 +296,7 @@ model SearchQueries {//get created when user enters his hostel address/create/up
   searchQueryId Int      @id @unique @default(autoincrement())
   country   String
   city      String
-  tole      String?
+  subCity      String?
 
   createdAt DateTime @default(now())
 
