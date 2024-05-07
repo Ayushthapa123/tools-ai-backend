@@ -6,7 +6,6 @@ type Address {
   addressId: ID!
   city: String
   country: String!
-  district: String
   street: String
   tole: String
   updatedAt: DateTime!
@@ -28,7 +27,6 @@ type ContactDetails {
 input CreateAddressInput {
   city: String
   country: String!
-  district: String!
   hostelId: Float!
   street: String
   tole: String
@@ -306,7 +304,6 @@ type Token {
 input UpdateAddressInput {
   city: String
   country: String
-  district: String
   street: String
   tole: String
 }

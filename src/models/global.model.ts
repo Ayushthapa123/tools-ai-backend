@@ -419,9 +419,6 @@ export class Address {
   country: string;
 
   @Field({ nullable: true })
-  district?: string;
-
-  @Field({ nullable: true })
   city?: string;
 
   @Field({ nullable: true })
@@ -456,6 +453,21 @@ export class ContactDetails {
 
   //   @Field(() => Hostel, { nullable: true })
   //   hostel?: Hostel;
+}
+
+@ObjectType()
+export class SearchQuerys {
+  @Field(() => ID)
+  searchQueryId: number;
+
+  @Field()
+  country: string;
+
+  @Field()
+  city: string;
+
+  @Field({ nullable: true })
+  tole?: string;
 }
 
 @ObjectType()

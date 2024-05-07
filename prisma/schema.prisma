@@ -279,7 +279,6 @@ model Socials {
 model Address {
   addressId Int      @id @unique @default(autoincrement())
   country   String
-  district  String?
   city      String?
   tole      String?
   street    String?
@@ -289,6 +288,25 @@ model Address {
   hostelId  Int @unique
   hostel    Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
+
+model SearchQueries {//get created when user enters his hostel address/create/update. if already present don't create else create
+//create two searchQueries for each hostel with tole and without tole. 
+  //if queryType is tole it will have city and country as well
+  //when searching back hostel. if tole present search on tole else search on city
+  searchQueryId Int      @id @unique @default(autoincrement())
+  country   String
+  city      String
+  tole      String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+}
+
+
+
+
 
 model ContactDetails {
   contactId Int      @id @unique @default(autoincrement())
@@ -335,4 +353,3 @@ enum GalleryType {
   FOOD
   OTHER
 }
-

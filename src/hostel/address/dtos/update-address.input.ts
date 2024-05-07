@@ -8,9 +8,6 @@ export class UpdateAddressInput {
   country?: string;
 
   @Field({ nullable: true })
-  district?: string;
-
-  @Field({ nullable: true })
   city?: string;
 
   @Field({ nullable: true })

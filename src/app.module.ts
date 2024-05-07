@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 // import { EmailModule } from './email/email.module';
 import { HostelModule } from './hostel/hostel.module';
 import { ImageController } from './image/image.controller';
+import { SearchSuggestionsModule } from './searchSuggestions/searchSuggestions.module';
 // import { ImageModule } from './image/image.module';
 // import { ImageModule } from './image/image.module';
 @Module({
@@ -23,6 +24,7 @@ import { ImageController } from './image/image.controller';
     UsersModule,
     // EmailModule,
     HostelModule,
+    SearchSuggestionsModule,
     // ImageModule,
   ],
 

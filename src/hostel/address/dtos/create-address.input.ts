@@ -10,9 +10,6 @@ export class CreateAddressInput {
   @Field()
   country: string;
 
-  @Field()
-  district: string;
-
   @Field({ nullable: true })
   city?: string;
 
