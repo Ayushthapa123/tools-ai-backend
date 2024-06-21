@@ -6,13 +6,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '@src/prisma/prisma.service';
-import { SignupInput } from './dto/signup-user.input';
-import { LoginInput } from './dto/login-user.input';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { ChangePasswordInput } from './dto/change-password.input';
+import { LoginInput } from './dto/login-user.input';
+import { SignupInput } from './dto/signup-user.input';
+import { PrismaService } from '@src/prisma/prisma.service';
 import { ResetPasswordInput } from './dto/get-token.input';
+import { ChangePasswordInput } from './dto/change-password.input';
 
 @Injectable()
 export class AuthService {

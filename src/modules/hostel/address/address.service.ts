@@ -15,10 +15,49 @@ export class AddressService {
   }
 
   async createAddress(data: CreateAddressInput) {
+    //check whether a searchQueries already have address
+    const searchCity = await this.prisma.searchQueries.findFirst({
+      where: { city: data.city, country: data.country },
+    });
+    if (!searchCity) {
+      //create searchquery with just country and city
+      await this.prisma.searchQueries.create({
+        data: { country: data.country, city: data.city },
+      });
+    }
+    const searchSubCity = await this.prisma.searchQueries.findFirst({
+      where: { subCity: data.subCity, city: data.city, country: data.country },
+    });
+    if (!searchSubCity && data.subCity) {
+      //create searchquery with country and city subcity
+      await this.prisma.searchQueries.create({
+        data: { country: data.country, city: data.city, subCity: data.subCity },
+      });
+    }
+
     return this.prisma.address.create({ data });
   }
 
   async updateAddress(addressId: number, data: UpdateAddressInput) {
+    //check whether a searchQueries already have address
+    const searchCity = await this.prisma.searchQueries.findFirst({
+      where: { city: data.city, country: data.country },
+    });
+    if (!searchCity) {
+      //create searchquery with just country and city
+      await this.prisma.searchQueries.create({
+        data: { country: data.country, city: data.city },
+      });
+    }
+    const searchSubCity = await this.prisma.searchQueries.findFirst({
+      where: { subCity: data.subCity, city: data.city, country: data.country },
+    });
+    if (!searchSubCity && data.subCity) {
+      //create searchquery with country and city subcity
+      await this.prisma.searchQueries.create({
+        data: { country: data.country, city: data.city, subCity: data.subCity },
+      });
+    }
     return this.prisma.address.update({ where: { addressId }, data });
   }
 

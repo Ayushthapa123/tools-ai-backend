@@ -12,14 +12,15 @@
 
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
+    "strictNullChecks": false, // Consider setting to true for stricter type checking
+    "noImplicitAny": false, // Consider setting to true for stricter type checking
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "baseUrl": "./src", // Set the base directory for module resolution
     "paths": {
-      "@src/*": ["*"] // Define the alias for the src directory
+      "@src/*": ["*"], // Define the alias for the src directory
+      "@prisma/*": ["prisma/*"] // Example: Alias for Prisma folder, adjust as necessary
     }
   }
 }

@@ -4,10 +4,7 @@ import { Address } from '@src/models/global.model';
 import { CreateAddressInput } from './dtos/create-address.input';
 import { UpdateAddressInput } from './dtos/update-address.input';
 
-// import { Controller } from '@nestjs/common';
-
 @Resolver(() => Address)
-// @Controller('hostel') // thats not possible to just create hostel namespace I guess. It must have something
 export class AddressResolver {
   constructor(private readonly addressService: AddressService) {}
 

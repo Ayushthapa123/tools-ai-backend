@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 
 import { MonthlyPricingService } from './monthlyPricing.service';
 import { MonthlyPricingResolver } from './monthlyPricing.resolver';
-import { PrismaService } from '@src/prisma/prisma.service';
 
 @Module({
-  providers: [MonthlyPricingResolver, MonthlyPricingService, PrismaService],
+  providers: [MonthlyPricingResolver, MonthlyPricingService],
 })
 export class MonthlyPricingModule {}

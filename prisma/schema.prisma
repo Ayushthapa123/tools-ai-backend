@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://doadmin:AVNS_WQ0Ldj4nooqC9lH2QoZ@db-postgresql-nyc3-42616-do-user-16385499-0.c.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
+  url      = "postgres://avnadmin:AVNS_9cDlvhPmbji0zGcLxc8@hosteladmin-db-hosteladmin.j.aivencloud.com:11809/defaultdb?sslmode=require"
 }
 
 // Define the Users model
@@ -20,14 +20,16 @@ model Users {
   profilePicture     String?
   phoneNumber        String?
   hashedRefreshToken String?
-  verified    Boolean @default(false)
-
 
   hostelId      Int?     @unique
+
+  userPlan           SubscriptionPlans  @default(FREE)
 
 
   isVerified Boolean  @default(false)
   userType   UserType @default(STUDENT)
+  // hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
+
   hostel     Hostel?
 }
 
@@ -35,6 +37,7 @@ model Hostel {
   hostelId    Int     @id @unique @default(autoincrement())
   name        String
   verified    Boolean @default(false)
+  scrapped    Boolean? 
   genderType  GenderType
   hostelType  HostelType @default(STAY)
   capacity    Int?
@@ -50,10 +53,8 @@ model Hostel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Define a relation to Users
   owner            Users?             @relation(fields: [userId], references: [userId])
 
-  // Define relations to other models
   roomAvailability RoomAvailability?
   dailyPricing     DailyPricing?
 
@@ -69,7 +70,7 @@ model Hostel {
   gallery   Gallery[]
   suppliers HostelSuppliers[]
 
-  @@index([userId,hostelId,slug])
+  @@index([hostelId,slug])
 }
 model HostelFeatures {
   hostelFeatureId Int     @id @unique @default(autoincrement())
@@ -352,4 +353,11 @@ enum GalleryType {
   REVIEW
   FOOD
   OTHER
+}
+
+
+enum SubscriptionPlans {
+  FREE
+  PRO
+  PREMIUM
 }
