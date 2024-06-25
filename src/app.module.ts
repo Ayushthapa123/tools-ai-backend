@@ -21,6 +21,7 @@ import { ImageController } from './modules/image/image.controller';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //It is schema first approach
       sortSchema: true,
     }),
+
     PrismaModule,
     AuthModule,
     UsersModule,

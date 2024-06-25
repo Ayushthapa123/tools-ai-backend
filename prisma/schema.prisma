@@ -40,6 +40,7 @@ model Hostel {
   scrapped    Boolean? 
   genderType  GenderType
   hostelType  HostelType @default(STAY)
+  dataSource  DataSource @default(OWNER)
   capacity    Int?
   currencyId  Int?
 
@@ -360,4 +361,12 @@ enum SubscriptionPlans {
   FREE
   PRO
   PREMIUM
+}
+
+enum DataSource {
+  OWNER
+  GOOGLE
+  FACEBOOK 
+  SCRAPPED
+  OTHERS
 }
