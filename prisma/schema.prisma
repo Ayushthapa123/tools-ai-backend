@@ -66,10 +66,10 @@ model Hostel {
 
   MonthlyPricing MonthlyPricing?
 
-  orders    Orders[]
+  // orders    Orders[]
   payments  Payments[]
   gallery   Gallery[]
-  suppliers HostelSuppliers[]
+  // suppliers HostelSuppliers[]
 
   @@index([hostelId,slug])
 }
@@ -87,108 +87,7 @@ model HostelRules {
 
 }
 
-model Orders {
-  orderId         Int      @id @unique @default(autoincrement())
-  productId       Int
-  hostelId        Int
-  orderNumber     Int
-  quantity        Int
-  discountPercent Int?
-  totalPrice      Float
-  createdAt       DateTime @default(now())
-  shippingDate    DateTime
-  notes           String?
 
-  // Define a relation to Hostel
-  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
-}
-
-model Product {
-  productId   Int      @id @unique @default(autoincrement())
-  name        String
-  photo       String?
-  description String?
-  categoryId  Int
-  supplierId  Int
-  stockSize   Int?
-  size        String?
-  color       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Define a relation to Suppliers
-  supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
-}
-
-model Category {
-  categoryId  Int     @id @unique @default(autoincrement())
-  name        String
-  photo       String?
-  description String?
-}
-
-model Suppliers {
-  supplierId  Int      @id @unique @default(autoincrement())
-  name        String
-  companyName String
-  fullAddress   String
-  phone        String 
-  altPhone     String?
-  email        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Define a relation to Products
-  products Product[]
-  hostel   HostelSuppliers[]
-}
-
-model HostelSuppliers {
-  supplierId         Int      @id @default(autoincrement())
-  hostelId   Int
-  createdAt  DateTime @default(now())
-
-  hostel   Hostel    @relation(fields: [hostelId], references: [hostelId])
-  supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
-
-  @@unique([hostelId, supplierId])
-}
-
-model Advertisement {
-  adId           Int       @id @unique @default(autoincrement())
-  adPlanId       Int       @unique
-  startDate      DateTime
-  endDate        DateTime?
-  createdAt      DateTime  @default(now())
-  budgetedAmount Float
-  paymentStatus  Boolean
-
-  // Define a relation to AdPlan
-  adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
-}
-
-model AdPlan {
-  adPlanId      Int            @id @unique @default(autoincrement())
-  name          String
-  cost          Float
-  description   String?
-  features      String[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  advertisement Advertisement? // One-to-one relationship 
-  payments      Payments[]
-}
-
-model Payments {
-  paymentId Int      @id @unique @default(autoincrement())
-  adPlanId  Int
-  hostelId  Int
-  createdAt DateTime @default(now())
-
-  // Define relations to other models
-  adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
-  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
-}
 
 model MonthlyPricing {
   monthlyPricingId Int      @id @unique @default(autoincrement())
@@ -370,3 +269,112 @@ enum DataSource {
   SCRAPPED
   OTHERS
 }
+
+//!for advertisement 
+
+model Advertisement {
+  adId           Int       @id @unique @default(autoincrement())
+  adPlanId       Int       @unique
+  startDate      DateTime
+  endDate        DateTime?
+  createdAt      DateTime  @default(now())
+  budgetedAmount Float
+  paymentStatus  Boolean
+
+  // Define a relation to AdPlan
+  adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
+}
+
+model AdPlan {
+  adPlanId      Int            @id @unique @default(autoincrement())
+  name          String
+  cost          Float
+  description   String?
+  features      String[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  advertisement Advertisement? // One-to-one relationship 
+  payments      Payments[]
+}
+
+model Payments {
+  paymentId Int      @id @unique @default(autoincrement())
+  adPlanId  Int
+  hostelId  Int
+  createdAt DateTime @default(now())
+
+  // Define relations to other models
+  adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
+  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
+}
+
+
+//!for ecommerce 
+
+// model Orders {
+//   orderId         Int      @id @unique @default(autoincrement())
+//   productId       Int
+//   hostelId        Int
+//   orderNumber     Int
+//   quantity        Int
+//   discountPercent Int?
+//   totalPrice      Float
+//   createdAt       DateTime @default(now())
+//   shippingDate    DateTime
+//   notes           String?
+
+//   // Define a relation to Hostel
+//   hostel Hostel @relation(fields: [hostelId], references: [hostelId])
+// }
+
+// model Product {
+//   productId   Int      @id @unique @default(autoincrement())
+//   name        String
+//   photo       String?
+//   description String?
+//   categoryId  Int
+//   supplierId  Int
+//   stockSize   Int?
+//   size        String?
+//   color       String?
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Define a relation to Suppliers
+//   supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
+// }
+
+// model Category {
+//   categoryId  Int     @id @unique @default(autoincrement())
+//   name        String
+//   photo       String?
+//   description String?
+// }
+
+// model Suppliers {
+//   supplierId  Int      @id @unique @default(autoincrement())
+//   name        String
+//   companyName String
+//   fullAddress   String
+//   phone        String 
+//   altPhone     String?
+//   email        String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   // Define a relation to Products
+//   products Product[]
+//   hostel   HostelSuppliers[]
+// }
+
+// model HostelSuppliers {
+//   supplierId         Int      @id @default(autoincrement())
+//   hostelId   Int
+//   createdAt  DateTime @default(now())
+
+//   hostel   Hostel    @relation(fields: [hostelId], references: [hostelId])
+//   supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
+
+//   @@unique([hostelId, supplierId])
+// }
+
