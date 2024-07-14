@@ -22,5 +22,10 @@
       "@src/*": ["*"], // Define the alias for the src directory
       "@prisma/*": ["prisma/*"] // Example: Alias for Prisma folder, adjust as necessary
     }
-  }
+  },
+  "exclude": [
+  "node_modules",
+  "dist",
+  "**/*.spec.ts"
+]
 }

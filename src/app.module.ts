@@ -8,12 +8,11 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
-// import { EmailModule } from './email/email.module';
+import { EmailModule } from './modules/email/email.module';
 import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchModule } from './modules/search/search.module';
 import { ImageController } from './modules/image/image.controller';
-// import { ImageModule } from './image/image.module';
-// import { ImageModule } from './image/image.module';
+// import { ImageModule } from './modules/image/image.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -25,7 +24,7 @@ import { ImageController } from './modules/image/image.controller';
     PrismaModule,
     AuthModule,
     UsersModule,
-    // EmailModule,
+    EmailModule,
     HostelModule,
     SearchModule,
     // ImageModule,

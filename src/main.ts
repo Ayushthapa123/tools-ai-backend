@@ -11,19 +11,7 @@ async function bootstrap() {
     origin: '*',
   });
 
-  // // Check if migrations need to be applied
-  // const pendingMigrationsOutput = execSync(
-  //   'npx prisma migrate dev --name dummy',
-  //   { encoding: 'utf-8' },
-  // );
-  // const pendingMigrations = /No pending migrations/g.test(
-  //   pendingMigrationsOutput,
-  // );
 
-  // if (!pendingMigrations) {
-  //   // Apply pending migrations
-  //   execSync('npx prisma migrate deploy');
-  // }
-  await app.listen(3001);
+  await app.listen(3003);
 }
 bootstrap();

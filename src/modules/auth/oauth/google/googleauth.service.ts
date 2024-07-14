@@ -18,7 +18,7 @@ export class GoogleAuthService {
   async signUpWithGoogle(code: string) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = 'http://localhost:3000/oauth/google';
+    const redirectUri = `${process.env.WEB_URL}oauth/google`;
 
     const client = new OAuth2Client(clientId, clientSecret, redirectUri);
 
@@ -66,7 +66,7 @@ export class GoogleAuthService {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      'http://localhost:3000/oauth/google',
+      `${process.env.WEB_URL}oauth/google`,
     );
 
     //what about name??
