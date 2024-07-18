@@ -5,7 +5,6 @@ import { InputType, Field } from '@nestjs/graphql';
 export class ChangePasswordInput {
   @Field()
   currentPassword: string;
-
   @Field()
   newPassword: string;
 }

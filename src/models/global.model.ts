@@ -297,6 +297,11 @@ export class MonthlyPricing {
 
   @Field({ nullable: true })
   attachBathroom?: number;
+  @Field({ nullable: true })
+  admission?: number;
+
+  @Field({ nullable: true })
+  deposite?: number;
 
   @Field(() => Date)
   createdAt: Date;

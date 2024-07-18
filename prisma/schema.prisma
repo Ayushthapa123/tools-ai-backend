@@ -44,7 +44,7 @@ model Hostel {
   hostelType  HostelType @default(STAY)
   dataSource  DataSource @default(OWNER)
   capacity    Int?
-  currencyId  Int?
+  currencyId  Int?//not required here
 
   description String?
   slug        String  @unique
@@ -147,7 +147,7 @@ model RoomAvailability {
 model Gallery {
   galleryId Int     @id @unique @default(autoincrement())
   type      GalleryType @default(ROOM)
-  caption   String?
+  caption   String?// Like Room no1, Room No1, 
   url       String
 
   createdAt   DateTime @default(now())
@@ -224,6 +224,15 @@ model ContactDetails {
   // Define a relation to Hostel
   hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
+
+// model HostelSettings {
+//   hostelSettingId Int @id @unique @default(autoincrement())
+//   currency     String?
+//   fontSize 
+//   mode 
+//   active // make false if no activity in past 30 days
+// visibility// Who Can See your hostel info?
+// }
 
 //Enums 
 enum UserType {
