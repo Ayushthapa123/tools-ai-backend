@@ -72,7 +72,7 @@ export class AuthService {
 
       console.log('uuuuuuuuu', user);
       // Generate JWT tokens
-      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId);
+      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId);
       // Save refreshToken in the database
       await this.prisma.users.update({
         where: { userId: user.userId }, // Specify the user to update
@@ -112,7 +112,7 @@ export class AuthService {
     }
 
     // Generate JWT tokens
-    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId);
+    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId);
     // Save refreshToken in the database
     await this.prisma.users.update({
       where: { userId: user.userId }, // Specify the user to update
@@ -176,7 +176,7 @@ export class AuthService {
       // Hash the password before saving it
       const passwordHash = await bcrypt.hash(input.password, 10);
       const { accessToken, refreshToken } = this.generateJwtTokens(
-        Number(userId),
+        Number(userId),1 //TODO get hostelId as well from here
       );
 
       const user = await this.prisma.users.update({
@@ -191,11 +191,11 @@ export class AuthService {
     }
   }
 
-  private generateJwtTokens(userId: number) {
+  private generateJwtTokens(userId: number,hostelId:number) {
     const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
       expiresIn: '50m',
     });
-    const refreshToken = jwt.sign({ sub: userId }, this.refreshTokenSecret, {
+    const refreshToken = jwt.sign({ sub: userId,hostelId:hostelId }, this.refreshTokenSecret, {
       expiresIn: '30d',
     });
     return { accessToken, refreshToken };

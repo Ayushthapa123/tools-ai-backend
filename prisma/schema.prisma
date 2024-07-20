@@ -9,10 +9,9 @@ datasource db {
   url      = "postgres://avnadmin:AVNS_9cDlvhPmbji0zGcLxc8@hosteladmin-db-hosteladmin.j.aivencloud.com:11809/defaultdb?sslmode=require"
 }
 
-// Define the Users model
 model Users {
   userId             Int      @id @unique @default(autoincrement())
-  hostelId      Int?     @unique
+  hostelId      Int?     @unique //this needs to be included when creatng token. 
 
   email              String   @unique
   passwordHash       String?
@@ -30,7 +29,6 @@ model Users {
 
   isVerified Boolean  @default(false)
   userType   UserType @default(STUDENT)
-  // hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 
   hostel     Hostel?
 }
@@ -44,7 +42,6 @@ model Hostel {
   hostelType  HostelType @default(STAY)
   dataSource  DataSource @default(OWNER)
   capacity    Int?
-  currencyId  Int?//not required here
 
   description String?
   slug        String  @unique
@@ -64,12 +61,14 @@ model Hostel {
   socials        Socials?
   address        Address?
   contact        ContactDetails?
+  hostelSettings        HostelSettings?
+
 
 
   MonthlyPricing MonthlyPricing?
 
   // orders    Orders[]
-  payments  Payments[]
+  // payments  Payments[]
   gallery   Gallery[]
   // suppliers HostelSuppliers[]
 
@@ -106,7 +105,6 @@ model MonthlyPricing {
   updatedAt        DateTime @updatedAt
   hostelId         Int      @unique
 
-  // Define a relation to Hostel
   hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
 }
 
@@ -147,7 +145,7 @@ model RoomAvailability {
 model Gallery {
   galleryId Int     @id @unique @default(autoincrement())
   type      GalleryType @default(ROOM)
-  caption   String?// Like Room no1, Room No1, 
+  caption   String?// Like Room no1, Room No2, 
   url       String
 
   createdAt   DateTime @default(now())
@@ -192,7 +190,8 @@ model Address {
   hostel    Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
 
-model SearchQueries {//get created when user enters his hostel address/create/update. if already present don't create else create
+model SearchQueries {
+  //get created when user enters his hostel address/create/update. if already present don't create else create
 //create two searchQueries for each hostel with tole and without tole. 
   //if queryType is tole it will have city and country as well
   //when searching back hostel. if tole present search on tole else search on city
@@ -206,9 +205,6 @@ model SearchQueries {//get created when user enters his hostel address/create/up
   updatedAt DateTime @updatedAt
 
 }
-
-
-
 
 
 model ContactDetails {
@@ -225,14 +221,30 @@ model ContactDetails {
   hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
 }
 
-// model HostelSettings {
-//   hostelSettingId Int @id @unique @default(autoincrement())
-//   currency     String?
-//   fontSize 
-//   mode 
-//   active // make false if no activity in past 30 days
-// visibility// Who Can See your hostel info?
-// }
+model HostelSettings {
+  hostelSettingId Int @id @unique @default(autoincrement())
+  currency     String?
+  fontSize     Int @default(14)
+  active       Boolean  @default(true) // make false if no activity in past 30 days
+  deActivate       Boolean  @default(false) // make false if no activity in past 30 days
+
+  visibility   VisibilityType @default(ALL) // Who Can See your hostel info? ALL, STUDENTS, ONLY_ME
+  allowBooking Boolean @default(false) 
+  allowComments Boolean @default(false)
+  allowPrivateFeedbacks Boolean @default(false)
+  allowMessages Boolean @default(false)
+
+
+  allowRating Boolean @default(false)
+  badges       Badges[] @default([]) //different badges for hostels 
+
+  hostelId  Int @unique
+  // Define a relation to Hostel
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+
+
+}
+
 
 //Enums 
 enum UserType {
@@ -252,9 +264,37 @@ enum HostelType {
   TRAVELS
   BOTH
 }
+enum StayHostelCategories {
+  COLLEGE_HOSTEL 
+  SCHOOL_HOSTEL 
+  PRIVATE_HOSTEL 
+  PROFESSIONAL_HOSTEL 
+  TRAINING_HOSTEL 
+  BOARDING_HOSTEL
+  KIDS_HOSTEL 
+  ADULTS_ONLY_HOSTEL 
+  BUDGET_FRIENDLY 
+  PREMIUM
+
+}
+
+enum TravelHostelCategories {
+  BUDGET_FRIENDLY 
+  PREMIUM 
+  PARTY 
+  YOUTH 
+  ECO_FRIENDLY 
+  UNIQUELY_THEMED 
+  TOURIST_ONLY 
+  COMMUNITY_BASED
+
+}
 // Hostel categories. NO need to create schema. just create array of object in frontend.
-// Stay: boarding Hostel, training Hostel, school hostel, college hostel, 
-// Travel: Budgeted,youth,party, uniquely themed, eco-friendly
+enum VisibilityType {
+  ALL 
+  STUDENTS_ONLY 
+  ONLY_ME
+}
 
 enum GalleryType {
   PROFILE//no need
@@ -283,44 +323,53 @@ enum DataSource {
   SCRAPPED
   OTHERS
 }
+enum Badges {
+  NEW
+  PEOPLES_CHOICE 
+  FAMOUS 
+  GOOD_FOOD 
+  GOOD_LOCATION
+  SOCIAL_BUTTERFLY 
+  TECH_SAVVY
+}
 
 //!for advertisement 
 
-model Advertisement {
-  adId           Int       @id @unique @default(autoincrement())
-  adPlanId       Int       @unique
-  startDate      DateTime
-  endDate        DateTime?
-  createdAt      DateTime  @default(now())
-  budgetedAmount Float
-  paymentStatus  Boolean
+// model Advertisement {
+//   adId           Int       @id @unique @default(autoincrement())
+//   adPlanId       Int       @unique
+//   startDate      DateTime
+//   endDate        DateTime?
+//   createdAt      DateTime  @default(now())
+//   budgetedAmount Float
+//   paymentStatus  Boolean
 
-  // Define a relation to AdPlan
-  adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
-}
+//   // Define a relation to AdPlan
+//   adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
+// }
 
-model AdPlan {
-  adPlanId      Int            @id @unique @default(autoincrement())
-  name          String
-  cost          Float
-  description   String?
-  features      String[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  advertisement Advertisement? // One-to-one relationship 
-  payments      Payments[]
-}
+// model AdPlan {
+//   adPlanId      Int            @id @unique @default(autoincrement())
+//   name          String
+//   cost          Float
+//   description   String?
+//   features      String[]
+//   createdAt     DateTime       @default(now())
+//   updatedAt     DateTime       @updatedAt
+//   advertisement Advertisement? // One-to-one relationship 
+//   payments      Payments[]
+// }
 
-model Payments {
-  paymentId Int      @id @unique @default(autoincrement())
-  adPlanId  Int
-  hostelId  Int
-  createdAt DateTime @default(now())
+// model Payments {
+//   paymentId Int      @id @unique @default(autoincrement())
+//   adPlanId  Int
+//   hostelId  Int
+//   createdAt DateTime @default(now())
 
-  // Define relations to other models
-  adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
-  hostel Hostel @relation(fields: [hostelId], references: [hostelId])
-}
+//   // Define relations to other models
+//   adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
+//   hostel Hostel @relation(fields: [hostelId], references: [hostelId])
+// }
 
 
 //!for ecommerce  

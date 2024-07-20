@@ -1,6 +1,8 @@
 // src/models/hostel.model.ts
 
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
+import { VisibilityType } from '@prisma/client';
+import { Badges } from '@prisma/client';
 
 @ObjectType()
 export class Users {
@@ -459,6 +461,48 @@ export class ContactDetails {
   //   @Field(() => Hostel, { nullable: true })
   //   hostel?: Hostel;
 }
+
+@ObjectType()
+export class HostelSettings {
+  @Field(() => ID)
+  hostelSettingId: number;
+
+  @Field({ nullable: true })
+  currency?: string;
+
+  @Field()
+  fontSize: number;
+
+  @Field()
+  active: boolean;
+
+  @Field()
+  deActivate: boolean;
+
+  @Field()
+  visibility: VisibilityType;
+
+  @Field()
+  allowBooking: boolean;
+
+  @Field()
+  allowComments: boolean;
+
+  @Field()
+  allowPrivateFeedbacks: boolean;
+
+  @Field()
+  allowMessages: boolean;
+
+  @Field()
+  allowRating: boolean;
+
+  @Field(() => [Badges])
+  badges: Badges[];
+
+
+}
+
 
 @ObjectType()
 export class SearchQuerys {

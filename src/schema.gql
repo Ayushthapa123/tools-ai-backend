@@ -11,6 +11,16 @@ type Address {
   updatedAt: DateTime!
 }
 
+enum Badges {
+  FAMOUS
+  GOOD_FOOD
+  GOOD_LOCATION
+  NEW
+  PEOPLES_CHOICE
+  SOCIAL_BUTTERFLY
+  TECH_SAVVY
+}
+
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
@@ -62,6 +72,20 @@ input CreateHostelInput {
   genderType: String!
   hostelType: String!
   name: String!
+}
+
+input CreateHostelSettingsInput {
+  active: Boolean! = true
+  allowBooking: Boolean! = false
+  allowComments: Boolean! = false
+  allowMessages: Boolean! = false
+  allowPrivateFeedbacks: Boolean! = false
+  allowRating: Boolean! = false
+  badges: [Badges!]! = []
+  currency: String
+  deActivate: Boolean! = false
+  fontSize: Float! = 14
+  visibility: String! = "ALL"
 }
 
 input CreateMonthlyPricingInput {
@@ -169,6 +193,21 @@ type Hostel {
   whatsappId: String
 }
 
+type HostelSettings {
+  active: Boolean!
+  allowBooking: Boolean!
+  allowComments: Boolean!
+  allowMessages: Boolean!
+  allowPrivateFeedbacks: Boolean!
+  allowRating: Boolean!
+  badges: [Badges!]!
+  currency: String
+  deActivate: Boolean!
+  fontSize: Float!
+  hostelSettingId: ID!
+  visibility: String!
+}
+
 type HostelSuppliers {
   createdAt: DateTime!
   hostelId: Int!
@@ -204,9 +243,11 @@ type Mutation {
   createHostel(data: CreateHostelInput!): Hostel!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
+  createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSettings!
   createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
   deleteGallery(galleryId: Float!): Gallery!
+  deleteSettings(hostelSettingId: Float!): HostelSettings!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
   refreshTokens(input: GetTokenInput!): UsersHostelIdAndToken!
@@ -220,6 +261,7 @@ type Mutation {
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
+  updateSettings(data: UpdateHostelSettingsInput!, hostelSettingId: Float!): HostelSettings!
   updateSocials(data: UpdateSocialsInput!, socialsId: Float!): Socials!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
 }
@@ -259,6 +301,7 @@ type Query {
   getHostelsBySearch(input: SearchHostelInput!): [Hostel!]!
   getMonthlyPricingByHostelId(hostelId: Float!): MonthlyPricing
   getRoomAvailibilityByHostelId(hostelId: Float!): RoomAvailability
+  getSettingsByHostelId(hostelId: Float!): HostelSettings
   getSocialsByHostelId(hostelId: Float!): Socials
   getToleSearchSuggestions(query: String!): [SearchQuerys!]
   getUser(id: Float!): Users
@@ -369,6 +412,21 @@ input UpdateHostelInput {
   userId: Int
   verified: Boolean
   whatsappId: String
+}
+
+input UpdateHostelSettingsInput {
+  active: Boolean = true
+  allowBooking: Boolean = false
+  allowComments: Boolean = false
+  allowMessages: Boolean = false
+  allowPrivateFeedbacks: Boolean = false
+  allowRating: Boolean = false
+  badges: [Badges!] = []
+  currency: String
+  deActivate: Boolean = false
+  fontSize: Float = 14
+  hostelSettingId: ID!
+  visibility: String = "ALL"
 }
 
 input UpdateMonthlyPricingInput {

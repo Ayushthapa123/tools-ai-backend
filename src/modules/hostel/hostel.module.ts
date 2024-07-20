@@ -11,6 +11,7 @@ import { DailyPricingModule } from './dailyPricing/dailyPricing.module';
 import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { JwtService } from '@nestjs/jwt';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtService } from '@nestjs/jwt';
     DailyPricingModule,
     MonthlyPricingModule,
     GalleryModule,
+    SettingsModule
   ],
   providers: [HostelResolver, HostelService, PrismaService, JwtService],
 })
