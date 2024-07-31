@@ -12,13 +12,17 @@ import { EmailModule } from './modules/email/email.module';
 import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchModule } from './modules/search/search.module';
 import { ImageController } from './modules/image/image.controller';
+import { SHostelModule } from './modules/shostel/s-hostels.module';
+import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.module';
 // import { ImageModule } from './modules/image/image.module';
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //It is schema first approach
       sortSchema: true,
+      // playground:false
     }),
 
     PrismaModule,
@@ -27,6 +31,7 @@ import { ImageController } from './modules/image/image.controller';
     EmailModule,
     HostelModule,
     SearchModule,
+    SHostelModule,
     // ImageModule,
   ],
 

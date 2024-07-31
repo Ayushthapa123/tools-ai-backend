@@ -38,6 +38,8 @@ model Hostel {
   name        String
   verified    Boolean @default(false)
   scrapped    Boolean? 
+  reviewed    Boolean @default(false)
+  ranking     Int @default(0)
   genderType  GenderType
   hostelType  HostelType @default(STAY)
   dataSource  DataSource @default(OWNER)
@@ -66,10 +68,17 @@ model Hostel {
 
 
   MonthlyPricing MonthlyPricing?
+  amenities      Amenities?
+  services       Services?
+  HostelRules       HostelRules?
+
+
+
 
   // orders    Orders[]
   // payments  Payments[]
   gallery   Gallery[]
+  nearbyPlaces    NearbyPlace[]
   // suppliers HostelSuppliers[]
 
   @@index([hostelId,slug])
@@ -81,12 +90,7 @@ model HostelFeatures {
   type             String?
 }
 
-model HostelRules {
-  hostelRulesId Int     @id @unique @default(autoincrement())
-  name            String
-  description     String?
 
-}
 
 
 
@@ -198,10 +202,9 @@ model SearchQueries {
   searchQueryId Int      @id @unique @default(autoincrement())
   country   String
   city      String
-  subCity      String?
+  subCity      String?  
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
 
 }
@@ -212,9 +215,10 @@ model ContactDetails {
   phone     String
   altPhone  String?
   email     String
-  createdAt   DateTime @default(now())
 
+  createdAt   DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   hostelId  Int @unique
 
   // Define a relation to Hostel
@@ -238,6 +242,9 @@ model HostelSettings {
   allowRating Boolean @default(false)
   badges       Badges[] @default([]) //different badges for hostels 
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   hostelId  Int @unique
   // Define a relation to Hostel
   hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
@@ -245,6 +252,60 @@ model HostelSettings {
 
 }
 
+model NearbyPlace {
+  nearbyPlaceId   Int             @id @unique @default(autoincrement())
+  name            String
+  description     String
+  hostelId        Int
+  hostel          Hostel          @relation(fields: [hostelId], references: [hostelId])
+}
+
+
+model Amenities {
+  amenitiesId    Int             @id @unique @default(autoincrement())
+  hostelId       Int             @unique 
+  amenities      String     
+
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+
+}
+
+model Services {
+  servicesId    Int             @id @unique @default(autoincrement())
+  hostelId       Int             @unique 
+  amenities      String     
+
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+
+}
+
+model HostelRules {
+  rulesId    Int             @id @unique @default(autoincrement())
+  hostelId       Int             @unique 
+  rules      String     
+
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+
+}
+
+
+model SHostels {
+  sHostelsId      Int  @id @unique @default(autoincrement())
+  name            String
+  description     String? 
+  email           String? 
+  contact         String?
+
+
+  country         String 
+  city            String 
+  subCity         String? 
+  street          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
 
 //Enums 
 enum UserType {

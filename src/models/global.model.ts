@@ -461,6 +461,19 @@ export class ContactDetails {
   //   @Field(() => Hostel, { nullable: true })
   //   hostel?: Hostel;
 }
+@ObjectType()
+export class NearbyPlace {
+  @Field(() => ID)
+  nearbyPlaceId: number;
+
+  @Field()
+  name: string;
+
+  @Field()
+  description: string;
+
+  
+}
 
 @ObjectType()
 export class HostelSettings {
@@ -517,6 +530,42 @@ export class SearchQuerys {
 
   @Field({ nullable: true })
   subCity?: string;
+}
+
+@ObjectType()
+export class Amenities {
+  @Field(() => Int)
+  amenitiesId: number;
+
+  @Field(() => Int)
+  hostelId: number;
+
+  @Field()
+  amenities: string; // Will be stored as JSON string
+}
+
+@ObjectType()
+export class Services {
+  @Field(() => Int)
+  servicesId: number;
+
+  @Field(() => Int)
+  hostelId: number;
+
+  @Field()
+  amenities: string; // JSON string
+}
+
+@ObjectType()
+export class HostelRules {
+  @Field(() => Int)
+  rulesId: number;
+
+  @Field(() => Int)
+  hostelId: number;
+
+  @Field()
+  rules: string; // JSON string
 }
 
 @ObjectType()
@@ -594,4 +643,41 @@ export class Hostel {
 
   @Field(() => [HostelSuppliers], { nullable: true })
   suppliers?: HostelSuppliers[];
+}
+
+
+@ObjectType()
+export class SHostels {
+  @Field(() => Int)
+  sHostelsId: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
+  contact?: string;
+
+  @Field()
+  country: string;
+
+  @Field()
+  city: string;
+
+  @Field({ nullable: true })
+  subCity?: string;
+
+  @Field({ nullable: true })
+  street?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }

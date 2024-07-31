@@ -11,6 +11,12 @@ type Address {
   updatedAt: DateTime!
 }
 
+type Amenities {
+  amenities: String!
+  amenitiesId: Int!
+  hostelId: Int!
+}
+
 enum Badges {
   FAMOUS
   GOOD_FOOD
@@ -40,6 +46,11 @@ input CreateAddressInput {
   hostelId: Float!
   street: String
   subCity: String
+}
+
+input CreateAmenitiesInput {
+  amenities: String!
+  hostelId: Int!
 }
 
 input CreateContactInput {
@@ -74,6 +85,11 @@ input CreateHostelInput {
   name: String!
 }
 
+input CreateHostelRulesInput {
+  hostelId: Int!
+  rules: String!
+}
+
 input CreateHostelSettingsInput {
   active: Boolean! = true
   allowBooking: Boolean! = false
@@ -100,6 +116,12 @@ input CreateMonthlyPricingInput {
   twoSeater: Float
 }
 
+input CreateNearbyPlaceInput {
+  description: String!
+  hostelId: Float!
+  name: String!
+}
+
 input CreateRoomAvailibilityInput {
   attachBathroom: Boolean
   fiveSeater: Boolean
@@ -108,6 +130,22 @@ input CreateRoomAvailibilityInput {
   oneSeater: Boolean
   threeSeater: Boolean
   twoSeater: Boolean
+}
+
+input CreateSHostelsInput {
+  city: String!
+  contact: String
+  country: String!
+  description: String
+  email: String
+  name: String!
+  street: String
+  subCity: String
+}
+
+input CreateServicesInput {
+  amenities: String!
+  hostelId: Int!
 }
 
 input CreateSocialsInput {
@@ -193,6 +231,12 @@ type Hostel {
   whatsappId: String
 }
 
+type HostelRules {
+  hostelId: Int!
+  rules: String!
+  rulesId: Int!
+}
+
 type HostelSettings {
   active: Boolean!
   allowBooking: Boolean!
@@ -237,16 +281,26 @@ type MonthlyPricing {
 type Mutation {
   changePassword(input: ChangePasswordInput!): String!
   createAddress(data: CreateAddressInput!): Address!
+  createAmenities(createAmenitiesInput: CreateAmenitiesInput!): Amenities!
   createContact(data: CreateContactInput!): ContactDetails!
   createDailyPricing(data: CreateDailyPricingInput!): DailyPricing!
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
+  createHostelRules(createHostelRulesInput: CreateHostelRulesInput!): HostelRules!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
+  createNearbyPlace(createNearbyPlaceInput: CreateNearbyPlaceInput!): NearbyPlace!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
+  createSHostels(createSHostelsInput: CreateSHostelsInput!): SHostels!
+  createServices(createServicesInput: CreateServicesInput!): Services!
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSettings!
   createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
+  deleteAmenities(amenitiesId: Int!): Amenities!
   deleteGallery(galleryId: Float!): Gallery!
+  deleteHostelRules(rulesId: Int!): HostelRules!
+  deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
+  deleteSHostels(sHostelsId: Int!): SHostels!
+  deleteServices(servicesId: Int!): Services!
   deleteSettings(hostelSettingId: Float!): HostelSettings!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
@@ -255,15 +309,26 @@ type Mutation {
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
   updateAddress(addressId: Float!, data: UpdateAddressInput!): Address!
+  updateAmenities(amenitiesId: Int!, updateAmenitiesInput: UpdateAmenitiesInput!): Amenities!
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetails!
   updateDailyPricing(dailyPricingId: Float!, data: UpdateDailyPricingInput!): DailyPricing!
   updateGallery(data: UpdateGalleryInput!, galleryId: Float!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+  updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
+  updateNearbyPlace(nearbyPlaceId: Int!, updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
+  updateSHostels(sHostelsId: Int!, updateSHostelsInput: UpdateSHostelsInput!): SHostels!
+  updateServices(servicesId: Int!, updateServicesInput: UpdateServicesInput!): Services!
   updateSettings(data: UpdateHostelSettingsInput!, hostelSettingId: Float!): HostelSettings!
   updateSocials(data: UpdateSocialsInput!, socialsId: Float!): Socials!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
+}
+
+type NearbyPlace {
+  description: String!
+  name: String!
+  nearbyPlaceId: ID!
 }
 
 type Orders {
@@ -287,6 +352,8 @@ type Payments {
 }
 
 type Query {
+  amenitiesByHostelId(hostelId: Int!): Amenities!
+  amenity(amenitiesId: Int!): Amenities!
   getAddressByHostelId(hostelId: Float!): Address
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
   getCitySearchSuggestions(query: String!): [SearchQuerys!]
@@ -307,6 +374,14 @@ type Query {
   getUser(id: Float!): Users
   getUserByAccessToken(accessToken: String!): Users
   getUsers: [Users!]!
+  hostelRules(rulesId: Int!): HostelRules!
+  hostelRulesByHostelId(hostelId: Int!): HostelRules!
+  nearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
+  nearbyPlaces: [NearbyPlace!]!
+  sHostel(sHostelsId: Int!): SHostels!
+  sHostels: [SHostels!]!
+  service(servicesId: Int!): Services!
+  servicesByHostelId(hostelId: Int!): Services!
 }
 
 input ResetPasswordInput {
@@ -322,6 +397,20 @@ type RoomAvailability {
   roomAvailabilityId: ID!
   threeSeater: Boolean
   twoSeater: Boolean
+  updatedAt: DateTime!
+}
+
+type SHostels {
+  city: String!
+  contact: String
+  country: String!
+  createdAt: DateTime!
+  description: String
+  email: String
+  name: String!
+  sHostelsId: Int!
+  street: String
+  subCity: String
   updatedAt: DateTime!
 }
 
@@ -345,6 +434,12 @@ type SearchQuerys {
   country: String!
   searchQueryId: ID!
   subCity: String
+}
+
+type Services {
+  amenities: String!
+  hostelId: Int!
+  servicesId: Int!
 }
 
 input SignupInput {
@@ -377,6 +472,10 @@ input UpdateAddressInput {
   country: String
   street: String
   subCity: String
+}
+
+input UpdateAmenitiesInput {
+  amenities: String
 }
 
 input UpdateContactInput {
@@ -414,6 +513,10 @@ input UpdateHostelInput {
   whatsappId: String
 }
 
+input UpdateHostelRulesInput {
+  rules: String
+}
+
 input UpdateHostelSettingsInput {
   active: Boolean = true
   allowBooking: Boolean = false
@@ -441,6 +544,13 @@ input UpdateMonthlyPricingInput {
   twoSeater: Float
 }
 
+input UpdateNearbyPlaceInput {
+  description: String
+  hostelId: Float
+  name: String
+  nearbyPlaceId: ID!
+}
+
 input UpdateRoomAvailibilityInput {
   attachBathroom: Boolean
   fiveSeater: Boolean
@@ -448,6 +558,21 @@ input UpdateRoomAvailibilityInput {
   oneSeater: Boolean
   threeSeater: Boolean
   twoSeater: Boolean
+}
+
+input UpdateSHostelsInput {
+  city: String
+  contact: String
+  country: String
+  description: String
+  email: String
+  name: String
+  street: String
+  subCity: String
+}
+
+input UpdateServicesInput {
+  amenities: String
 }
 
 input UpdateSocialsInput {

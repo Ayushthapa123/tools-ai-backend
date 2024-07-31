@@ -12,6 +12,10 @@ import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { JwtService } from '@nestjs/jwt';
 import { SettingsModule } from './settings/settings.module';
+import { NearbyPlaceModule } from './nearbyPlaces/nearbyPlace.module';
+import { AmenitiesModule } from './amenities/amenities.module';
+import { ServicesModule } from './services/services.module';
+import { HostelRulesModule } from './hostelRules/hostelRules.module';
 
 @Module({
   imports: [
@@ -22,8 +26,12 @@ import { SettingsModule } from './settings/settings.module';
     DailyPricingModule,
     MonthlyPricingModule,
     GalleryModule,
-    SettingsModule
+    SettingsModule,
+    NearbyPlaceModule,
+    AmenitiesModule,
+    ServicesModule, 
+    HostelRulesModule
   ],
-  providers: [HostelResolver, HostelService, PrismaService, JwtService],
+  providers: [HostelResolver, HostelService, JwtService],
 })
 export class HostelModule {}

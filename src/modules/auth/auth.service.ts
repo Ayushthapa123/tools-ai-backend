@@ -13,6 +13,7 @@ import { SignupInput } from './dto/signup-user.input';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { ResetPasswordInput } from './dto/get-token.input';
 import { ChangePasswordInput } from './dto/change-password.input';
+import { UserType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -72,7 +73,7 @@ export class AuthService {
 
       console.log('uuuuuuuuu', user);
       // Generate JWT tokens
-      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId);
+      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId,user.userType);
       // Save refreshToken in the database
       await this.prisma.users.update({
         where: { userId: user.userId }, // Specify the user to update
@@ -112,7 +113,7 @@ export class AuthService {
     }
 
     // Generate JWT tokens
-    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId);
+    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId,user.userType);
     // Save refreshToken in the database
     await this.prisma.users.update({
       where: { userId: user.userId }, // Specify the user to update
@@ -176,7 +177,7 @@ export class AuthService {
       // Hash the password before saving it
       const passwordHash = await bcrypt.hash(input.password, 10);
       const { accessToken, refreshToken } = this.generateJwtTokens(
-        Number(userId),1 //TODO get hostelId as well from here
+        Number(userId),1,UserType.HOSTEL_OWNER // TODO get hostelId as well from here
       );
 
       const user = await this.prisma.users.update({
@@ -191,7 +192,7 @@ export class AuthService {
     }
   }
 
-  private generateJwtTokens(userId: number,hostelId:number) {
+  private generateJwtTokens(userId: number,hostelId:number,userType:UserType) {
     const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
       expiresIn: '50m',
     });
@@ -227,7 +228,8 @@ export class AuthService {
         decoded.hasOwnProperty('sub')
       ) {
         // Generate a new access token with appropriate claims
-        const newAccessToken = jwt.sign({ sub: decoded.sub }, this.jwtSecret, {
+        // here no need to generate refreshToken so no need to call the function
+        const newAccessToken = jwt.sign({ sub: decoded.sub,hostelId:user.hostelId,userType:user.userType }, this.jwtSecret, {
           expiresIn: '50m', // Set appropriate expiration time
         });
 
