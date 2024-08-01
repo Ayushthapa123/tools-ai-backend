@@ -9,12 +9,10 @@ export class CreateNearbyPlaceInput {
 
   @Field()
   hostelId: number;
-  
+
   @Field()
   name: string;
 
   @Field()
   description: string;
-
-
 }

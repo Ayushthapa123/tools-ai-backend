@@ -316,7 +316,7 @@ type Mutation {
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
-  updateNearbyPlace(nearbyPlaceId: Int!, updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
+  updateNearbyPlace(updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
   updateSHostels(sHostelsId: Int!, updateSHostelsInput: UpdateSHostelsInput!): SHostels!
   updateServices(servicesId: Int!, updateServicesInput: UpdateServicesInput!): Services!
@@ -328,7 +328,7 @@ type Mutation {
 type NearbyPlace {
   description: String!
   name: String!
-  nearbyPlaceId: ID!
+  nearbyPlaceId: Int!
 }
 
 type Orders {
@@ -548,7 +548,7 @@ input UpdateNearbyPlaceInput {
   description: String
   hostelId: Float
   name: String
-  nearbyPlaceId: ID!
+  nearbyPlaceId: Int!
 }
 
 input UpdateRoomAvailibilityInput {

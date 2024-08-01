@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HostelService } from './hostel.service';
+import { Test, TestingModule } from '@nestjs/testing';
 
 describe('HostelService', () => {
   let service: HostelService;
@@ -12,6 +12,7 @@ describe('HostelService', () => {
     service = module.get<HostelService>(HostelService);
   });
 
+  
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

@@ -39,7 +39,7 @@ model Hostel {
   verified    Boolean @default(false)
   scrapped    Boolean? 
   reviewed    Boolean @default(false)
-  ranking     Int @default(0)
+  ranking     Int? @default(0)
   genderType  GenderType
   hostelType  HostelType @default(STAY)
   dataSource  DataSource @default(OWNER)

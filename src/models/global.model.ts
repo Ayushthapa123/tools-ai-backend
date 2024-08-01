@@ -1,8 +1,8 @@
 // src/models/hostel.model.ts
 
-import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
-import { VisibilityType } from '@prisma/client';
 import { Badges } from '@prisma/client';
+import { VisibilityType } from '@prisma/client';
+import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 
 @ObjectType()
 export class Users {
@@ -463,7 +463,7 @@ export class ContactDetails {
 }
 @ObjectType()
 export class NearbyPlace {
-  @Field(() => ID)
+  @Field(() => Int)
   nearbyPlaceId: number;
 
   @Field()
@@ -471,8 +471,6 @@ export class NearbyPlace {
 
   @Field()
   description: string;
-
-  
 }
 
 @ObjectType()
@@ -512,10 +510,7 @@ export class HostelSettings {
 
   @Field(() => [Badges])
   badges: Badges[];
-
-
 }
-
 
 @ObjectType()
 export class SearchQuerys {
@@ -644,7 +639,6 @@ export class Hostel {
   @Field(() => [HostelSuppliers], { nullable: true })
   suppliers?: HostelSuppliers[];
 }
-
 
 @ObjectType()
 export class SHostels {

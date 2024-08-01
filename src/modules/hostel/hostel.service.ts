@@ -4,10 +4,10 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateHostelInput } from './dtos/create-hostel.input';
 import { Hostel } from '@src/models/global.model';
 import { generateSlug } from '@src/helpers/generateSlug';
+import { PrismaService } from '../../prisma/prisma.service';
+import { CreateHostelInput } from './dtos/create-hostel.input';
 
 @Injectable()
 export class HostelService {
@@ -57,19 +57,18 @@ export class HostelService {
 
   async getHostelBytoken(userId: number) {
     try {
-      const hostel = await this.prisma.hostel.findUnique({
+      const hostel = await this.prisma.hostel.findFirst({
         where: { userId: Number(userId) },
       });
-
       return hostel; // Return the decoded user ID
     } catch (error) {
+      console.log(error);
       // Token verification failed
-      throw new NotFoundException('token not found');
+      throw new NotFoundException('hostel not found');
     }
   }
 
   async createHostel(userId: number, data: CreateHostelInput) {
-    console.log('uuuuuuuuuuu', userId);
     const slug = generateSlug(data.name);
 
     try {
