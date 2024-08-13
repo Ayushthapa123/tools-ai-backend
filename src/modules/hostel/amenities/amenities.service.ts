@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Amenities } from '@src/models/global.model';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { CreateAmenitiesInput } from './dtos/create-amenities.input';
 import { UpdateAmenitiesInput } from './dtos/update-amenities.input';
-import { Amenities } from '@src/models/global.model';
 
 @Injectable()
 export class AmenitiesService {
@@ -15,9 +15,11 @@ export class AmenitiesService {
   }
 
   async getAmenitiesByHostelId(hostelId: number): Promise<Amenities | null> {
-    return this.prisma.amenities.findUnique({
+    const amenities = await this.prisma.amenities.findUnique({
       where: { hostelId },
     });
+
+    return amenities ?? null;
   }
 
   async createAmenities(data: CreateAmenitiesInput): Promise<Amenities> {
@@ -26,7 +28,10 @@ export class AmenitiesService {
     });
   }
 
-  async updateAmenities(amenitiesId: number, data: UpdateAmenitiesInput): Promise<Amenities> {
+  async updateAmenities(
+    amenitiesId: number,
+    data: UpdateAmenitiesInput,
+  ): Promise<Amenities> {
     return this.prisma.amenities.update({
       where: { amenitiesId },
       data,

@@ -12,6 +12,9 @@ export class UpdateHostelInput {
   verified?: boolean;
 
   @Field({ nullable: true })
+  reviewed?: boolean;
+
+  @Field({ nullable: true })
   genderType?: GenderType;
 
   @Field({ nullable: true })

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Services } from '@src/models/global.model';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { CreateServicesInput } from './dtos/create-services.input';
 import { UpdateServicesInput } from './dtos/update-services.input';
-import { Services } from '@src/models/global.model';
 
 @Injectable()
 export class ServicesService {
@@ -26,7 +26,10 @@ export class ServicesService {
     });
   }
 
-  async updateServices(servicesId: number, data: UpdateServicesInput): Promise<Services> {
+  async updateServices(
+    servicesId: number,
+    data: UpdateServicesInput,
+  ): Promise<Services> {
     return this.prisma.services.update({
       where: { servicesId },
       data,

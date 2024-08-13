@@ -12,7 +12,7 @@ type Address {
 }
 
 type Amenities {
-  amenities: String!
+  amenities: String
   amenitiesId: Int!
   hostelId: Int!
 }
@@ -138,8 +138,16 @@ input CreateSHostelsInput {
   country: String!
   description: String
   email: String
+  imgUrl: String
   name: String!
+  slug: String!
   street: String
+  subCity: String
+}
+
+input CreateSearchQueriesInput {
+  city: String!
+  country: String!
   subCity: String
 }
 
@@ -214,9 +222,11 @@ type Hostel {
   gallery: [Gallery!]
   genderType: String!
   hostelId: ID!
+  hostelSettings: HostelSettings
   hostelType: String!
   monthlyPricing: MonthlyPricing
   name: String!
+  nearbyPlaces: [NearbyPlace!]
   orders: [Orders!]
   owner: Users!
   payments: [Payments!]
@@ -248,7 +258,7 @@ type HostelSettings {
   currency: String
   deActivate: Boolean!
   fontSize: Float!
-  hostelSettingId: ID!
+  hostelSettingId: Int!
   visibility: String!
 }
 
@@ -291,6 +301,7 @@ type Mutation {
   createNearbyPlace(createNearbyPlaceInput: CreateNearbyPlaceInput!): NearbyPlace!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
   createSHostels(createSHostelsInput: CreateSHostelsInput!): SHostels!
+  createSearchQuery(createSearchQueriesInput: CreateSearchQueriesInput!): SearchQueries!
   createServices(createServicesInput: CreateServicesInput!): Services!
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSettings!
   createSocials(data: CreateSocialsInput!): Socials!
@@ -300,6 +311,7 @@ type Mutation {
   deleteHostelRules(rulesId: Int!): HostelRules!
   deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   deleteSHostels(sHostelsId: Int!): SHostels!
+  deleteSearchQuery(searchQueryId: Int!): SearchQueries!
   deleteServices(servicesId: Int!): Services!
   deleteSettings(hostelSettingId: Float!): HostelSettings!
   forgotPassword(email: String!): ForgotPasswordResponse!
@@ -319,6 +331,7 @@ type Mutation {
   updateNearbyPlace(updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
   updateSHostels(sHostelsId: Int!, updateSHostelsInput: UpdateSHostelsInput!): SHostels!
+  updateSearchQuery(searchQueryId: Int!, updateSearchQueriesInput: UpdateSearchQueriesInput!): SearchQueries!
   updateServices(servicesId: Int!, updateServicesInput: UpdateServicesInput!): Services!
   updateSettings(data: UpdateHostelSettingsInput!, hostelSettingId: Float!): HostelSettings!
   updateSocials(data: UpdateSocialsInput!, socialsId: Float!): Socials!
@@ -352,7 +365,7 @@ type Payments {
 }
 
 type Query {
-  amenitiesByHostelId(hostelId: Int!): Amenities!
+  amenitiesByHostelId: Amenities!
   amenity(amenitiesId: Int!): Amenities!
   getAddressByHostelId(hostelId: Float!): Address
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
@@ -375,13 +388,16 @@ type Query {
   getUserByAccessToken(accessToken: String!): Users
   getUsers: [Users!]!
   hostelRules(rulesId: Int!): HostelRules!
-  hostelRulesByHostelId(hostelId: Int!): HostelRules!
+  hostelRulesByHostelId: HostelRules!
   nearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   nearbyPlaces: [NearbyPlace!]!
   sHostel(sHostelsId: Int!): SHostels!
+  sHostelBySlug(slug: String!): SHostels!
   sHostels: [SHostels!]!
+  searchQueries(query: String!): [SearchQueries!]!
+  searchQuery(searchQueryId: Int!): SearchQueries!
   service(servicesId: Int!): Services!
-  servicesByHostelId(hostelId: Int!): Services!
+  servicesByHostelId: Services!
 }
 
 input ResetPasswordInput {
@@ -407,6 +423,9 @@ type SHostels {
   createdAt: DateTime!
   description: String
   email: String
+  genderType: String
+  hostelType: String
+  imgUrl: String
   name: String!
   sHostelsId: Int!
   street: String
@@ -427,6 +446,15 @@ input SearchHostelInput {
   subCity: String
   threeSeater: Boolean
   twoSeater: Boolean
+}
+
+type SearchQueries {
+  city: String!
+  country: String!
+  createdAt: DateTime!
+  searchQueryId: Int!
+  subCity: String
+  updatedAt: DateTime!
 }
 
 type SearchQuerys {
@@ -506,6 +534,7 @@ input UpdateHostelInput {
   genderType: String
   hostelType: String
   name: String
+  reviewed: Boolean
   slug: String
   telegramId: String
   userId: Int
@@ -528,7 +557,7 @@ input UpdateHostelSettingsInput {
   currency: String
   deActivate: Boolean = false
   fontSize: Float = 14
-  hostelSettingId: ID!
+  hostelSettingId: Int!
   visibility: String = "ALL"
 }
 
@@ -566,8 +595,16 @@ input UpdateSHostelsInput {
   country: String
   description: String
   email: String
+  imgUrl: String
   name: String
+  slug: String
   street: String
+  subCity: String
+}
+
+input UpdateSearchQueriesInput {
+  city: String
+  country: String
   subCity: String
 }
 

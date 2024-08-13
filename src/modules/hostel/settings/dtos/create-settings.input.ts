@@ -1,8 +1,8 @@
 // src/hostel/dto/create-hostel-settings.input.ts
 
-import { InputType, Field } from '@nestjs/graphql';
+import { Badges } from '@src/dtos/global.dtos';
 import { VisibilityType } from '@prisma/client';
-import {Badges} from '@src/dtos/global.dtos'
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateHostelSettingsInput {

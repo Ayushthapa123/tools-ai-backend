@@ -1,7 +1,7 @@
 // src/models/hostel.model.ts
 
-import { Badges } from '@prisma/client';
-import { VisibilityType } from '@prisma/client';
+import { Badges, GenderType } from '@prisma/client';
+import { HostelType, VisibilityType } from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 
 @ObjectType()
@@ -44,18 +44,6 @@ export class Users {
 
   //   @Field(() => Hostel, { nullable: true })
   //   hostel?: Hostel;
-}
-
-@ObjectType()
-export class HostelFeatures {
-  @Field(() => ID)
-  hostelFeatureId: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  emojiUrl?: string;
 }
 
 @ObjectType()
@@ -475,7 +463,7 @@ export class NearbyPlace {
 
 @ObjectType()
 export class HostelSettings {
-  @Field(() => ID)
+  @Field(() => Int)
   hostelSettingId: number;
 
   @Field({ nullable: true })
@@ -535,8 +523,8 @@ export class Amenities {
   @Field(() => Int)
   hostelId: number;
 
-  @Field()
-  amenities: string; // Will be stored as JSON string
+  @Field({ nullable: true })
+  amenities?: string; // Will be stored as JSON string
 }
 
 @ObjectType()
@@ -561,6 +549,51 @@ export class HostelRules {
 
   @Field()
   rules: string; // JSON string
+}
+
+@ObjectType()
+export class SHostels {
+  @Field(() => Int)
+  sHostelsId: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
+  genderType?: GenderType;
+
+  @Field({ nullable: true })
+  hostelType?: HostelType;
+
+  @Field({ nullable: true })
+  contact?: string;
+
+  @Field()
+  country: string;
+
+  @Field()
+  city: string;
+
+  @Field({ nullable: true })
+  subCity?: string;
+
+  @Field({ nullable: true })
+  street?: string;
+
+  @Field({ nullable: true })
+  imgUrl?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }
 
 @ObjectType()
@@ -627,8 +660,14 @@ export class Hostel {
   @Field(() => MonthlyPricing, { nullable: true })
   monthlyPricing?: MonthlyPricing;
 
+  @Field(() => HostelSettings, { nullable: true })
+  hostelSettings?: HostelSettings;
+
   @Field(() => [Orders], { nullable: true })
   orders?: Orders[];
+
+  @Field(() => [NearbyPlace], { nullable: true })
+  nearbyPlaces?: NearbyPlace[];
 
   @Field(() => [Payments], { nullable: true })
   payments?: Payments[];
@@ -641,21 +680,9 @@ export class Hostel {
 }
 
 @ObjectType()
-export class SHostels {
+export class SearchQueries {
   @Field(() => Int)
-  sHostelsId: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field({ nullable: true })
-  email?: string;
-
-  @Field({ nullable: true })
-  contact?: string;
+  searchQueryId: number;
 
   @Field()
   country: string;
@@ -665,9 +692,6 @@ export class SHostels {
 
   @Field({ nullable: true })
   subCity?: string;
-
-  @Field({ nullable: true })
-  street?: string;
 
   @Field()
   createdAt: Date;

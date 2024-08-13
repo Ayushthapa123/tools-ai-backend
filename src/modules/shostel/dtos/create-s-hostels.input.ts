@@ -5,6 +5,9 @@ export class CreateSHostelsInput {
   @Field()
   name: string;
 
+  @Field()
+  slug: string;
+
   @Field({ nullable: true })
   description?: string;
 
@@ -25,4 +28,7 @@ export class CreateSHostelsInput {
 
   @Field({ nullable: true })
   street?: string;
+
+  @Field({ nullable: true })
+  imgUrl?: string;
 }

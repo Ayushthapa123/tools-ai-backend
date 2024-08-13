@@ -40,18 +40,20 @@ export class HostelService {
   async getHostelBySlug(slug: string): Promise<Hostel | null> {
     return this.prisma.hostel.findUnique({
       where: { slug },
-      // include: {
-      //   owner: {
-      //     select: {
-      //       // Specify the fields you want from the Users model
-      //       userId: true,
-      //       email: true,
-      //       fullName: true,
-
-      //       // Add other fields you need
-      //     },
-      //   },
-      // },
+      include: {
+        address: true,
+        contact: true,
+        dailyPricing: true,
+        monthlyPricing: true,
+        roomAvailability: true,
+        gallery: true,
+        nearbyPlaces: true,
+        socials: true,
+        amenities: true,
+        hostelRules: true,
+        services: true,
+        hostelSettings: true,
+      },
     });
   }
 
@@ -69,7 +71,7 @@ export class HostelService {
   }
 
   async createHostel(userId: number, data: CreateHostelInput) {
-    const slug = generateSlug(data.name);
+    const slug = generateSlug(data.name, data.genderType, data.hostelType);
 
     try {
       const res = await this.prisma.hostel.create({

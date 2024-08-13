@@ -1,8 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@src/guards/auth.guard';
+import { Services } from '@src/models/global.model';
 import { ServicesService } from './services.service';
 import { CreateServicesInput } from './dtos/create-services.input';
 import { UpdateServicesInput } from './dtos/update-services.input';
-import { Services } from '@src/models/global.model';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 
 @Resolver(() => Services)
 export class ServicesResolver {
@@ -16,9 +18,9 @@ export class ServicesResolver {
   }
 
   @Query(() => Services, { name: 'servicesByHostelId' })
-  async getServicesByHostelId(
-    @Args('hostelId', { type: () => Int }) hostelId: number,
-  ): Promise<Services | null> {
+  @UseGuards(AuthGuard)
+  async getServicesByHostelId(@Context() ctx: any): Promise<Services | null> {
+    const hostelId = ctx.user.hostelId;
     return this.servicesService.getServicesByHostelId(hostelId);
   }
 

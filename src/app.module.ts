@@ -13,7 +13,8 @@ import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchModule } from './modules/search/search.module';
 import { ImageController } from './modules/image/image.controller';
 import { SHostelModule } from './modules/shostel/s-hostels.module';
-import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.module';
+// import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.module';
+import { SearchQueriesModule } from './modules/searchQueries/search-queries.module';
 // import { ImageModule } from './modules/image/image.module';
 
 @Module({
@@ -32,6 +33,7 @@ import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.modu
     HostelModule,
     SearchModule,
     SHostelModule,
+    SearchQueriesModule,
     // ImageModule,
   ],
 

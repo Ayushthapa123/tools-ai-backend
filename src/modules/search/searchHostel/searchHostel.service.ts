@@ -30,7 +30,7 @@ export class SearchHostelService {
       include: {
         address: true,
         roomAvailability: true,
-        MonthlyPricing: true,
+        monthlyPricing: true,
         gallery: { where: { type: 'COVER' } },
       },
       where: {

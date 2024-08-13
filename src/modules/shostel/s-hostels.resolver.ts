@@ -1,8 +1,8 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { SHostels } from '@src/models/global.model';
 import { SHostelsService } from './s-hostels.service';
 import { CreateSHostelsInput } from './dtos/create-s-hostels.input';
 import { UpdateSHostelsInput } from './dtos/update-s-hostels.input';
-import { SHostels } from '@src/models/global.model';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 
 @Resolver(() => SHostels)
 export class SHostelsResolver {
@@ -13,6 +13,13 @@ export class SHostelsResolver {
     @Args('sHostelsId', { type: () => Int }) sHostelsId: number,
   ): Promise<SHostels | null> {
     return this.sHostelsService.getSHostelsById(sHostelsId);
+  }
+
+  @Query(() => SHostels, { name: 'sHostelBySlug' })
+  async getSHostelsBySlug(
+    @Args('slug', { type: () => String }) slug: string,
+  ): Promise<SHostels | null> {
+    return this.sHostelsService.getSHostelsBySlug(slug);
   }
 
   @Query(() => [SHostels], { name: 'sHostels' })

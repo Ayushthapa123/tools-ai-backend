@@ -1,4 +1,5 @@
-
+//! Starting a entity name with capital letter caused unknown bug. when i put MonthlyPricing inside hostel
+//! it was giving null while there was a data. but changing name to monthlyPricing solved this
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x"]
@@ -37,12 +38,11 @@ model Hostel {
   hostelId    Int     @id @unique @default(autoincrement())
   name        String
   verified    Boolean @default(false)
-  scrapped    Boolean? 
   reviewed    Boolean @default(false)
   ranking     Int? @default(0)
   genderType  GenderType
   hostelType  HostelType @default(STAY)
-  dataSource  DataSource @default(OWNER)
+
   capacity    Int?
 
   description String?
@@ -60,20 +60,17 @@ model Hostel {
   roomAvailability RoomAvailability?
   dailyPricing     DailyPricing?
 
+
   socials        Socials?
   address        Address?
   contact        ContactDetails?
   hostelSettings        HostelSettings?
 
 
-
-  MonthlyPricing MonthlyPricing?
+  monthlyPricing MonthlyPricing?
   amenities      Amenities?
   services       Services?
-  HostelRules       HostelRules?
-
-
-
+  hostelRules    HostelRules?
 
   // orders    Orders[]
   // payments  Payments[]
@@ -83,12 +80,7 @@ model Hostel {
 
   @@index([hostelId,slug])
 }
-model HostelFeatures {
-  hostelFeatureId Int     @id @unique @default(autoincrement())
-  name            String
-  emojiUrl        String?
-  type             String?
-}
+
 
 
 
@@ -292,18 +284,24 @@ model HostelRules {
 model SHostels {
   sHostelsId      Int  @id @unique @default(autoincrement())
   name            String
+  slug            String @unique
   description     String? 
   email           String? 
   contact         String?
+  hostelType      HostelType?  @default(STAY)
+  genderType      GenderType?  
 
 
   country         String 
   city            String 
   subCity         String? 
   street          String?
+  imgUrl          String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([slug,sHostelsId])
 
 }
 
@@ -367,7 +365,8 @@ enum GalleryType {
   CELEBRATIONS
   REVIEW
   FOOD
-  OTHER
+  OTHER 
+  LOGO
 }
 
 
@@ -377,7 +376,7 @@ enum SubscriptionPlans {
   PREMIUM
 }
 
-enum DataSource {
+enum DataSources {
   OWNER
   GOOGLE
   FACEBOOK 

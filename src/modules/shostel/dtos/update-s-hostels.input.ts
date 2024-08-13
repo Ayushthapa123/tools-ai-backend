@@ -7,6 +7,9 @@ export class UpdateSHostelsInput {
   name?: string;
 
   @Field({ nullable: true })
+  slug?: string;
+
+  @Field({ nullable: true })
   description?: string;
 
   @Field({ nullable: true })
@@ -26,4 +29,6 @@ export class UpdateSHostelsInput {
 
   @Field({ nullable: true })
   street?: string;
+  @Field({ nullable: true })
+  imgUrl?: string;
 }

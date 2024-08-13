@@ -1,10 +1,12 @@
 // src/hostel/dto/update-hostel-settings.input.ts
 
-import { InputType, Field, ID, PartialType } from '@nestjs/graphql';
 import { CreateHostelSettingsInput } from './create-settings.input';
+import { InputType, Field, PartialType, Int } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateHostelSettingsInput extends PartialType(CreateHostelSettingsInput) {
-  @Field(() => ID)
+export class UpdateHostelSettingsInput extends PartialType(
+  CreateHostelSettingsInput,
+) {
+  @Field(() => Int)
   hostelSettingId: number;
 }

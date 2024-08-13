@@ -1,8 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@src/guards/auth.guard';
+import { Amenities } from '@src/models/global.model';
 import { AmenitiesService } from './amenities.service';
 import { CreateAmenitiesInput } from './dtos/create-amenities.input';
 import { UpdateAmenitiesInput } from './dtos/update-amenities.input';
-import { Amenities } from '@src/models/global.model';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 
 @Resolver(() => Amenities)
 export class AmenitiesResolver {
@@ -16,9 +18,9 @@ export class AmenitiesResolver {
   }
 
   @Query(() => Amenities, { name: 'amenitiesByHostelId' })
-  async getAmenitiesByHostelId(
-    @Args('hostelId', { type: () => Int }) hostelId: number,
-  ): Promise<Amenities | null> {
+  @UseGuards(AuthGuard)
+  async getAmenitiesByHostelId(@Context() ctx: any): Promise<Amenities | null> {
+    const hostelId = ctx.user.hostelId;
     return this.amenitiesService.getAmenitiesByHostelId(hostelId);
   }
 
@@ -34,7 +36,10 @@ export class AmenitiesResolver {
     @Args('amenitiesId', { type: () => Int }) amenitiesId: number,
     @Args('updateAmenitiesInput') updateAmenitiesInput: UpdateAmenitiesInput,
   ): Promise<Amenities> {
-    return this.amenitiesService.updateAmenities(amenitiesId, updateAmenitiesInput);
+    return this.amenitiesService.updateAmenities(
+      amenitiesId,
+      updateAmenitiesInput,
+    );
   }
 
   @Mutation(() => Amenities)
