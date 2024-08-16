@@ -17,10 +17,14 @@ export class SearchQueriesResolver {
 
   @Query(() => [SearchQueries], { name: 'searchQueries' })
   async getSearchQueries(
-    @Args('query', { type: () => String }) query:string
-
+    @Args('query', { type: () => String }) query: string,
   ): Promise<SearchQueries[]> {
     return this.searchQueriesService.getSearchQueries(query);
+  }
+
+  @Query(() => [SearchQueries], { name: 'getAllSearchQueries' })
+  async getAllSearchQueries(): Promise<SearchQueries[]> {
+    return this.searchQueriesService.getAllSearchQueries();
   }
 
   @Mutation(() => SearchQueries)

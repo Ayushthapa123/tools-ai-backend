@@ -9,7 +9,7 @@ export class SearchQueriesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSearchQueries(query: string): Promise<SearchQueries[]> {
-    console.log('qqqqqqqqq',query)
+    console.log('qqqqqqqqq', query);
     return await this.prisma.searchQueries.findMany({
       where: {
         OR: [
@@ -17,10 +17,12 @@ export class SearchQueriesService {
           { subCity: { contains: query, mode: 'insensitive' } },
         ],
       },
-      take:7
+      take: 7,
     });
   }
-  
+  async getAllSearchQueries(): Promise<SearchQueries[]> {
+    return await this.prisma.searchQueries.findMany({});
+  }
 
   async getSearchQueryById(
     searchQueryId: number,

@@ -291,6 +291,8 @@ model SHostels {
   hostelType      HostelType?  @default(STAY)
   genderType      GenderType?  
 
+  ranking        Int? @default(1)
+
 
   country         String 
   city            String 

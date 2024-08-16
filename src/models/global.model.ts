@@ -558,6 +558,8 @@ export class SHostels {
 
   @Field()
   name: string;
+  @Field()
+  slug: string;
 
   @Field({ nullable: true })
   description?: string;

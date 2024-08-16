@@ -138,6 +138,8 @@ input CreateSHostelsInput {
   country: String!
   description: String
   email: String
+  genderType: String
+  hostelType: String
   imgUrl: String
   name: String!
   slug: String!
@@ -369,6 +371,7 @@ type Query {
   amenity(amenitiesId: Int!): Amenities!
   getAddressByHostelId(hostelId: Float!): Address
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): [Hostel!]!
+  getAllSearchQueries: [SearchQueries!]!
   getCitySearchSuggestions(query: String!): [SearchQuerys!]
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
@@ -381,6 +384,7 @@ type Query {
   getHostelsBySearch(input: SearchHostelInput!): [Hostel!]!
   getMonthlyPricingByHostelId(hostelId: Float!): MonthlyPricing
   getRoomAvailibilityByHostelId(hostelId: Float!): RoomAvailability
+  getSHostelsBySearch(input: SearchSHostelInput!): [SHostels!]!
   getSettingsByHostelId(hostelId: Float!): HostelSettings
   getSocialsByHostelId(hostelId: Float!): Socials
   getToleSearchSuggestions(query: String!): [SearchQuerys!]
@@ -428,6 +432,7 @@ type SHostels {
   imgUrl: String
   name: String!
   sHostelsId: Int!
+  slug: String!
   street: String
   subCity: String
   updatedAt: DateTime!
@@ -461,6 +466,14 @@ type SearchQuerys {
   city: String!
   country: String!
   searchQueryId: ID!
+  subCity: String
+}
+
+input SearchSHostelInput {
+  city: String
+  genderType: String!
+  hostelType: String!
+  pageNumber: Float!
   subCity: String
 }
 
@@ -595,6 +608,8 @@ input UpdateSHostelsInput {
   country: String
   description: String
   email: String
+  genderType: String
+  hostelType: String
   imgUrl: String
   name: String
   slug: String

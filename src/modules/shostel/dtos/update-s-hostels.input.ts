@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-
+import { GenderType, HostelType } from '@prisma/client';
 
 @InputType()
 export class UpdateSHostelsInput {
@@ -8,6 +8,11 @@ export class UpdateSHostelsInput {
 
   @Field({ nullable: true })
   slug?: string;
+
+  @Field({ nullable: true })
+  hostelType?: HostelType;
+  @Field({ nullable: true })
+  genderType?: GenderType;
 
   @Field({ nullable: true })
   description?: string;

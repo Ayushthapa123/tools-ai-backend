@@ -20,12 +20,14 @@ export class HostelService {
       skip,
       take,
       include: {
-        owner: {
-          select: {
-            userId: true,
-            email: true,
-            fullName: true,
-          },
+        address: true,
+        roomAvailability: true,
+        monthlyPricing: true,
+        gallery: { where: { type: 'COVER' } },
+      },
+      where: {
+        gallery: {
+          some: { type: 'COVER' },
         },
       },
     });
