@@ -23,6 +23,9 @@ export class UpdateHostelInput {
   @Field(() => Int, { nullable: true })
   capacity?: number;
 
+  @Field(() => Int, { nullable: true })
+  availableSeats?: number;
+
   @Field({ nullable: true })
   description?: string;
 

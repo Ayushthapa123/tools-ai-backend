@@ -501,6 +501,27 @@ export class HostelSettings {
 }
 
 @ObjectType()
+export class GoogleMapLocation {
+  @Field(() => Int)
+  googleMapLocationId: number;
+
+  @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => Float)
+  lat: number;
+
+  @Field(() => Float)
+  lng: number;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
+}
+
+@ObjectType()
 export class SearchQuerys {
   @Field(() => ID)
   searchQueryId: number;
@@ -620,6 +641,9 @@ export class Hostel {
 
   @Field({ nullable: true })
   capacity?: number;
+
+  @Field({ nullable: true })
+  availableSeats?: number;
 
   @Field({ nullable: true })
   description?: string;

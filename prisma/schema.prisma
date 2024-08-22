@@ -43,7 +43,9 @@ model Hostel {
   genderType  GenderType
   hostelType  HostelType @default(STAY)
 
-  capacity    Int?
+  capacity    Int? 
+  availableSeats    Int? 
+
 
   description String?
   slug        String  @unique
@@ -65,6 +67,8 @@ model Hostel {
   address        Address?
   contact        ContactDetails?
   hostelSettings        HostelSettings?
+  googleMapLocation        GoogleMapLocation?
+
 
 
   monthlyPricing MonthlyPricing?
@@ -80,9 +84,6 @@ model Hostel {
 
   @@index([hostelId,slug])
 }
-
-
-
 
 
 
@@ -299,11 +300,28 @@ model SHostels {
   subCity         String? 
   street          String?
   imgUrl          String?
+  originalUrl          String?
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([slug,sHostelsId])
+
+}
+
+model GoogleMapLocation {
+  googleMapLocationId      Int  @id @unique @default(autoincrement())
+
+  description         String? 
+  lat                 Float
+  lng                 Float
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  hostelId  Int @unique
+  // Define a relation to Hostel
+  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
 
 }
 

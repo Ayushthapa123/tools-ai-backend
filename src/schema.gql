@@ -77,6 +77,12 @@ input CreateGalleryInput {
   url: String!
 }
 
+input CreateGoogleMapLocationInput {
+  description: String
+  lat: Float!
+  lng: Float!
+}
+
 input CreateHostelInput {
   capacity: Int
   description: String
@@ -210,12 +216,22 @@ input GetTokenInput {
   refreshToken: String!
 }
 
+type GoogleMapLocation {
+  createdAt: DateTime!
+  description: String
+  googleMapLocationId: Int!
+  lat: Float!
+  lng: Float!
+  updatedAt: DateTime!
+}
+
 type GoogleOauthUrl {
   url: String!
 }
 
 type Hostel {
   address: Address
+  availableSeats: Float
   capacity: Float
   contact: ContactDetails
   createdAt: DateTime!
@@ -297,6 +313,7 @@ type Mutation {
   createContact(data: CreateContactInput!): ContactDetails!
   createDailyPricing(data: CreateDailyPricingInput!): DailyPricing!
   createGallery(data: CreateGalleryInput!): Gallery!
+  createGoogleMapLocation(data: CreateGoogleMapLocationInput!, hostelId: Int!): GoogleMapLocation!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelRules(createHostelRulesInput: CreateHostelRulesInput!): HostelRules!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
@@ -310,6 +327,7 @@ type Mutation {
   createUser(input: CreateUserInput!): Users!
   deleteAmenities(amenitiesId: Int!): Amenities!
   deleteGallery(galleryId: Float!): Gallery!
+  deleteGoogleMapLocation(id: Int!): GoogleMapLocation!
   deleteHostelRules(rulesId: Int!): HostelRules!
   deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   deleteSHostels(sHostelsId: Int!): SHostels!
@@ -327,6 +345,7 @@ type Mutation {
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetails!
   updateDailyPricing(dailyPricingId: Float!, data: UpdateDailyPricingInput!): DailyPricing!
   updateGallery(data: UpdateGalleryInput!, galleryId: Float!): Gallery!
+  updateGoogleMapLocation(data: UpdateGoogleMapLocation!, id: Int!): GoogleMapLocation!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
@@ -391,6 +410,7 @@ type Query {
   getUser(id: Float!): Users
   getUserByAccessToken(accessToken: String!): Users
   getUsers: [Users!]!
+  googleMapLocation(id: Int!): GoogleMapLocation!
   hostelRules(rulesId: Int!): HostelRules!
   hostelRulesByHostelId: HostelRules!
   nearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
@@ -541,7 +561,15 @@ input UpdateGalleryInput {
   url: String
 }
 
+input UpdateGoogleMapLocation {
+  description: String
+  googleMapLocationId: Int!
+  lat: Float
+  lng: Float
+}
+
 input UpdateHostelInput {
+  availableSeats: Int
   capacity: Int
   description: String
   genderType: String

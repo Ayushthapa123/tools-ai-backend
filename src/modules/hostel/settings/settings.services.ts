@@ -1,15 +1,17 @@
+import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
-import { CreateHostelSettingsInput } from './dtos/create-settings.input';
-import { UpdateHostelSettingsInput } from './dtos/update-settings.input';;
 import { HostelSettings } from '../../../models/global.model';
-import { Prisma } from '@prisma/client';
+import { CreateHostelSettingsInput } from './dtos/create-settings.input';
+import { UpdateHostelSettingsInput } from './dtos/update-settings.input';
 
 @Injectable()
 export class SettingsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSettingsByHostelId(hostelId: number): Promise<HostelSettings | null> {
+  async getSettingsByHostelId(
+    hostelId: number,
+  ): Promise<HostelSettings | null> {
     return this.prisma.hostelSettings.findUnique({
       where: { hostelId },
     });
@@ -24,7 +26,10 @@ export class SettingsService {
     };
     return this.prisma.hostelSettings.create({ data: createData });
   }
-  async updateSettings(hostelSettingId: number, data: UpdateHostelSettingsInput) {
+  async updateSettings(
+    hostelSettingId: number,
+    data: UpdateHostelSettingsInput,
+  ) {
     return this.prisma.hostelSettings.update({
       where: { hostelSettingId },
       data,
