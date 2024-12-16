@@ -3,6 +3,7 @@
 import { Badges, GenderType } from '@prisma/client';
 import { HostelType, VisibilityType } from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
+import { WeekDays } from '@src/modules/hostel/food-menu/enums/weekdays.enum';
 
 @ObjectType()
 export class Users {
@@ -718,6 +719,38 @@ export class SearchQueries {
 
   @Field({ nullable: true })
   subCity?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
+}
+@ObjectType()
+export class FoodMenu {
+  @Field(() => Int)
+  foodMenuId: number;
+
+  @Field()
+  day: WeekDays;
+
+  @Field()
+  lunch: string;
+
+  @Field()
+  snacks: string;
+
+  @Field()
+  dinner: string;
+
+  @Field()
+  lunchTime: string;
+
+  @Field()
+  snacksTime: string;
+
+  @Field()
+  dinnerTime: string;
 
   @Field()
   createdAt: Date;
