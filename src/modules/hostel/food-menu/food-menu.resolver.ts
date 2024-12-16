@@ -1,8 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { FoodMenuService } from './food-menu.service';
 import { FoodMenu } from '@src/models/global.model';
-import { CreateFoodMenu } from './dtos/createFoodMenu.dto';
-import { UpdateFoodMenu } from './dtos/updateFoodMenu.dto';
+import { CreateFoodMenu } from './dtos/create-food-menu.dto';
+import { UpdateFoodMenu } from './dtos/update-food-menu.dto';
 
 @Resolver()
 export class FoodMenuResolver {

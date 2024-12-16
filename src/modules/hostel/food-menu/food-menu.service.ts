@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
+import { UpdateFoodMenu } from './dtos/update-food-menu.dto';
 
 @Injectable()
 export class FoodMenuService {
@@ -23,7 +24,7 @@ export class FoodMenuService {
         })
     }
 
-    async updateMenu(id,updatedData){
+    async updateMenu(id:number,updatedData:UpdateFoodMenu){
         return this.prismaService.foodMenu.update({
             where:{
                 foodMenuId:id,
@@ -32,7 +33,7 @@ export class FoodMenuService {
         })
     }
 
-    async deleteMenu(id){
+    async deleteMenu(id:number){
         return this.prismaService.foodMenu.delete({
             where:{
                 foodMenuId:id,

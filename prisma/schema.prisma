@@ -535,13 +535,13 @@ enum WeekDays {
 
 model FoodMenu{
   foodMenuId Int    @id @unique @default(autoincrement())
-  day        WeekDays
-  lunch      String 
-  dinner     String
-  snacks     String
-  lunchTime  String
-  snacksTime String
-  dinnerTime String
+  day        WeekDays?
+  lunch      String?
+  dinner     String?
+  snacks     String?
+  lunchTime  String?
+  snacksTime String?
+  dinnerTime String?
 
   hostelId Int
 

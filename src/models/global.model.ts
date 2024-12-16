@@ -1,9 +1,8 @@
 // src/models/hostel.model.ts
 
-import { Badges, GenderType } from '@prisma/client';
+import { Badges, GenderType, WeekDays } from '@prisma/client';
 import { HostelType, VisibilityType } from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
-import { WeekDays } from '@src/modules/hostel/food-menu/enums/weekdays.enum';
 
 @ObjectType()
 export class Users {
@@ -731,26 +730,26 @@ export class FoodMenu {
   @Field(() => Int)
   foodMenuId: number;
 
-  @Field()
-  day: WeekDays;
+  @Field(() => String,{nullable:true})
+  day?: WeekDays;
 
-  @Field()
-  lunch: string;
+  @Field({nullable:true})
+  lunch?: string;
+ 
+  @Field({nullable:true})
+  dinner?: string;
 
-  @Field()
-  snacks: string;
+  @Field({nullable:true})
+  snacks?: string;
 
-  @Field()
-  dinner: string;
+  @Field({nullable:true})
+  lunchTime?: string;
 
-  @Field()
-  lunchTime: string;
+  @Field({nullable:true})
+  dinnerTime?: string;
 
-  @Field()
-  snacksTime: string;
-
-  @Field()
-  dinnerTime: string;
+  @Field({nullable:true})
+  snacksTime?: string;
 
   @Field()
   createdAt: Date;

@@ -71,13 +71,14 @@ input CreateDailyPricingInput {
 }
 
 input CreateFoodMenu {
-  day: String!
-  dinner: String!
-  dinnerTime: String!
-  lunch: String!
-  lunchTime: String!
-  snacks: String!
-  snacksTime: String!
+  day: String
+  dinner: String
+  dinnerTime: String
+  hostelId: Float = 1
+  lunch: String
+  lunchTime: String
+  snacks: String
+  snacksTime: String
 }
 
 input CreateGalleryInput {
@@ -212,14 +213,14 @@ scalar DateTime
 
 type FoodMenu {
   createdAt: DateTime!
-  day: String!
-  dinner: String!
-  dinnerTime: String!
+  day: String
+  dinner: String
+  dinnerTime: String
   foodMenuId: Int!
-  lunch: String!
-  lunchTime: String!
-  snacks: String!
-  snacksTime: String!
+  lunch: String
+  lunchTime: String
+  snacks: String
+  snacksTime: String
   updatedAt: DateTime!
 }
 
