@@ -18,18 +18,23 @@ export class FoodMenuResolver {
         return this.foodMenuService.getFoodMenuById(id);
     }
 
+    @Query(()=>[FoodMenu])
+    async getFoodMenuByHostelId(@Args("hostelId") hostelId:number){
+        return this.foodMenuService.getFoodMenuByHostelId(hostelId);
+    }
+
     @Mutation(()=>FoodMenu)
     async createMenu(@Args('data') data:CreateFoodMenu){
         return this.foodMenuService.createMenu(data);
     }
 
     @Mutation(()=>FoodMenu)
-    async updateMenu(@Args('updatedData') updatedData:UpdateFoodMenu,@Args("id") id:number){
-        return this.foodMenuService.updateMenu(id,updatedData);
+    async updateMenu(@Args('updatedData') updatedData:UpdateFoodMenu,@Args("foodMenuId") foodMenuId:number,@Args("accessToken") accessToken:string){
+        return this.foodMenuService.updateMenu(foodMenuId,updatedData,accessToken);
     }
 
     @Mutation(()=>[FoodMenu])
-    async deleteMenu(@Args('id') id:number){
-        return this.foodMenuService.deleteMenu(id);
+    async deleteMenu(@Args('id') id:number,@Args("accessToken") accessToken:string){
+        return this.foodMenuService.deleteMenu(id,accessToken);
     }
 }

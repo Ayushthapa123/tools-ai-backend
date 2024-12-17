@@ -354,7 +354,7 @@ type Mutation {
   deleteGallery(galleryId: Float!): Gallery!
   deleteGoogleMapLocation(id: Int!): GoogleMapLocation!
   deleteHostelRules(rulesId: Int!): HostelRules!
-  deleteMenu(id: Float!): [FoodMenu!]!
+  deleteMenu(accessToken: String!, id: Float!): [FoodMenu!]!
   deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   deleteSHostels(sHostelsId: Int!): SHostels!
   deleteSearchQuery(searchQueryId: Int!): SearchQueries!
@@ -374,7 +374,7 @@ type Mutation {
   updateGoogleMapLocation(data: UpdateGoogleMapLocation!, id: Int!): GoogleMapLocation!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
-  updateMenu(id: Float!, updatedData: UpdateFoodMenu!): FoodMenu!
+  updateMenu(accessToken: String!, foodMenuId: Float!, updatedData: UpdateFoodMenu!): FoodMenu!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
   updateNearbyPlace(updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
@@ -421,6 +421,7 @@ type Query {
   getCitySearchSuggestions(query: String!): [SearchQuerys!]
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
+  getFoodMenuByHostelId(hostelId: Float!): [FoodMenu!]!
   getFoodMenuById(id: Float!): FoodMenu!
   getFoodMenus: [FoodMenu!]!
   getGalleryByHostelId(galleryType: String!, hostelId: Float!): [Gallery!]
