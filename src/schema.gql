@@ -74,7 +74,7 @@ input CreateFoodMenu {
   day: String
   dinner: String
   dinnerTime: String
-  hostelId: Float = 1
+  hostelId: Float!
   lunch: String
   lunchTime: String
   snacks: String

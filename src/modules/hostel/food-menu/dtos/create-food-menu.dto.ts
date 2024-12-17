@@ -28,6 +28,6 @@ export class CreateFoodMenu {
   @Field({nullable:true})
   snacksTime?: string;
 
-  @Field({nullable:true,defaultValue:1})
-  hostelId?: number;
+  @Field()
+  hostelId: number;
 }
