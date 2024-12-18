@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { UpdateFoodMenu } from './dtos/update-food-menu.dto';
 import { CreateFoodMenu } from './dtos/create-food-menu.dto';
-import * as jwt from 'jsonwebtoken';
-
+import { GraphQLError } from 'graphql';
 @Injectable()
 export class FoodMenuService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -12,14 +11,7 @@ export class FoodMenuService {
     return this.prismaService.foodMenu.findMany();
   }
 
-  async getFoodMenuById(id: number) {
-    return this.prismaService.foodMenu.findUnique({
-      where: {
-        foodMenuId: id,
-      },
-    });
-  }
-
+  
   async getFoodMenuByHostelId(hostelId: number) {
     return this.prismaService.foodMenu.findMany({
       where: {
@@ -27,46 +19,36 @@ export class FoodMenuService {
       },
     });
   }
-  async createMenu(data: CreateFoodMenu) {
+  async createMenu(data: CreateFoodMenu,ctx:any) {
+    const {selectedHostel} = await this.validateToCreateMenu(ctx,data);
+    //this returns the hostel of the loggedin user if he has a hostel.
     return this.prismaService.foodMenu.create({
-      data,
+      // data,
+      //should ask hostel id from mutation? or follow down method?
+      data:{
+        ...data,
+        hostelId:selectedHostel.hostelId,
+      }      
     });
   }
 
   async updateMenu(
+    ctx:any,
     foodMenuId: number,
     updatedData: UpdateFoodMenu,
-    accessToken: string,
   ) {
-    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-    const decodeUserId = decoded.sub;
-    const user = await this.prismaService.users.findUnique({
-      where: {
-        userId: Number(decodeUserId),
-      },
-    }); // this gives us the loggedin user
-    if (!user) {
-      throw new NotFoundException('User with this id not found');
-    }
-    const selectedHostel = await this.prismaService.hostel.findUnique({
-      where: {
-        userId: user.userId,
-      },
-      include: {
-        foodMenu: true,
-      },
-    }); // this gives us the hostel of the logged in user
-    if(!selectedHostel){
-        throw new NotFoundException("The user hasn't registered any hostel on his name.")
-    }
-    const selectedMenu = await this.prismaService.foodMenu.findFirst({
-      where: {
-        foodMenuId,
-      },
-    }); // this gives us the hostel in which this menu is mentioned.
+    const {selectedHostel,selectedMenu} = await this.validationForUpdateAndDelete(ctx,foodMenuId);
     if (selectedMenu.hostelId !== selectedHostel.hostelId) {
-      throw new NotFoundException('You are not the owner. you cannot update the menu.');
+      throw new GraphQLError(
+        'You are not the owner. you cannot update the menu.',
+        {
+          extensions: {
+            code: 'FORBIDDEN',
+          },
+        },
+      );
     }
+
     return this.prismaService.foodMenu.update({
       where: {
         foodMenuId,
@@ -74,18 +56,69 @@ export class FoodMenuService {
       data: updatedData,
     });
   }
+  
+  async deleteMenu(foodMenuId: number, ctx: any) {
+    
+   const {selectedHostel,selectedMenu} = await this.validationForUpdateAndDelete(ctx,foodMenuId);
 
-  async deleteMenu(id: number,accessToken:string) {
+    if (selectedMenu.hostelId !== selectedHostel.hostelId) {
+      throw new GraphQLError(
+        'You are not the owner. you cannot delete the menu.',
+        {
+          extensions: {
+            code: 'FORBIDDEN',
+          },
+        },
+      );
+    }
 
-    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
-    const decodeUserId = decoded.sub;
+    await this.prismaService.foodMenu.delete({
+      where: {
+        foodMenuId,
+      },
+    });
+    return this.prismaService.foodMenu.findMany({
+      where: {
+        hostelId: selectedHostel.hostelId,
+      },
+    });
+  }
+
+  async deleteFoodMenuById(foodMenuId: number,ctx:any) {
+    const {selectedHostel,selectedMenu} = await this.validationForUpdateAndDelete(ctx,foodMenuId);
+    await this.prismaService.foodMenu.delete({
+      where: {
+        foodMenuId:selectedMenu.foodMenuId,
+        hostelId:selectedMenu.hostelId,
+      },
+    });
+    return this.prismaService.foodMenu.findMany({
+      where:{
+        hostelId:selectedHostel.hostelId,
+      }
+    })
+  }
+  private async validationForUpdateAndDelete(ctx:any,foodMenuId:number){
+    const  decodeUserId = ctx.userId;
+      if(!decodeUserId){
+        throw new GraphQLError('Invalid or expired access token.', {
+          extensions: { 
+            code: 'UNAUTHENTICATED' 
+          },
+      })
+    }
     const user = await this.prismaService.users.findUnique({
       where: {
         userId: Number(decodeUserId),
+        userType: 'HOSTEL_OWNER',
       },
     }); // this gives us the loggedin user
     if (!user) {
-      throw new NotFoundException('user with this id not found');
+      throw new GraphQLError('Only hostel owner can update/delete this menu.', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
     const selectedHostel = await this.prismaService.hostel.findUnique({
       where: {
@@ -95,27 +128,82 @@ export class FoodMenuService {
         foodMenu: true,
       },
     }); // this gives us the hostel of the logged in user
-    if(!selectedHostel){
-        throw new NotFoundException("The user hasn't registered any hostel on his name.")
+    if (!selectedHostel) {
+      throw new GraphQLError(
+        "The user hasn't registered any hostel on his name.",
+        {
+          extensions: {
+            code: 'NOT_FOUND',
+          },
+        },
+      );
     }
     const selectedMenu = await this.prismaService.foodMenu.findFirst({
       where: {
-        foodMenuId:id,
+        foodMenuId,
       },
     }); // this gives us the hostel in which this menu is mentioned.
-    if (selectedMenu.hostelId !== selectedHostel.hostelId) {
-      throw new NotFoundException('You are not the owner. you cannot delete the menu.');
-    }
 
-    await this.prismaService.foodMenu.delete({
-      where: {
-        foodMenuId: id,
-      },
-    });
-    return this.prismaService.foodMenu.findMany({
-        where:{
-            hostelId:selectedHostel.hostelId,
+    if (!selectedMenu) {
+      throw new GraphQLError(`Menu not found with the provided menu ID:${foodMenuId}`, {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
+    }
+    return {selectedHostel,selectedMenu};
+  }
+
+  private async validateToCreateMenu(ctx:any,data:CreateFoodMenu){
+      const  decodeUserId = ctx.userId;
+        if(!decodeUserId){
+          throw new GraphQLError('Invalid or expired access token.', {
+            extensions: { 
+              code: 'UNAUTHENTICATED' 
+            },
+        })
+      }
+      const user = await this.prismaService.users.findUnique({
+        where: {
+          userId: Number(decodeUserId),
+          userType: 'HOSTEL_OWNER',
+        },
+      }); // this gives us the loggedin user
+      if (!user) {
+        throw new GraphQLError('Only hostel owner can create a menu.', {
+          extensions: {
+            code: 'FORBIDDEN',
+          },
+        });
+      }
+      const selectedHostel = await this.prismaService.hostel.findUnique({
+        where: {
+          userId: user.userId,
         }
-    });
+      }); // this gives us the hostel of the logged in user
+      if (!selectedHostel) {
+        throw new GraphQLError(
+          "The user hasn't registered any hostel on his name.So,he can't create menu.",
+          {
+            extensions: {
+              code: 'FORBIDDEN',
+            },
+          },
+        );
+      }
+    const existingMenu = await this.prismaService.foodMenu.findFirst({
+      where:{
+        day:data.day,
+        hostelId:data.hostelId,
+      }
+    })
+    if(existingMenu){
+      throw new GraphQLError(`Menu already exists for ${data.day}. Please consider updating.`,{
+        extensions:{
+          code:'CONFLICT',
+        }
+      })
+    }
+  return {selectedHostel};
   }
 }

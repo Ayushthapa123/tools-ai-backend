@@ -340,7 +340,7 @@ type Mutation {
   createGoogleMapLocation(data: CreateGoogleMapLocationInput!, hostelId: Int!): GoogleMapLocation!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelRules(createHostelRulesInput: CreateHostelRulesInput!): HostelRules!
-  createMenu(data: CreateFoodMenu!): FoodMenu!
+  createMenu(data: CreateFoodMenu!, hostelId: Float!): FoodMenu!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
   createNearbyPlace(createNearbyPlaceInput: CreateNearbyPlaceInput!): NearbyPlace!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
@@ -351,10 +351,11 @@ type Mutation {
   createSocials(data: CreateSocialsInput!): Socials!
   createUser(input: CreateUserInput!): Users!
   deleteAmenities(amenitiesId: Int!): Amenities!
+  deleteFoodMenuById(foodMenuId: Float!): [FoodMenu!]!
   deleteGallery(galleryId: Float!): Gallery!
   deleteGoogleMapLocation(id: Int!): GoogleMapLocation!
   deleteHostelRules(rulesId: Int!): HostelRules!
-  deleteMenu(accessToken: String!, id: Float!): [FoodMenu!]!
+  deleteMenu(menuId: Float!): [FoodMenu!]!
   deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   deleteSHostels(sHostelsId: Int!): SHostels!
   deleteSearchQuery(searchQueryId: Int!): SearchQueries!
@@ -374,7 +375,7 @@ type Mutation {
   updateGoogleMapLocation(data: UpdateGoogleMapLocation!, id: Int!): GoogleMapLocation!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
-  updateMenu(accessToken: String!, foodMenuId: Float!, updatedData: UpdateFoodMenu!): FoodMenu!
+  updateMenu(foodMenuId: Float!, updatedData: UpdateFoodMenu!): FoodMenu!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
   updateNearbyPlace(updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
@@ -422,7 +423,6 @@ type Query {
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
   getFoodMenuByHostelId(hostelId: Float!): [FoodMenu!]!
-  getFoodMenuById(id: Float!): FoodMenu!
   getFoodMenus: [FoodMenu!]!
   getGalleryByHostelId(galleryType: String!, hostelId: Float!): [Gallery!]
   getGoogleAuthUrl: GoogleOauthUrl!
