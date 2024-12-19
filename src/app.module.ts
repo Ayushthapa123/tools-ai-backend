@@ -15,6 +15,7 @@ import { ImageController } from './modules/image/image.controller';
 import { SHostelModule } from './modules/shostel/s-hostels.module';
 // import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.module';
 import { SearchQueriesModule } from './modules/searchQueries/search-queries.module';
+import { JwtService } from '@nestjs/jwt'; //remove this
 // import { ImageModule } from './modules/image/image.module';
 
 @Module({
@@ -38,6 +39,8 @@ import { SearchQueriesModule } from './modules/searchQueries/search-queries.modu
   ],
 
   controllers: [AppController, ImageController], //we don't need it now
-  providers: [AppService], //we dont need it now
+  providers: [AppService,
+  JwtService
+], //we dont need it now
 })
 export class AppModule {}

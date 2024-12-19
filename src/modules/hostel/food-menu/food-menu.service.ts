@@ -99,8 +99,8 @@ export class FoodMenuService {
     })
   }
   private async validationForUpdateAndDelete(ctx:any,foodMenuId:number){
-    const  decodeUserId = ctx.userId;
-      if(!decodeUserId){
+    const  decodeUserId = ctx?.userId;
+    if(!decodeUserId){
         throw new GraphQLError('Invalid or expired access token.', {
           extensions: { 
             code: 'UNAUTHENTICATED' 
@@ -110,11 +110,12 @@ export class FoodMenuService {
     const user = await this.prismaService.users.findUnique({
       where: {
         userId: Number(decodeUserId),
-        userType: 'HOSTEL_OWNER',
+        userType: 'HOSTEL_OWNER', //hostel owner is not added student by default
       },
     }); // this gives us the loggedin user
+    console.log("user tyoe",user); // user hostelid is not generated automatically see in schema
     if (!user) {
-      throw new GraphQLError('Only hostel owner can update/delete this menu.', {
+      throw new GraphQLError('Only user owning hostel can update/delete this menu.', {
         extensions: {
           code: 'FORBIDDEN',
         },
@@ -141,11 +142,12 @@ export class FoodMenuService {
     const selectedMenu = await this.prismaService.foodMenu.findFirst({
       where: {
         foodMenuId,
+        hostelId:user?.hostelId, 
       },
     }); // this gives us the hostel in which this menu is mentioned.
 
     if (!selectedMenu) {
-      throw new GraphQLError(`Menu not found with the provided menu ID:${foodMenuId}`, {
+      throw new GraphQLError(`Only owner of this hostel can update/delete a menu. `, {
         extensions: {
           code: 'NOT_FOUND',
         },
@@ -155,7 +157,8 @@ export class FoodMenuService {
   }
 
   private async validateToCreateMenu(ctx:any,data:CreateFoodMenu){
-      const  decodeUserId = ctx.userId;
+      const  decodeUserId = ctx?.userId;
+      console.log("hello",decodeUserId);
         if(!decodeUserId){
           throw new GraphQLError('Invalid or expired access token.', {
             extensions: { 
@@ -169,6 +172,7 @@ export class FoodMenuService {
           userType: 'HOSTEL_OWNER',
         },
       }); // this gives us the loggedin user
+      console.log("user is",user); 
       if (!user) {
         throw new GraphQLError('Only hostel owner can create a menu.', {
           extensions: {
@@ -191,6 +195,13 @@ export class FoodMenuService {
           },
         );
       }
+if(selectedHostel.hostelId !== data.hostelId){//should i display the original hostel name?
+  throw new GraphQLError(`Only owner of this hostel can create a menu. `,{
+    extensions:{
+      code:"FORBIDDEN"
+    }
+  })
+}
     const existingMenu = await this.prismaService.foodMenu.findFirst({
       where:{
         day:data.day,

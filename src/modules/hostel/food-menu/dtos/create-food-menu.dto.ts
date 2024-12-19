@@ -7,7 +7,7 @@ registerEnumType(WeekDays,{
 
 @InputType()
 export class CreateFoodMenu {
-  @Field(() => String,{nullable:true})
+  @Field(() => WeekDays,{nullable:true})
   day?: WeekDays;
 
   @Field({nullable:true})

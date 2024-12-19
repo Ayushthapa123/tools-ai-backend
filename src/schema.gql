@@ -71,7 +71,7 @@ input CreateDailyPricingInput {
 }
 
 input CreateFoodMenu {
-  day: String
+  day: WeekDays
   dinner: String
   dinnerTime: String
   hostelId: Float!
@@ -340,7 +340,7 @@ type Mutation {
   createGoogleMapLocation(data: CreateGoogleMapLocationInput!, hostelId: Int!): GoogleMapLocation!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelRules(createHostelRulesInput: CreateHostelRulesInput!): HostelRules!
-  createMenu(data: CreateFoodMenu!, hostelId: Float!): FoodMenu!
+  createMenu(data: CreateFoodMenu!): FoodMenu!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
   createNearbyPlace(createNearbyPlaceInput: CreateNearbyPlaceInput!): NearbyPlace!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
