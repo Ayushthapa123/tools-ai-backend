@@ -22,12 +22,9 @@ export class FoodMenuResolver {
 
   @Mutation(() => FoodMenu)
   @UseGuards(AuthGuard)
-  async createMenu(
-    @Args('data') data: CreateFoodMenu,
-    @Context() ctx: any,
-
-  ) {
-    return this.foodMenuService.createMenu(data,ctx);
+  async createMenu(@Args('data') data: CreateFoodMenu, @Context() ctx: any) {
+    const decodeUserId = ctx?.user?.sub;
+    return this.foodMenuService.createMenu(data, decodeUserId);
   }
 
   @Mutation(() => FoodMenu)
@@ -35,21 +32,31 @@ export class FoodMenuResolver {
   async updateMenu(
     @Args('updatedData') updatedData: UpdateFoodMenu,
     @Args('foodMenuId') foodMenuId: number,
-    @Context() ctx: any, 
+    @Context() ctx: any,
   ) {
-    return this.foodMenuService.updateMenu(ctx, foodMenuId, updatedData);
+    const decodeUserId = ctx?.user?.sub;
+    return this.foodMenuService.updateMenu(
+      decodeUserId,
+      foodMenuId,
+      updatedData,
+    );
   }
 
   @Mutation(() => [FoodMenu])
   @UseGuards(AuthGuard)
   async deleteMenu(@Args('menuId') menuId: number, @Context() ctx: any) {
-    return this.foodMenuService.deleteMenu(menuId, ctx);
+    const decodeUserId = ctx?.user?.sub;
+    return this.foodMenuService.deleteMenu(menuId, decodeUserId);
   }
 
-  @Mutation(() => [FoodMenu])
-  @UseGuards(AuthGuard)
-  async deleteFoodMenuById(@Args('foodMenuId') foodMenuId: number, @Context() ctx: any) {
-    return this.foodMenuService.deleteFoodMenuById(foodMenuId,ctx);
-  }
-
+  //Deleting by id and deleteMenu are doing the same task
+  // @Mutation(() => [FoodMenu])
+  // @UseGuards(AuthGuard)
+  // async deleteFoodMenuById(
+  //   @Args('foodMenuId') foodMenuId: number,
+  //   @Context() ctx: any,
+  // ) {
+  //   const decodeUserId = ctx?.user?.sub;
+  //   return this.foodMenuService.deleteFoodMenuById(foodMenuId, decodeUserId);
+  // }
 }

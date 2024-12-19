@@ -725,6 +725,15 @@ export class SearchQueries {
   @Field()
   updatedAt: Date;
 }
+
+@ObjectType()
+export class Error{
+  @Field({nullable:true})
+  message?:String
+
+  @Field({nullable:true})
+  code?:String
+}
 @ObjectType()
 export class FoodMenu {
   @Field(() => Int)
@@ -750,6 +759,9 @@ export class FoodMenu {
 
   @Field({nullable:true})
   snacksTime?: string;
+
+  @Field({nullable:true})
+  errors?:Error;
 
   @Field()
   createdAt: Date;
