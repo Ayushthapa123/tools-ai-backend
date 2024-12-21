@@ -70,6 +70,17 @@ input CreateDailyPricingInput {
   twoSeater: Float
 }
 
+input CreateFoodMenu {
+  day: WeekDays
+  dinner: String
+  dinnerTime: String
+  hostelId: Float!
+  lunch: String
+  lunchTime: String
+  snacks: String
+  snacksTime: String
+}
+
 input CreateGalleryInput {
   caption: String
   hostelId: Float!
@@ -200,6 +211,25 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Error {
+  code: String
+  message: String
+}
+
+type FoodMenu {
+  createdAt: DateTime!
+  day: String
+  dinner: String
+  dinnerTime: String
+  errors: Error
+  foodMenuId: Int!
+  lunch: String
+  lunchTime: String
+  snacks: String
+  snacksTime: String
+  updatedAt: DateTime!
+}
+
 type ForgotPasswordResponse {
   userId: Float!
 }
@@ -316,6 +346,7 @@ type Mutation {
   createGoogleMapLocation(data: CreateGoogleMapLocationInput!, hostelId: Int!): GoogleMapLocation!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelRules(createHostelRulesInput: CreateHostelRulesInput!): HostelRules!
+  createMenu(data: CreateFoodMenu!): FoodMenu!
   createMonthlyPricing(data: CreateMonthlyPricingInput!): MonthlyPricing!
   createNearbyPlace(createNearbyPlaceInput: CreateNearbyPlaceInput!): NearbyPlace!
   createRoomAvailibility(data: CreateRoomAvailibilityInput!): RoomAvailability!
@@ -329,6 +360,7 @@ type Mutation {
   deleteGallery(galleryId: Float!): Gallery!
   deleteGoogleMapLocation(id: Int!): GoogleMapLocation!
   deleteHostelRules(rulesId: Int!): HostelRules!
+  deleteMenu(menuId: Float!): [FoodMenu!]!
   deleteNearbyPlace(nearbyPlaceId: Int!): NearbyPlace!
   deleteSHostels(sHostelsId: Int!): SHostels!
   deleteSearchQuery(searchQueryId: Int!): SearchQueries!
@@ -348,6 +380,7 @@ type Mutation {
   updateGoogleMapLocation(data: UpdateGoogleMapLocation!, id: Int!): GoogleMapLocation!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelRules(rulesId: Int!, updateHostelRulesInput: UpdateHostelRulesInput!): HostelRules!
+  updateMenu(foodMenuId: Float!, updatedData: UpdateFoodMenu!): FoodMenu!
   updateMonthlyPricing(data: UpdateMonthlyPricingInput!, monthlyPricingId: Float!): MonthlyPricing!
   updateNearbyPlace(updateNearbyPlaceInput: UpdateNearbyPlaceInput!): NearbyPlace!
   updateRoomAvailibility(data: UpdateRoomAvailibilityInput!, roomAvailibilityId: Float!): RoomAvailability!
@@ -394,6 +427,8 @@ type Query {
   getCitySearchSuggestions(query: String!): [SearchQuerys!]
   getContactByHostelId(hostelId: Float!): ContactDetails
   getDailyPricingByHostelId(hostelId: Float!): DailyPricing
+  getFoodMenuByHostelId(hostelId: Float!): [FoodMenu!]!
+  getFoodMenus: [FoodMenu!]!
   getGalleryByHostelId(galleryType: String!, hostelId: Float!): [Gallery!]
   getGoogleAuthUrl: GoogleOauthUrl!
   getHostelById(hostelId: Float!): Hostel
@@ -555,6 +590,16 @@ input UpdateDailyPricingInput {
   twoSeater: Float
 }
 
+input UpdateFoodMenu {
+  day: WeekDays
+  dinner: String
+  dinnerTime: String
+  lunch: String
+  lunchTime: String
+  snacks: String
+  snacksTime: String
+}
+
 input UpdateGalleryInput {
   caption: String
   type: String
@@ -695,4 +740,14 @@ input VerifyEmailInput {
 
 type VerifyEmailResponse {
   userId: Float!
+}
+
+enum WeekDays {
+  FRIDAY
+  MONDAY
+  SATURDAY
+  SUNDAY
+  THURSDAY
+  TUESDAY
+  WEDNESDAY
 }
