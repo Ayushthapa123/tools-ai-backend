@@ -1,6 +1,6 @@
 // src/models/hostel.model.ts
 
-import { HostelType, VisibilityType } from '@prisma/client';
+import { HostelType, VisibilityType, WeekDays } from '@prisma/client';
 import { Badges, GenderType, UserType } from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 
@@ -729,6 +729,50 @@ export class SearchQueries {
 
   @Field({ nullable: true })
   subCity?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class Error {
+  @Field({ nullable: true })
+  message?: string;
+
+  @Field({ nullable: true })
+  code?: string;
+}
+@ObjectType()
+export class FoodMenu {
+  @Field(() => Int)
+  foodMenuId: number;
+
+  @Field(() => String, { nullable: true })
+  day?: WeekDays;
+
+  @Field({ nullable: true })
+  lunch?: string;
+
+  @Field({ nullable: true })
+  dinner?: string;
+
+  @Field({ nullable: true })
+  snacks?: string;
+
+  @Field({ nullable: true })
+  lunchTime?: string;
+
+  @Field({ nullable: true })
+  dinnerTime?: string;
+
+  @Field({ nullable: true })
+  snacksTime?: string;
+
+  @Field({ nullable: true })
+  errors?: Error;
 
   @Field()
   createdAt: Date;

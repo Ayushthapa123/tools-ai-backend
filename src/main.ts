@@ -11,6 +11,8 @@ async function bootstrap() {
     origin: '*',
   });
 
+  app.useGlobalGuards();
+
   await app.listen(3003);
 }
 bootstrap();

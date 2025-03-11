@@ -8,6 +8,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node --max_old_space_size=4096 node_modules/.bin/nest start",
+    "startwindows": "node --max-old-space-size=4096 ./node_modules/@nestjs/cli/bin/nest.js start --watch",
     "build": "node --max_old_space_size=4096 node_modules/.bin/nest build",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -47,8 +48,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.0.0",
-    "@nestjs/schematics": "^10.0.0",
+    "@nestjs/cli": "^10.4.9",
+    "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.0.0",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.17",

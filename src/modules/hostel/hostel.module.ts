@@ -16,6 +16,7 @@ import { DailyPricingModule } from './dailyPricing/dailyPricing.module';
 import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
 import { RoomAvailibilityModule } from './roomAvailability/roomAvalibility.module';
 import { GoogleMapLocationModule } from './googleMapLocation/googleMapLocation.module';
+// import { FoodMenuModule } from './food-menu/food-menu.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GoogleMapLocationModule } from './googleMapLocation/googleMapLocation.m
     ServicesModule,
     HostelRulesModule,
     GoogleMapLocationModule,
+    // FoodMenuModule,
   ],
   providers: [HostelResolver, HostelService, JwtService],
 })
