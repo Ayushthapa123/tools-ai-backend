@@ -15,13 +15,17 @@ export class SHostelsService {
   }
 
   async getSHostelsBySlug(slug: string): Promise<SHostels | null> {
+    const decodedSlug = decodeURIComponent(slug);
+    console.log('dddddddddddddddd', decodedSlug);
     return this.prisma.sHostels.findUnique({
-      where: { slug },
+      where: { slug: decodedSlug },
     });
   }
 
   async getSHostels(): Promise<SHostels[]> {
-    return this.prisma.sHostels.findMany();
+    const h= await  this.prisma.sHostels.findMany({});
+    console.log('hhhhhhhhhhhhhhhh',h)
+    return h
   }
 
   async createSHostels(data: CreateSHostelsInput): Promise<SHostels> {

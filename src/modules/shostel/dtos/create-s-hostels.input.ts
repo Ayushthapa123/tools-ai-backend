@@ -23,6 +23,9 @@ export class CreateSHostelsInput {
   @Field({ nullable: true })
   contact?: string;
 
+  @Field({ nullable: true })
+  ranking?: number;
+
   @Field()
   country: string;
 
@@ -37,4 +40,6 @@ export class CreateSHostelsInput {
 
   @Field({ nullable: true })
   imgUrl?: string;
+  @Field({ nullable: true })
+  originalUrl?: string;
 }

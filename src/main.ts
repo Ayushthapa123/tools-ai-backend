@@ -1,5 +1,5 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 
 import * as dotenv from 'dotenv';
 // import { execSync } from 'child_process';
@@ -10,7 +10,6 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
-
 
   await app.listen(3003);
 }

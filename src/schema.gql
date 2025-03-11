@@ -148,6 +148,8 @@ input CreateSHostelsInput {
   hostelType: String
   imgUrl: String
   name: String!
+  originalUrl: String
+  ranking: Float
   slug: String!
   street: String
   subCity: String
@@ -239,6 +241,7 @@ type Hostel {
   description: String
   gallery: [Gallery!]
   genderType: String!
+  googleMapLocation: GoogleMapLocation
   hostelId: ID!
   hostelSettings: HostelSettings
   hostelType: String!
@@ -451,6 +454,8 @@ type SHostels {
   hostelType: String
   imgUrl: String
   name: String!
+  originalUrl: String
+  ranking: Float
   sHostelsId: Int!
   slug: String!
   street: String
@@ -640,6 +645,8 @@ input UpdateSHostelsInput {
   hostelType: String
   imgUrl: String
   name: String
+  originalUrl: String
+  ranking: Float
   slug: String
   street: String
   subCity: String
@@ -675,6 +682,7 @@ type Users {
   profilePicture: String
   updatedAt: DateTime!
   userId: ID!
+  userType: String!
 }
 
 type UsersAndToken {

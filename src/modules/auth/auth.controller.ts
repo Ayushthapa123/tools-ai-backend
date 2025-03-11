@@ -1,24 +1,24 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
 import { Users } from '@src/models/global.model';
 import { LoginInput } from './dto/login-user.input';
 import { SignupInput } from './dto/signup-user.input';
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
 
 import { CurrentUser } from './decorators/current-user.decorator';
 // import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { MailerService } from '@src/modules/email/mailer/mailer.service';
 import {
-  ForgotPasswordResponse,
   UsersAndToken,
-  UsersHostelIdAndToken,
   VerifyEmailResponse,
+  UsersHostelIdAndToken,
+  ForgotPasswordResponse,
 } from './models/user.model';
 import {
   GetTokenInput,
-  ResetPasswordInput,
   VerifyEmailInput,
+  ResetPasswordInput,
 } from './dto/get-token.input';
 
 @Resolver(() => Auth)

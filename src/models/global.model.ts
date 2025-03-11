@@ -1,7 +1,7 @@
 // src/models/hostel.model.ts
 
-import { Badges, GenderType } from '@prisma/client';
 import { HostelType, VisibilityType } from '@prisma/client';
+import { Badges, GenderType, UserType } from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 
 @ObjectType()
@@ -17,6 +17,9 @@ export class Users {
 
   @Field()
   passwordHash?: string;
+
+  @Field()
+  userType: UserType;
 
   @Field()
   fullName: string;
@@ -597,6 +600,9 @@ export class SHostels {
   @Field({ nullable: true })
   contact?: string;
 
+  @Field({ nullable: true })
+  ranking?: number;
+
   @Field()
   country: string;
 
@@ -611,6 +617,8 @@ export class SHostels {
 
   @Field({ nullable: true })
   imgUrl?: string;
+  @Field({ nullable: true })
+  originalUrl?: string;
 
   @Field()
   createdAt: Date;
@@ -688,6 +696,9 @@ export class Hostel {
 
   @Field(() => HostelSettings, { nullable: true })
   hostelSettings?: HostelSettings;
+
+  @Field(() => GoogleMapLocation, { nullable: true })
+  googleMapLocation?: GoogleMapLocation;
 
   @Field(() => [Orders], { nullable: true })
   orders?: Orders[];

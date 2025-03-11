@@ -8,12 +8,12 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { UserType } from '@prisma/client';
 import { LoginInput } from './dto/login-user.input';
 import { SignupInput } from './dto/signup-user.input';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { ResetPasswordInput } from './dto/get-token.input';
 import { ChangePasswordInput } from './dto/change-password.input';
-import { UserType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -73,7 +73,11 @@ export class AuthService {
 
       console.log('uuuuuuuuu', user);
       // Generate JWT tokens
-      const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId,user.userType);
+      const { accessToken, refreshToken } = this.generateJwtTokens(
+        user.userId,
+        user.hostelId,
+        user.userType,
+      );
       // Save refreshToken in the database
       await this.prisma.users.update({
         where: { userId: user.userId }, // Specify the user to update
@@ -113,7 +117,11 @@ export class AuthService {
     }
 
     // Generate JWT tokens
-    const { accessToken, refreshToken } = this.generateJwtTokens(user.userId,user.hostelId,user.userType);
+    const { accessToken, refreshToken } = this.generateJwtTokens(
+      user.userId,
+      user.hostelId,
+      user.userType,
+    );
     // Save refreshToken in the database
     await this.prisma.users.update({
       where: { userId: user.userId }, // Specify the user to update
@@ -177,7 +185,9 @@ export class AuthService {
       // Hash the password before saving it
       const passwordHash = await bcrypt.hash(input.password, 10);
       const { accessToken, refreshToken } = this.generateJwtTokens(
-        Number(userId),1,UserType.HOSTEL_OWNER // TODO get hostelId as well from here
+        Number(userId),
+        1,
+        UserType.HOSTEL_OWNER, // TODO get hostelId as well from here
       );
 
       const user = await this.prisma.users.update({
@@ -192,13 +202,21 @@ export class AuthService {
     }
   }
 
-  private generateJwtTokens(userId: number,hostelId:number,userType:UserType) {
+  private generateJwtTokens(
+    userId: number,
+    hostelId: number,
+    userType: UserType,
+  ) {
     const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
       expiresIn: '50m',
     });
-    const refreshToken = jwt.sign({ sub: userId,hostelId:hostelId }, this.refreshTokenSecret, {
-      expiresIn: '30d',
-    });
+    const refreshToken = jwt.sign(
+      { sub: userId, hostelId: hostelId },
+      this.refreshTokenSecret,
+      {
+        expiresIn: '30d',
+      },
+    );
     return { accessToken, refreshToken };
   }
   private generateVerificationToken(userId: number) {
@@ -229,9 +247,17 @@ export class AuthService {
       ) {
         // Generate a new access token with appropriate claims
         // here no need to generate refreshToken so no need to call the function
-        const newAccessToken = jwt.sign({ sub: decoded.sub,hostelId:user.hostelId,userType:user.userType }, this.jwtSecret, {
-          expiresIn: '50m', // Set appropriate expiration time
-        });
+        const newAccessToken = jwt.sign(
+          {
+            sub: decoded.sub,
+            hostelId: user.hostelId,
+            userType: user.userType,
+          },
+          this.jwtSecret,
+          {
+            expiresIn: '50m', // Set appropriate expiration time
+          },
+        );
 
         // Return the new access token
         return { user, token: { accessToken: newAccessToken, refreshToken } };

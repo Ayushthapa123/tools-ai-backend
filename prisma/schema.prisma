@@ -2,12 +2,13 @@
 //! it was giving null while there was a data. but changing name to monthlyPricing solved this
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = "postgres://avnadmin:AVNS_9cDlvhPmbji0zGcLxc8@hosteladmin-db-hosteladmin.j.aivencloud.com:11809/defaultdb?sslmode=require"
+  url      = env("DATABASE_URL")
+
 }
 
 model Users {
@@ -300,7 +301,7 @@ model SHostels {
   subCity         String? 
   street          String?
   imgUrl          String?
-  originalUrl          String?
+  originalUrl     String?
 
 
   createdAt DateTime @default(now())
@@ -329,7 +330,8 @@ model GoogleMapLocation {
 enum UserType {
   STUDENT
   HOSTEL_OWNER
-  SUPPLIERS
+  SUPPLIERS 
+  SUPERADMIN
   OTHERS
 }
 

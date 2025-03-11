@@ -14,6 +14,7 @@ export class SearchSHostelService {
     const genderType = input.genderType;
     const city = input.city;
     const subCity = input.subCity;
+    console.log('cccccccccccccc', city);
 
     // const minRating = input.minRating;
     // const maxPrice = input.maxPrice;

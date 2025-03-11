@@ -1,28 +1,36 @@
+# Stage 1: Build
+FROM node:18.15.0-alpine AS builder
 
-# Use Node.js image
-FROM node:18.15.0
-
-# Create app directory
-# WORKDIR /app
+# Set working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-COPY package*.json ./
-
 # Install dependencies
-RUN yarn install
+COPY package*.json ./
+RUN yarn install --frozen-lockfile
 
-# Copy the rest of your application code
+# Copy application code
 COPY . .
 
-# Copy the .env file to the image
-COPY .env.example .env
-
-# Build your Next.js application
+# Build the application
 RUN yarn build
+
+# Stage 2: Production
+FROM node:18.15.0-alpine
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy only necessary files from the builder stage
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/.env .env
+
+# Install only production dependencies
+RUN yarn install --production --frozen-lockfile && yarn cache clean
 
 # Expose the port
 EXPOSE 3003
 
 # Specify the command to run your app
-CMD [ "npm", "start" ]
+CMD ["node", "dist/main.js"]

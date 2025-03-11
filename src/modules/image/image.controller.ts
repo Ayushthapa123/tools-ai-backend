@@ -1,22 +1,23 @@
 import {
-  Controller,
   Post,
-  HttpException,
+  Controller,
   HttpStatus,
   UploadedFile,
+  HttpException,
   UseInterceptors,
 } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
+import * as Cloudinary from 'cloudinary';
 import { FileInterceptor } from '@nestjs/platform-express';
-// import * as AWS from 'aws-sdk';
 
+dotenv.config();
 
-import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
-
-
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import * as dotenv from 'dotenv'; // Import dotenv to access environment variables
-
-dotenv.config(); // Load environment variables from .env file if present
+Cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 @Controller('upload/image')
 export class ImageController {
@@ -27,40 +28,14 @@ export class ImageController {
   async uploadImage(@UploadedFile() image: any) {
     console.log('iii', image);
     try {
-      const s3Client = new S3Client({
-        endpoint: 'https://blr1.digitaloceanspaces.com',
-        region: 'blr1', // Assuming your DigitalOcean Spaces is in the NYC3 region
-        credentials: {
-          accessKeyId: 'DO00ZBH74KWTYP4Z8X98',
-          secretAccessKey: 'nddGcxyx2f8TpkamcMli5LkBV1/H8TMZOV0cm2F85B8',
-        },
-      });
-
-      // const params = {
-      //   Bucket: 'example-space', // Replace with your DigitalOcean Space name
-      //   Key: `folder-path/${uuidv4()}.jpg`, // Unique key for the uploaded image
-      //   Body: image.buffer,
-      //   ContentType: image.mimetype, // Set content type based on uploaded file's mimetype
-      //   ACL: 'public-read', // Make uploaded image publicly accessible
-      //   Metadata: {
-      //     'x-amz-meta-my-key': 'your-value',
-      //   },
-      // };
-      const imageType = String(image.originalname).split('.')[1];
-      const key = `${uuidv4()}.${imageType}`;
+      const key = `${uuidv4()}.${image.originalname.split('.').pop()}`;
       console.log('kkkk', key);
 
-      const data = await s3Client.send(
-        new PutObjectCommand({
-          Bucket: 'storage-101',
-          Key: key,
-          Body: image.buffer,
-          ACL: 'public-read',
-        }),
-      );
-      console.log('Successfully uploaded object:', data);
+      const result = await this.uploadToCloudinary(image.buffer, key);
+
+      console.log('Successfully uploaded object:', result);
       return {
-        imageUrl: `https://storage-101.blr1.digitaloceanspaces.com/${key}`,
+        imageUrl: result.secure_url,
       };
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -69,5 +44,24 @@ export class ImageController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  private uploadToCloudinary(buffer: Buffer, key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const uploadStream = Cloudinary.v2.uploader.upload_stream(
+        {
+          public_id: key,
+          folder: 'uploads',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        },
+      );
+      uploadStream.end(buffer);
+    });
   }
 }

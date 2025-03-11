@@ -55,6 +55,7 @@ export class HostelService {
         hostelRules: true,
         services: true,
         hostelSettings: true,
+        googleMapLocation: true,
       },
     });
   }

@@ -27,6 +27,7 @@ import { SearchQueriesModule } from './modules/searchQueries/search-queries.modu
     }),
 
     PrismaModule,
+
     AuthModule,
     UsersModule,
     EmailModule,
