@@ -13,9 +13,12 @@ import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchModule } from './modules/search/search.module';
 import { ImageController } from './modules/image/image.controller';
 import { SHostelModule } from './modules/shostel/s-hostels.module';
+// import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+
 // import { HostelRulesModule } from './modules/hostel/hostelRules/hostelRules.module';
 import { SearchQueriesModule } from './modules/searchQueries/search-queries.module';
 import { JwtService } from '@nestjs/jwt'; //remove this
+// import { APP_GUARD } from '@nestjs/core';
 // import { ImageModule } from './modules/image/image.module';
 
 @Module({
@@ -26,6 +29,15 @@ import { JwtService } from '@nestjs/jwt'; //remove this
       sortSchema: true,
       // playground:false
     }),
+
+    // ThrottlerModule.forRoot({
+    //   throttlers: [
+    //     {
+    //       ttl: 6000,
+    //       limit: 100,
+    //     },
+    //   ],
+    // }),
 
     PrismaModule,
 
@@ -40,6 +52,13 @@ import { JwtService } from '@nestjs/jwt'; //remove this
   ],
 
   controllers: [AppController, ImageController], //we don't need it now
-  providers: [AppService, JwtService], //we dont need it now
+  providers: [
+    AppService,
+    JwtService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ThrottlerGuard,
+    // },
+  ], //we dont need it now
 })
 export class AppModule {}

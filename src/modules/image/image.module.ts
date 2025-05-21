@@ -3,5 +3,4 @@ import { ImageResolver } from './image.resolver';
 @Module({
   providers: [ImageResolver],
 })
-
 export class ImageModule {}

@@ -19,6 +19,7 @@ export class ImageResolver {
       Bucket: 'hostel-images',
       Key: uuidv4(),
       Body: file.buffer,
+
       // ACL: 'public-read', // Set appropriate permissions
     };
 

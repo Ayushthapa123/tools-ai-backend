@@ -2,7 +2,6 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 
 import * as dotenv from 'dotenv';
-// import { execSync } from 'child_process';
 
 async function bootstrap() {
   dotenv.config();
@@ -13,6 +12,6 @@ async function bootstrap() {
 
   app.useGlobalGuards();
 
-  await app.listen(3003);
+  await app.listen(process.env.PORT || 3003);
 }
 bootstrap();
