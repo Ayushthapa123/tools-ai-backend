@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { SearchQueries } from '@src/models/global.model';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { CreateSearchQueriesInput } from './dtos/create-search-queries.input';
 import { UpdateSearchQueriesInput } from './dtos/update-search-queries.input';
@@ -8,9 +7,8 @@ import { UpdateSearchQueriesInput } from './dtos/update-search-queries.input';
 export class SearchQueriesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSearchQueries(query: string): Promise<SearchQueries[]> {
-    console.log('qqqqqqqqq', query);
-    return await this.prisma.searchQueries.findMany({
+  async getSearchQueries(query: string) {
+    const res = await this.prisma.searchQuery.findMany({
       where: {
         OR: [
           { city: { contains: query, mode: 'insensitive' } },
@@ -19,56 +17,85 @@ export class SearchQueriesService {
       },
       take: 7,
     });
+    return {
+      data: res,
+      error: null,
+    };
   }
-  async getAllSearchQueries(): Promise<SearchQueries[]> {
-    return await this.prisma.searchQueries.findMany({});
+  async getAllSearchQueries() {
+    const res = await this.prisma.searchQuery.findMany({});
+    return {
+      data: res,
+      error: null,
+    };
   }
 
-  async getSearchQueryById(
-    searchQueryId: number,
-  ): Promise<SearchQueries | null> {
-    return await this.prisma.searchQueries.findUnique({
-      where: { searchQueryId },
+  async getSearchQueryById(searchQueryId: number) {
+    const res = await this.prisma.searchQuery.findUnique({
+      where: { id: searchQueryId },
     });
+    return {
+      data: [res],
+      error: null,
+    };
   }
 
-  async createSearchQuery(
-    data: CreateSearchQueriesInput,
-  ): Promise<SearchQueries> {
-    const searchQuery = await this.prisma.searchQueries.findFirst({
+  async createSearchQuery(data: CreateSearchQueriesInput) {
+    const searchQuery = await this.prisma.searchQuery.findFirst({
       where: { country: data.country, city: data.city, subCity: data.subCity },
     });
-    console.log('findsearc', searchQuery);
     if (!searchQuery) {
-      return this.prisma.searchQueries.create({
+      const res = await this.prisma.searchQuery.create({
         data,
       });
+      return {
+        data: [res],
+        error: null,
+      };
     } else {
-      return null;
+      return {
+        data: null,
+        error: {
+          message: 'Search query already exists',
+        },
+      };
     }
   }
 
   async updateSearchQuery(
     searchQueryId: number,
     data: UpdateSearchQueriesInput,
-  ): Promise<SearchQueries> {
-    const searchQuery = this.prisma.searchQueries.findFirst({
+  ) {
+    const searchQuery = this.prisma.searchQuery.findFirst({
       where: { country: data.country, city: data.city, subCity: data.subCity },
     });
 
     if (!searchQuery) {
-      return this.prisma.searchQueries.update({
-        where: { searchQueryId },
+      const res = await this.prisma.searchQuery.update({
+        where: { id: searchQueryId },
         data,
       });
+      return {
+        data: [res],
+        error: null,
+      };
     } else {
-      return null;
+      return {
+        data: null,
+        error: {
+          message: 'Search query already exists',
+        },
+      };
     }
   }
 
-  async deleteSearchQuery(searchQueryId: number): Promise<SearchQueries> {
-    return await this.prisma.searchQueries.delete({
-      where: { searchQueryId },
+  async deleteSearchQuery(searchQueryId: number) {
+    const res = await this.prisma.searchQuery.delete({
+      where: { id: searchQueryId },
     });
+    return {
+      data: [res],
+      error: null,
+    };
   }
 }

@@ -187,7 +187,7 @@ model DynamicPricingRule {
 }
 model RoomAmenity {
   id       Int @id @unique @default(autoincrement())
-  amenity  String
+  amenity  Json
   roomId   Int @unique
   room Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -248,7 +248,7 @@ model SearchQuery {
 //create two searchQueries for each hostel with tole and without tole. 
   //if queryType is tole it will have city and country as well
   //when searching back hostel. if tole present search on tole else search on city
-  searchQueryId Int      @id @unique @default(autoincrement())
+  id Int      @id @unique @default(autoincrement())
   country   String
   city      String
   subCity      String?  
@@ -314,7 +314,7 @@ model NearbyPlace {
 model Amenities {
   id    Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  amenities      String     
+  amenities      Json     
 
   hostel Hostel?  @relation(fields: [hostelId], references: [id])
 
@@ -323,23 +323,23 @@ model Amenities {
 model Service {
   servicesId    Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  amenities      String     
+  amenities      Json     
 
   hostel Hostel  @relation(fields: [hostelId], references: [id])
 
 }
 
 model HostelRules {
-  id    Int             @id @unique @default(autoincrement())
+  id             Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  rules      String     
+  rules          Json
 
   hostel Hostel  @relation(fields: [hostelId], references: [id])
 }
 
 model FoodMenu{
   id Int    @id @unique @default(autoincrement())
-  day        WeekDays @unique
+  day        WeekDays 
   lunch      String?
   dinner     String?
   snacks     String?
@@ -370,8 +370,15 @@ enum UserType {
 enum GenderType {
   BOYS
   GIRLS
+  OTHERS
+}
+
+enum HostelGenderType {
+  BOYS
+  GIRLS
   BOTH
 }
+
 enum HostelType {
   STAY
   TRAVELS 

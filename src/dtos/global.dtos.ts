@@ -9,7 +9,6 @@ import {
   HostelType as PrismaHostelType,
   GalleryType as PrismaGalleryType,
   VisibilityType as PrismaVisibilityType,
-  SubscriptionPlans as PrismaSubscriptionPlans,
 } from '@prisma/client';
 
 export { PrismaUserType as UserType };
@@ -18,7 +17,6 @@ export { PrismaHostelType as HostelType };
 
 export { PrismaVisibilityType as VisibilityType };
 export { PrismaGalleryType as GalleryType };
-export { PrismaSubscriptionPlans as SubscriptionPlans };
 export { PrismaBadges as Badges };
 
 registerEnumType(PrismaUserType, {
@@ -39,10 +37,6 @@ registerEnumType(PrismaVisibilityType, {
 
 registerEnumType(PrismaGalleryType, {
   name: 'GalleryType',
-});
-
-registerEnumType(PrismaSubscriptionPlans, {
-  name: 'SubscriptionPlans',
 });
 
 registerEnumType(PrismaBadges, {

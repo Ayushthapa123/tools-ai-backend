@@ -1,48 +1,34 @@
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@src/guards/auth.guard';
-import { Services } from '@src/models/global.model';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ServicesService } from './services.service';
-import { CreateServicesInput } from './dtos/create-services.input';
-import { UpdateServicesInput } from './dtos/update-services.input';
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { CreateServiceDto } from './dto/create-service.dto';
+import { UpdateServiceDto } from './dto/update-service.dto';
+import { Service } from '@src/models/global.model';
 
-@Resolver(() => Services)
+@Resolver('Service')
 export class ServicesResolver {
   constructor(private readonly servicesService: ServicesService) {}
 
-  @Query(() => Services, { name: 'service' })
-  async getServicesById(
-    @Args('servicesId', { type: () => Int }) servicesId: number,
-  ): Promise<Services | null> {
-    return this.servicesService.getServicesById(servicesId);
+  @Mutation(() => Service)
+  async createService(
+    @Args('createServiceInput') createServiceDto: CreateServiceDto,
+  ) {
+    return this.servicesService.createService(createServiceDto);
   }
 
-  @Query(() => Services, { name: 'servicesByHostelId' })
-  @UseGuards(AuthGuard)
-  async getServicesByHostelId(@Context() ctx: any): Promise<Services | null> {
-    const hostelId = ctx.user.hostelId;
-    return this.servicesService.getServicesByHostelId(hostelId);
+  @Query(() => Service)
+  async findServiceByHomestayId(@Args('homestayId') homestayId: number) {
+    return this.servicesService.findByHomestayId(homestayId);
   }
 
-  @Mutation(() => Services)
-  async createServices(
-    @Args('createServicesInput') createServicesInput: CreateServicesInput,
-  ): Promise<Services> {
-    return this.servicesService.createServices(createServicesInput);
+  @Mutation(() => Service)
+  async updateService(
+    @Args('updateServiceInput') updateServiceDto: UpdateServiceDto,
+  ) {
+    return this.servicesService.updateService(updateServiceDto);
   }
 
-  @Mutation(() => Services)
-  async updateServices(
-    @Args('servicesId', { type: () => Int }) servicesId: number,
-    @Args('updateServicesInput') updateServicesInput: UpdateServicesInput,
-  ): Promise<Services> {
-    return this.servicesService.updateServices(servicesId, updateServicesInput);
-  }
-
-  @Mutation(() => Services)
-  async deleteServices(
-    @Args('servicesId', { type: () => Int }) servicesId: number,
-  ): Promise<Services> {
-    return this.servicesService.deleteServices(servicesId);
+  @Mutation(() => Service)
+  async removeService(@Args('id') id: number) {
+    return this.servicesService.removeService(id);
   }
 }

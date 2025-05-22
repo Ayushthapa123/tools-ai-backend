@@ -3,30 +3,31 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { OAuth2Client } from 'google-auth-library';
-import * as jwt from 'jsonwebtoken';
-
 import { google } from 'googleapis';
 import { GoogleOauthUrl } from './google.model';
+import { generateJwtTokens } from '@src/helpers/jwt.helper';
+import { UserType } from '@prisma/client';
+import { Response } from 'express';
+import { CookieService } from '../../services/cookie.service';
 
 @Injectable()
 export class GoogleAuthService {
-  constructor(private readonly prismaService: PrismaService) {}
-  private readonly jwtSecret: string = process.env.JWT_SECRET;
-  private readonly refreshTokenSecret: string =
-    process.env.REFRESH_TOKEN_SECRET;
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly cookieService: CookieService,
+  ) {}
 
-  async signUpWithGoogle(code: string) {
+  async signUpWithGoogle(code: string, res: Response) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = `${process.env.WEB_URL}oauth/google`;
+    const redirectUri = `${process.env.WEB_URL}/oauth/google`;
 
     const client = new OAuth2Client(clientId, clientSecret, redirectUri);
 
     // Exchange authorization code for access token
-    const { tokens } = await client.getToken(code);
-
+    const { tokens: googleTokens } = await client.getToken(code);
     // Make a request to Google's tokeninfo endpoint to retrieve the ID token
-    await client.setCredentials(tokens);
+    await client.setCredentials(googleTokens);
 
     const tokenId = client.credentials.id_token;
     const ticket = await client.verifyIdToken({
@@ -38,7 +39,7 @@ export class GoogleAuthService {
     const name = payload.given_name + ' ' + payload.family_name;
 
     // Check if user already exists in the database
-    let user = await this.prismaService.users.findUnique({
+    let user = await this.prismaService.user.findUnique({
       where: {
         email,
       },
@@ -46,27 +47,39 @@ export class GoogleAuthService {
 
     if (!user) {
       // Create user if not exists
-      user = await this.prismaService.users.create({
+      user = await this.prismaService.user.create({
         data: {
           email,
           fullName: name,
-          userType: 'STUDENT',
+          userType: UserType.STUDENT,
+          isVerified: true,
         },
       });
-      // Generate JWT token
-      const token = this.generateJwtTokens(user.userId);
-      return { ...user, token: token };
-    } else {
-      const token = this.generateJwtTokens(user.userId);
-      return { ...user, token: token };
     }
+
+    // Generate JWT tokens
+    const authTokens = generateJwtTokens(
+      user.id,
+      UserType.STUDENT,
+      user.hostelId,
+    );
+
+    // Set cookies using the shared cookie service
+    this.cookieService.setAuthCookies(
+      res,
+      authTokens.accessToken,
+      authTokens.refreshToken,
+    );
+
+    // Return user without tokens
+    return { ...user, token: authTokens };
   }
 
   async getGoogleAuthUrl(): Promise<GoogleOauthUrl> {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.WEB_URL}oauth/google`,
+      `${process.env.WEB_URL}/oauth/google`,
     );
 
     //what about name??
@@ -82,15 +95,5 @@ export class GoogleAuthService {
     });
 
     return { url: authUrl };
-  }
-
-  private generateJwtTokens(userId: number) {
-    const accessToken = jwt.sign({ sub: userId }, this.jwtSecret, {
-      expiresIn: '50m',
-    });
-    const refreshToken = jwt.sign({ sub: userId }, this.refreshTokenSecret, {
-      expiresIn: '30d',
-    });
-    return { accessToken, refreshToken };
   }
 }

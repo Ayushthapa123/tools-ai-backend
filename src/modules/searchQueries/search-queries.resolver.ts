@@ -1,58 +1,58 @@
-import { SearchQueries } from '@src/models/global.model';
+import { SearchQuery } from '@src/models/global.model';
 import { SearchQueriesService } from './search-queries.services';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { CreateSearchQueriesInput } from './dtos/create-search-queries.input';
 import { UpdateSearchQueriesInput } from './dtos/update-search-queries.input';
 
-@Resolver(() => SearchQueries)
+@Resolver(() => SearchQuery)
 export class SearchQueriesResolver {
   constructor(private readonly searchQueriesService: SearchQueriesService) {}
 
-  @Query(() => SearchQueries, { name: 'searchQuery' })
+  @Query(() => SearchQuery, { name: 'searchQuery' })
   async getSearchQueryById(
     @Args('searchQueryId', { type: () => Int }) searchQueryId: number,
-  ): Promise<SearchQueries | null> {
+  ): Promise<SearchQuery | null> {
     return this.searchQueriesService.getSearchQueryById(searchQueryId);
   }
 
-  @Query(() => [SearchQueries], { name: 'searchQueries' })
+  @Query(() => [SearchQuery], { name: 'searchQueries' })
   async getSearchQueries(
     @Args('query', { type: () => String }) query: string,
-  ): Promise<SearchQueries[]> {
+  ): Promise<SearchQuery> {
     return this.searchQueriesService.getSearchQueries(query);
   }
 
-  @Query(() => [SearchQueries], { name: 'getAllSearchQueries' })
-  async getAllSearchQueries(): Promise<SearchQueries[]> {
+  @Query(() => [SearchQuery], { name: 'getAllSearchQueries' })
+  async getAllSearchQueries(): Promise<SearchQuery> {
     return this.searchQueriesService.getAllSearchQueries();
   }
 
-  @Mutation(() => SearchQueries)
+  @Mutation(() => SearchQuery)
   async createSearchQuery(
     @Args('createSearchQueriesInput')
     createSearchQueriesInput: CreateSearchQueriesInput,
-  ): Promise<SearchQueries | null> {
+  ): Promise<SearchQuery | null> {
     return this.searchQueriesService.createSearchQuery(
       createSearchQueriesInput,
     );
   }
 
-  @Mutation(() => SearchQueries)
+  @Mutation(() => SearchQuery)
   async updateSearchQuery(
     @Args('searchQueryId', { type: () => Int }) searchQueryId: number,
     @Args('updateSearchQueriesInput')
     updateSearchQueriesInput: UpdateSearchQueriesInput,
-  ): Promise<SearchQueries> {
+  ): Promise<SearchQuery> {
     return this.searchQueriesService.updateSearchQuery(
       searchQueryId,
       updateSearchQueriesInput,
     );
   }
 
-  @Mutation(() => SearchQueries)
+  @Mutation(() => SearchQuery)
   async deleteSearchQuery(
     @Args('searchQueryId', { type: () => Int }) searchQueryId: number,
-  ): Promise<SearchQueries> {
+  ): Promise<SearchQuery> {
     return this.searchQueriesService.deleteSearchQuery(searchQueryId);
   }
 }

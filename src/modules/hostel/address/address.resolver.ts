@@ -9,10 +9,10 @@ export class AddressResolver {
   constructor(private readonly addressService: AddressService) {}
 
   @Query(() => Address, { nullable: true })
-  async getAddressByHostelId(
-    @Args('hostelId') hostelId: number,
+  async getAddressByHomestayId(
+    @Args('homestayId') homestayId: number,
   ): Promise<Address | null> {
-    return this.addressService.getAddressByHostelId(hostelId);
+    return this.addressService.getAddressByHomestayId(homestayId);
   }
 
   @Mutation(() => Address)

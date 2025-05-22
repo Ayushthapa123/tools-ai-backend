@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Address } from '../../../models/global.model';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { UpdateAddressInput } from './dtos/update-address.input';
 import { CreateAddressInput } from './dtos/create-address.input';
@@ -8,10 +7,22 @@ import { CreateAddressInput } from './dtos/create-address.input';
 export class AddressService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAddressByHostelId(hostelId: number): Promise<Address | null> {
-    return this.prisma.address.findUnique({
-      where: { hostelId },
+  async getAddressByHomestayId(homestayId: number) {
+    const address = await this.prisma.address.findUnique({
+      where: { homestayId: homestayId },
     });
+    if (!address) {
+      return {
+        data: null,
+        error: {
+          message: 'Address not found',
+        },
+      };
+    }
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async createAddress(data: CreateAddressInput) {
@@ -35,7 +46,11 @@ export class AddressService {
       });
     }
 
-    return this.prisma.address.create({ data });
+    const address = await this.prisma.address.create({ data });
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async updateAddress(addressId: number, data: UpdateAddressInput) {
@@ -79,10 +94,23 @@ export class AddressService {
         },
       });
     }
-    return this.prisma.address.update({ where: { addressId }, data });
+    const address = await this.prisma.address.update({
+      where: { id: addressId },
+      data,
+    });
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async deleteAddress(addressId: number) {
-    return this.prisma.address.delete({ where: { addressId } });
+    const address = await this.prisma.address.delete({
+      where: { id: addressId },
+    });
+    return {
+      data: address,
+      error: null,
+    };
   }
 }

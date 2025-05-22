@@ -1,12 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export function generateSlug(
-  hostelName: string,
-  genderType: string,
-  hostelType: string,
-): string {
-  // Remove special characters and spaces from the hostel name
-  const slug = hostelName
+export function generateSlug(name: string): string {
+  // Remove special characters and spaces from the homestay name
+  const slug = name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
@@ -15,7 +11,7 @@ export function generateSlug(
   const uniqueId = uuidv4().split('-')[0]; // Extracting the first part of the UUID
 
   // Concatenate the slug and the UUID
-  const finalSlug = `${slug}-${hostelType.toLowerCase()}-${genderType.toLowerCase()}-hostel-${uniqueId}`;
+  const finalSlug = `${slug}-${uniqueId}`;
 
   return finalSlug;
 }

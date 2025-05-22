@@ -1,9 +1,9 @@
 // auth.dto.ts
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, PartialType } from '@nestjs/graphql';
 import { UserType } from '@prisma/client';
-
+import { CreateUserInput } from '@src/modules/users/create-user.dto';
 @InputType()
-export class SignupInput {
+export class SignupInput extends PartialType(CreateUserInput) {
   @Field()
   email: string;
 
@@ -14,5 +14,5 @@ export class SignupInput {
   fullName: string;
 
   @Field()
-  userType?: UserType;
+  userType: UserType;
 }

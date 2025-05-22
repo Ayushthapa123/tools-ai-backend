@@ -7,15 +7,14 @@ import { UpdateContactInput } from './dtos/update-contact.input';
 // import { Controller } from '@nestjs/common';
 
 @Resolver(() => ContactDetails)
-// @Controller('hostel') // thats not possible to just create hostel namespace I guess. It must have something
 export class ContactResolver {
   constructor(private readonly contactService: ContactService) {}
 
   @Query(() => ContactDetails, { nullable: true })
-  async getContactByHostelId(
-    @Args('hostelId') hostelId: number,
+  async getContactByHomestayId(
+    @Args('homestayId') homestayId: number,
   ): Promise<ContactDetails | null> {
-    return this.contactService.getContactsByHostelId(hostelId);
+    return this.contactService.getContactsByHomestayId(homestayId);
   }
 
   @Mutation(() => ContactDetails)
