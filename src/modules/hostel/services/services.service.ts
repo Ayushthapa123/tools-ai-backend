@@ -1,44 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { Services } from '@src/models/global.model';
-import { PrismaService } from '@src/prisma/prisma.service';
-import { CreateServicesInput } from './dtos/create-services.input';
-import { UpdateServicesInput } from './dtos/update-services.input';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { CreateServiceDto } from './dto/create-service.dto';
+import { UpdateServiceDto } from './dto/update-service.dto';
 
 @Injectable()
 export class ServicesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-  async getServicesById(servicesId: number): Promise<Services | null> {
-    return this.prisma.services.findUnique({
-      where: { servicesId },
+  async createService(createServiceDto: CreateServiceDto) {
+    const service = await this.prisma.service.create({
+      data: {
+        ...createServiceDto,
+      },
     });
+
+    return {
+      data: service,
+      error: null,
+    };
   }
 
-  async getServicesByHostelId(hostelId: number): Promise<Services | null> {
-    return this.prisma.services.findUnique({
+  async findByHomestayId(hostelId: number) {
+    const service = await this.prisma.service.findUnique({
       where: { hostelId },
     });
+
+    return {
+      data: service,
+      error: null,
+    };
   }
 
-  async createServices(data: CreateServicesInput): Promise<Services> {
-    return this.prisma.services.create({
+  async updateService(updateServiceDto: UpdateServiceDto) {
+    const { id, ...data } = updateServiceDto;
+    const service = await this.prisma.service.update({
+      where: { id },
       data,
     });
+
+    return {
+      data: service,
+      error: null,
+    };
   }
 
-  async updateServices(
-    servicesId: number,
-    data: UpdateServicesInput,
-  ): Promise<Services> {
-    return this.prisma.services.update({
-      where: { servicesId },
-      data,
+  async removeService(id: number) {
+    const service = await this.prisma.service.delete({
+      where: { id },
     });
-  }
 
-  async deleteServices(servicesId: number): Promise<Services> {
-    return this.prisma.services.delete({
-      where: { servicesId },
-    });
+    return {
+      data: service,
+      error: null,
+    };
   }
 }

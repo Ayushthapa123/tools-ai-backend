@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Address } from '../../../models/global.model';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { UpdateAddressInput } from './dtos/update-address.input';
 import { CreateAddressInput } from './dtos/create-address.input';
@@ -8,39 +7,64 @@ import { CreateAddressInput } from './dtos/create-address.input';
 export class AddressService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAddressByHostelId(hostelId: number): Promise<Address | null> {
-    return this.prisma.address.findUnique({
+  async getAddressByHomestayId(hostelId: number) {
+    const address = await this.prisma.address.findUnique({
       where: { hostelId },
     });
+    if (!address) {
+      return {
+        data: null,
+        error: {
+          message: 'Address not found',
+        },
+      };
+    }
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async createAddress(data: CreateAddressInput) {
     //check whether a searchQueries already have address
-    const searchCity = await this.prisma.searchQueries.findFirst({
+    const searchCity = await this.prisma.searchQuery.findFirst({
       where: { city: data.city, country: data.country },
     });
     if (!searchCity) {
       //create searchquery with just country and city
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: { country: data.country, city: data.city },
       });
     }
-    const searchSubCity = await this.prisma.searchQueries.findFirst({
+    const searchSubCity = await this.prisma.searchQuery.findFirst({
       where: { subCity: data.subCity, city: data.city, country: data.country },
     });
     if (!searchSubCity && data.subCity) {
       //create searchquery with country and city subcity
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: { country: data.country, city: data.city, subCity: data.subCity },
       });
     }
-
-    return this.prisma.address.create({ data });
+    const address = await this.prisma.address.create({
+      data: {
+        hostelId: data.hostelId,
+        country: data.country,
+        city: data.city,
+        subCity: data.subCity,
+        street: data.street,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
+    });
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async updateAddress(addressId: number, data: UpdateAddressInput) {
     //check whether a searchQueries already have address
-    const searchCity = await this.prisma.searchQueries.findFirst({
+    const searchCity = await this.prisma.searchQuery.findFirst({
       where: {
         city: {
           equals: data.city,
@@ -55,14 +79,14 @@ export class AddressService {
 
     if (!searchCity) {
       //create searchquery with just country and city
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: {
           country: data.country.toLowerCase(),
           city: data.city.toLowerCase(),
         },
       });
     }
-    const searchSubCity = await this.prisma.searchQueries.findFirst({
+    const searchSubCity = await this.prisma.searchQuery.findFirst({
       where: {
         subCity: data.subCity.toLowerCase(),
         city: data.city.toLowerCase(),
@@ -71,7 +95,7 @@ export class AddressService {
     });
     if (!searchSubCity && data.subCity) {
       //create searchquery with country and city subcity
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: {
           country: data.country.toLowerCase(),
           city: data.city.toLowerCase(),
@@ -79,10 +103,23 @@ export class AddressService {
         },
       });
     }
-    return this.prisma.address.update({ where: { addressId }, data });
+    const address = await this.prisma.address.update({
+      where: { id: addressId },
+      data,
+    });
+    return {
+      data: address,
+      error: null,
+    };
   }
 
   async deleteAddress(addressId: number) {
-    return this.prisma.address.delete({ where: { addressId } });
+    const address = await this.prisma.address.delete({
+      where: { id: addressId },
+    });
+    return {
+      data: address,
+      error: null,
+    };
   }
 }

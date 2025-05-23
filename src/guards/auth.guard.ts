@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
@@ -14,26 +13,36 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const ctx = gqlContext.getContext();
-    // Check if headers exist in the context
-    const authorizationHeader = ctx.req?.headers?.authorization;
-    console.log('authheader', authorizationHeader);
 
-    if (!authorizationHeader) {
-      throw new UnauthorizedException();
-    }
+    // Get the access token from cookies or Authorization header
+    const accessToken = ctx.req?.cookies?.accessToken;
 
-    const token = authorizationHeader;
-    if (!token) {
-      throw new UnauthorizedException();
+    if (!accessToken) {
+      throw new UnauthorizedException('No access token found');
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: process.env.JWT_SECRET,
+        algorithms: ['HS256'], // Specify the algorithm
       });
-      ctx.user = payload; // Store the payload in the context for future use
-    } catch {
-      throw new UnauthorizedException();
+
+      // Verify token expiration
+      if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+        throw new UnauthorizedException('Token has expired');
+      }
+
+      // Add additional security checks if needed
+      if (!payload.sub || !payload.userType) {
+        throw new UnauthorizedException('Invalid token payload');
+      }
+
+      ctx.user = payload;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Invalid access token');
     }
 
     return true;

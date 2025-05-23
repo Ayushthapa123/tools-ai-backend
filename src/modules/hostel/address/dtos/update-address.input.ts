@@ -1,18 +1,9 @@
-// src/hostel/dto/update-hostel.input.ts
-
 import { InputType, Field } from '@nestjs/graphql';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateAddressInput } from './create-address.input';
 
 @InputType()
-export class UpdateAddressInput {
-  @Field({ nullable: true })
-  country?: string;
-
-  @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
-  subCity?: string;
-
-  @Field({ nullable: true })
-  street?: string;
+export class UpdateAddressInput extends PartialType(CreateAddressInput) {
+  @Field()
+  id: number;
 }

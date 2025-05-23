@@ -5,35 +5,22 @@ import { HostelService } from './hostel.service';
 import { HostelResolver } from './hostel.resolver';
 import { ContactModule } from './contact/contact.module';
 import { AddressModule } from './address/address.module';
-import { SocialsModule } from './socials/socials.module';
+import { AmenityModule } from './amenity/amenity.module';
 import { GalleryModule } from './gallery/gallery.module';
-import { SettingsModule } from './settings/settings.module';
 import { ServicesModule } from './services/services.module';
-import { AmenitiesModule } from './amenities/amenities.module';
-import { HostelRulesModule } from './hostelRules/hostelRules.module';
-import { NearbyPlaceModule } from './nearbyPlaces/nearbyPlace.module';
-import { DailyPricingModule } from './dailyPricing/dailyPricing.module';
-import { MonthlyPricingModule } from './monthlyPricing/monthlyPricing.module';
-import { RoomAvailibilityModule } from './roomAvailability/roomAvalibility.module';
-import { GoogleMapLocationModule } from './googleMapLocation/googleMapLocation.module';
-// import { FoodMenuModule } from './food-menu/food-menu.module';
-
+import { RoomModule } from './room/room.module';
+import { HostelRulesModule } from './rules/hostelRules.module';
+import { BookingModule } from './booking/booking.module';
 @Module({
   imports: [
     ContactModule,
     AddressModule,
-    SocialsModule,
-    RoomAvailibilityModule,
-    DailyPricingModule,
-    MonthlyPricingModule,
+    RoomModule,
     GalleryModule,
-    SettingsModule,
-    NearbyPlaceModule,
-    AmenitiesModule,
     ServicesModule,
+    AmenityModule,
     HostelRulesModule,
-    GoogleMapLocationModule,
-    // FoodMenuModule,
+    BookingModule,
   ],
   providers: [HostelResolver, HostelService, JwtService],
 })

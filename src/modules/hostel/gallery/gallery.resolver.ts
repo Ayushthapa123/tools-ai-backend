@@ -1,42 +1,58 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GalleryService } from './gallery.service';
-import { Gallery } from '@src/models/global.model';
-import { CreateGalleryInput } from './dtos/create-gallery.input';
-import { UpdateGalleryInput } from './dtos/update-gallery.input';
-import { GalleryType } from '@prisma/client';
+import { Gallery, GalleryList } from '@src/models/global.model';
+import { CreateGalleryInput } from './dto/create-gallery.dto';
+import { UpdateGalleryInput } from './dto/update-gallery.dto';
 
-// import { Controller } from '@nestjs/common';
-
-@Resolver(() => Gallery)
-// @Controller('hostel') // thats not possible to just create hostel namespace I guess. It must have something
+@Resolver()
 export class GalleryResolver {
   constructor(private readonly galleryService: GalleryService) {}
 
-  @Query(() => [Gallery], { nullable: true })
+  @Query(() => GalleryList, { nullable: true })
   async getGalleryByHostelId(
-    @Args('hostelId') hostelId: number,
-    @Args('galleryType') galleryType: GalleryType,
-  ): Promise<Gallery[] | null> {
-    return this.galleryService.getGAllerysByHostelId(hostelId, galleryType);
+    @Args('hostelId', { type: () => Int }) hostelId: number,
+  ) {
+    const { data, error } =
+      await this.galleryService.getGalleryByHostelId(hostelId);
+    return { data: data, error };
   }
 
   @Mutation(() => Gallery)
-  async createGallery(
-    @Args('data') data: CreateGalleryInput,
-  ): Promise<Gallery> {
-    return this.galleryService.createGallery(data);
+  async createGallery(@Args('data') data: CreateGalleryInput) {
+    const { data: gallery, error } =
+      await this.galleryService.createGallery(data);
+    return { data: gallery, error };
   }
 
   @Mutation(() => Gallery)
-  async deleteGallery(@Args('galleryId') galleryId: number): Promise<Gallery> {
-    return this.galleryService.deleteGallery(galleryId);
+  async deleteGallery(
+    @Args('galleryId', { type: () => Int }) galleryId: number,
+  ) {
+    const { data, error } = await this.galleryService.deleteGallery(galleryId);
+    return { data, error };
   }
 
   @Mutation(() => Gallery)
   async updateGallery(
-    @Args('galleryId') galleryId: number,
+    @Args('galleryId', { type: () => Int }) galleryId: number,
     @Args('data') data: UpdateGalleryInput,
-  ): Promise<Gallery> {
-    return this.galleryService.updateGallery(galleryId, data);
+  ) {
+    const { data: gallery, error } = await this.galleryService.updateGallery(
+      galleryId,
+      data,
+    );
+    return { data: gallery, error };
+  }
+
+  @Mutation(() => Gallery)
+  async selectGallery(
+    @Args('galleryId', { type: () => Int }) galleryId: number,
+    @Args('hostelId', { type: () => Int }) hostelId: number,
+  ) {
+    const { data, error } = await this.galleryService.selectGallery(
+      galleryId,
+      hostelId,
+    );
+    return { data, error };
   }
 }

@@ -1,5 +1,3 @@
-// src/hostel/dto/create-hostel.input.ts
-
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
@@ -18,4 +16,10 @@ export class CreateAddressInput {
 
   @Field({ nullable: true })
   street?: string;
+
+  @Field({ nullable: true })
+  latitude?: number;
+
+  @Field({ nullable: true })
+  longitude?: number;
 }

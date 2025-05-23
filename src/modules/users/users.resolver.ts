@@ -1,34 +1,35 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { Users } from '@src/models/global.model';
+import { User } from '@src/models/global.model';
 import { CreateUserInput } from './create-user.dto';
+import { UpdateUserInput } from './dtos/update-user.dto';
 
 @Resolver('Users')
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Query(() => [Users])
+  @Query(() => [User])
   async getUsers() {
     return this.usersService.getAllUsers();
   }
 
-  @Query(() => Users, { nullable: true })
-  async getUser(@Args('id') id: number) {
+  @Query(() => User, { nullable: true })
+  async getUserById(@Args('id') id: number) {
     return this.usersService.getUserById(id);
   }
 
-  @Query(() => Users, { nullable: true })
+  @Query(() => User, { nullable: true })
   async getUserByAccessToken(@Args('accessToken') accessToken: string) {
     return this.usersService.getUserByToken(accessToken);
   }
 
-  @Mutation(() => Users)
+  @Mutation(() => User)
   async createUser(@Args('input') input: CreateUserInput) {
     return this.usersService.createUser(input);
   }
 
-  //   @Mutation(() => [Users])
-  //   async createUsers(@Args('input') input: CreateUserInput[]) {
-  //     return this.usersService.createUsers(input);
-  //   }
+  @Mutation(() => User)
+  async updateUser(@Args('input') input: UpdateUserInput) {
+    return this.usersService.updateUser(input);
+  }
 }

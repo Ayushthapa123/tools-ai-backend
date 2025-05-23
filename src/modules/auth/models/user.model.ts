@@ -1,10 +1,11 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Users } from '@src/models/global.model';
+import { UserType } from '@src/models/global.enum';
+import { UserData } from '@src/models/global.model';
 
 @ObjectType()
 export class User {
   @Field(() => ID)
-  userId: number;
+  id: number;
 
   @Field()
   email: string;
@@ -24,17 +25,17 @@ export class Token {
 @ObjectType()
 export class VerifyEmailResponse {
   @Field()
-  userId: number;
+  id?: number;
 }
 @ObjectType()
 export class ForgotPasswordResponse {
   @Field()
-  userId: number;
+  id: number;
 }
 @ObjectType()
 export class UsersAndToken {
   @Field(() => ID)
-  userId: number;
+  id: number;
 
   @Field()
   fullName: string;
@@ -42,15 +43,27 @@ export class UsersAndToken {
   @Field()
   email: string;
 
+  @Field(() => UserType)
+  userType: UserType;
+
   @Field()
   token?: Token;
 }
 
 @ObjectType()
-export class UsersHostelIdAndToken {
+export class UsersHomestayIdAndToken {
   @Field()
-  user: Users;
+  user: UserData;
 
   @Field()
   token?: Token;
+}
+
+@ObjectType()
+export class LogoutResponse {
+  @Field()
+  success: boolean;
+
+  @Field()
+  message: string;
 }

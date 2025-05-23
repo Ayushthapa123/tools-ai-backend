@@ -8,161 +8,216 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-
 }
 
-model Users {
-  userId             Int      @id @unique @default(autoincrement())
-  hostelId      Int?     @unique //this needs to be included when creatng token. 
-
+model User {
+  id             Int      @id @unique @default(autoincrement())
+  hostelId      Int?      //this needs to be included when creatng token. 
   email              String   @unique
   passwordHash       String?
   fullName           String
- 
   profilePicture     String?
   phoneNumber        String?
+  altPhoneNumber     String?
   hashedRefreshToken String?     
-
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  userPlan           SubscriptionPlans  @default(FREE)
-
+  city               String? 
+  dateOfBirth        DateTime?
+  gender             GenderType?
+  userType   UserType @default(HOSTEL_OWNER)
+  booking    Booking[]
 
   isVerified Boolean  @default(false)
-  userType   UserType @default(STUDENT)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt 
+  deletedAt DateTime?
 
   hostel     Hostel?
+
+  @@index([email])
 }
 
 model Hostel {
-  hostelId    Int     @id @unique @default(autoincrement())
+  id         Int     @id @unique @default(autoincrement())
   name        String
-  verified    Boolean @default(false)
-  reviewed    Boolean @default(false)
-  ranking     Int? @default(0)
-  genderType  GenderType
-  hostelType  HostelType @default(STAY)
-
-  capacity    Int? 
-  availableSeats    Int? 
-
-
   description String?
   slug        String  @unique
+  ranking     Int? @default(0)
+  genderType  HostelGenderType @default(BOTH)
+  hostelType  HostelType @default(STAY) 
+
+  ownerId     Int @unique
+
   whatsappId  String?
   telegramId  String?
-  userId      Int?     @unique//! hostel don't need to have userId
 
+  verifiedBySuperAdmin    Boolean @default(false) 
+  verifiedByCommunityOwner    Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  owner            User?             @relation(fields: [ownerId], references: [id])
 
-  owner            Users?             @relation(fields: [userId], references: [userId])
-
-  roomAvailability RoomAvailability?
-  dailyPricing     DailyPricing?
-
-
-  socials        Socials?
+  social        Social?
   address        Address?
-  contact        ContactDetails?
-  hostelSettings        HostelSettings?
-  googleMapLocation        GoogleMapLocation?
+  contact        ContactDetail?
+  hostelSettings        HostelSetting?
 
-
-
-  monthlyPricing MonthlyPricing?
+  // monthlyPricing MonthlyPricing?
   amenities      Amenities?
-  services       Services?
+  service       Service?
   hostelRules    HostelRules?
 
   // orders    Orders[]
   // payments  Payments[]
   gallery   Gallery[]
+  rooms     Room[]
   nearbyPlaces    NearbyPlace[]
   // suppliers HostelSuppliers[]
 
   foodMenu FoodMenu[]
 
-  @@index([hostelId,slug])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+  deletedAt DateTime?
+  @@index([id,slug])
+  
+  @@index([name])
+  @@index([genderType])
+  @@index([hostelType])
+  @@index([verifiedBySuperAdmin])
+  @@index([createdAt])
+}
+model Room {
+  id             Int          @id @unique @default(autoincrement())
+  status         RoomStatus
+  capacity       RoomCapacity
+  attachBathroom Boolean?
+  hostelId     Int
+
+  caption        String
+  description    String?
+  roomNumber     String?
+  maxOccupancy   String?
+  booking        Booking[]
+  price          Price?
+  dynamicPricingRule DynamicPricingRule[]
+  roomAmenityId Int?
+  roomAmenity RoomAmenity?
+  hostel       Hostel     @relation(fields: [hostelId], references: [id])
+  image          RoomImage[]
+
+  @@index([hostelId])
+  @@index([status])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model RoomImage {
+  id        Int      @id @unique @default(autoincrement())
+  caption   String?
+  url       String
+  roomId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  room      Room     @relation(fields: [roomId], references: [id],onDelete: Cascade)
+
+  @@index([id])
+}
+
+// Not being used now
+model Booking {
+  id          Int           @id @unique @default(autoincrement())
+  roomId      Int
+  guestId     Int
+  startDate   DateTime
+  endDate     DateTime
+  status      BookingStatus
+  paymentPlatformName PaymentPlatformName @default(STRIPE)
+ 
+  bookingKey  String        // This is common for booking done at the same time
+  guest       User          @relation(fields: [guestId], references: [id])
+  room        Room          @relation(fields: [roomId], references: [id],onDelete: Cascade) 
+  // transaction Transaction[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([id, bookingKey])
+  @@index([startDate, endDate])
+  @@index([status])
+  @@index([guestId])
+  @@index([roomId])
+  @@index([createdAt])
+}
+
+model Price {
+  id               Int           @id @unique @default(autoincrement())
+  baseAmountPerDay       Int     
+  baseAmountPerMonth     Int     
+  currency         Currency 
+  isDynamicPricing Boolean @default(false) 
+
+  roomId           Int           @unique
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  discountAmount   Int?
+  discountType     DiscountType?
+  isDiscountActive Boolean       @default(false)
+  room             Room          @relation(fields: [roomId], references: [id],onDelete:Cascade)
+
+  @@index([roomId])
+  @@index([isDynamicPricing])
+  @@index([isDiscountActive])
+}
+
+// Only for daily based pricing in Travel Hostel
+model DynamicPricingRule {
+  id Int @id @unique @default(autoincrement())
+  name String
+  description String?
+  roomId Int   
+  startDate DateTime
+  endDate DateTime
+  amount Int  
+  isWeekend Boolean @default(false)  // apply this rule on weekend
+  isActive Boolean @default(true)
+  priority Int @default(0)
+  room Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId, startDate, endDate])
+}
+model RoomAmenity {
+  id       Int @id @unique @default(autoincrement())
+  amenity  Json
+  roomId   Int @unique
+  room Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
-
-model MonthlyPricing {
-  monthlyPricingId Int      @id @unique @default(autoincrement())
-   oneSeater      Int?
-  twoSeater      Int?
-  threeSeater    Int?
-  fourSeater     Int?
-  fiveSeater     Int?
-  attachBathroom Int?
-  deposite       Int?
-  admission      Int?
-  createdAt   DateTime @default(now())
-
-  updatedAt        DateTime @updatedAt
-  hostelId         Int      @unique
-
-  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
-}
-
-model DailyPricing {
-  dailyPricingId Int      @id @unique @default(autoincrement())
-  oneSeater      Int?
-  twoSeater      Int?
-  threeSeater    Int?
-  fourSeater     Int?
-  fiveSeater     Int?
-  attachBathroom Int?
-  createdAt   DateTime @default(now())
-
-  updatedAt      DateTime @updatedAt
-  hostelId       Int      @unique
-
-  // Define a relation to Hostel
-  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
-}
-
-model RoomAvailability {
-  roomAvailabilityId Int      @id @unique @default(autoincrement())
-  oneSeater          Boolean?
-  twoSeater          Boolean?
-  threeSeater        Boolean?
-  fourSeater         Boolean?
-  fiveSeater         Boolean?
-  attachBathroom     Boolean?
-  createdAt   DateTime @default(now())
-
-  updatedAt          DateTime @updatedAt
-  hostelId           Int      @unique
-
-  // Define a relation to Hostel
-  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
-}
 
 model Gallery {
-  galleryId Int     @id @unique @default(autoincrement())
+  id        Int     @id @unique @default(autoincrement())
+  hostelId  Int     
+
   type      GalleryType @default(ROOM)
   caption   String?// Like Room no1, Room No2, 
   url       String
+  isSelected Boolean @default(false)
+
 
   createdAt   DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  hostelId  Int     
-
-
+  updatedAt   DateTime @updatedAt
 
   // Define a relation to Hostel
-  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel @relation(fields: [hostelId], references: [id])
 
   @@index([hostelId])
 }
 
-model Socials {
-  socialsId Int     @id @unique @default(autoincrement())
+model Social {
+  id        Int     @id @unique @default(autoincrement())
   instaGram String?
   facebook  String?
   tiktok    String?
@@ -172,30 +227,32 @@ model Socials {
 
   createdAt   DateTime @default(now())
   updatedAt          DateTime @updatedAt
-  hostel    Hostel? @relation(fields: [hostelId], references: [hostelId])
+  hostel    Hostel @relation(fields: [hostelId], references: [id])
 
   // Define a relation to Hostel
 }
 
 model Address {
-  addressId Int      @id @unique @default(autoincrement())
+  id Int      @id @unique @default(autoincrement())
   country   String
-  city      String?
+  city      String
   subCity      String?
-  street    String?
-  createdAt   DateTime @default(now())
+  street    String? 
+  latitude    Float?
+  longitude   Float?
 
-  updatedAt DateTime @updatedAt
   hostelId  Int @unique
-  hostel    Hostel?  @relation(fields: [hostelId], references: [hostelId])
+  createdAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  hostel    Hostel  @relation(fields: [hostelId], references: [id])
 }
 
-model SearchQueries {
+model SearchQuery {
   //get created when user enters his hostel address/create/update. if already present don't create else create
 //create two searchQueries for each hostel with tole and without tole. 
   //if queryType is tole it will have city and country as well
   //when searching back hostel. if tole present search on tole else search on city
-  searchQueryId Int      @id @unique @default(autoincrement())
+  id Int      @id @unique @default(autoincrement())
   country   String
   city      String
   subCity      String?  
@@ -203,26 +260,27 @@ model SearchQueries {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([city, country])
 }
 
 
-model ContactDetails {
-  contactId Int      @id @unique @default(autoincrement())
+model ContactDetail {
+  id        Int      @id @unique @default(autoincrement())
   phone     String
   altPhone  String?
   email     String
 
+  hostelId  Int @unique
+
   createdAt   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  hostelId  Int @unique
-
   // Define a relation to Hostel
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel  @relation(fields: [hostelId], references: [id])
 }
 
-model HostelSettings {
-  hostelSettingId Int @id @unique @default(autoincrement())
+model HostelSetting {
+  id Int @id @unique @default(autoincrement())
   currency     String?
   fontSize     Int @default(14)
   active       Boolean  @default(true) // make false if no activity in past 30 days
@@ -243,89 +301,65 @@ model HostelSettings {
 
   hostelId  Int @unique
   // Define a relation to Hostel
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel  @relation(fields: [hostelId], references: [id])
 
 
 }
 
 model NearbyPlace {
-  nearbyPlaceId   Int             @id @unique @default(autoincrement())
+  id   Int             @id @unique @default(autoincrement())
   name            String
   description     String
   hostelId        Int
-  hostel          Hostel          @relation(fields: [hostelId], references: [hostelId])
+  hostel          Hostel          @relation(fields: [hostelId], references: [id])
 }
 
 
 model Amenities {
-  amenitiesId    Int             @id @unique @default(autoincrement())
+  id    Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  amenities      String     
+  amenities      Json     
 
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel?  @relation(fields: [hostelId], references: [id])
 
 }
 
-model Services {
-  servicesId    Int             @id @unique @default(autoincrement())
+model Service {
+  id    Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  amenities      String     
+  services      Json     
 
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
+  hostel Hostel  @relation(fields: [hostelId], references: [id])
 
 }
 
 model HostelRules {
-  rulesId    Int             @id @unique @default(autoincrement())
+  id             Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  rules      String     
+  rules          Json
 
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
-
+  hostel Hostel  @relation(fields: [hostelId], references: [id])
 }
 
+model FoodMenu{
+  id Int    @id @unique @default(autoincrement())
+  day        WeekDays 
+  lunch      String?
+  dinner     String?
+  snacks     String?
+  lunchTime  String?
+  snacksTime String?
+  dinnerTime String?
 
-model SHostels {
-  sHostelsId      Int  @id @unique @default(autoincrement())
-  name            String
-  slug            String @unique
-  description     String? 
-  email           String? 
-  contact         String?
-  hostelType      HostelType?  @default(STAY)
-  genderType      GenderType?  
+  hostelId Int
 
-  ranking        Int? @default(1)
-
-
-  country         String 
-  city            String 
-  subCity         String? 
-  street          String?
-  imgUrl          String?
-  originalUrl     String?
-
+  // Define a relation to Hostel
+  hostel Hostel @relation(fields: [hostelId], references: [id])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt()
 
-  @@index([slug,sHostelsId])
-
-}
-
-model GoogleMapLocation {
-  googleMapLocationId      Int  @id @unique @default(autoincrement())
-
-  description         String? 
-  lat                 Float
-  lng                 Float
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  hostelId  Int @unique
-  // Define a relation to Hostel
-  hostel Hostel?  @relation(fields: [hostelId], references: [hostelId])
-
+  @@index([hostelId, day])
 }
 
 //Enums 
@@ -334,17 +368,26 @@ enum UserType {
   HOSTEL_OWNER
   SUPPLIERS 
   SUPERADMIN
+  COMMUNITY_OWNER
   OTHERS
 }
 
 enum GenderType {
   BOYS
   GIRLS
+  OTHERS
+}
+
+enum HostelGenderType {
+  BOYS
+  GIRLS
   BOTH
 }
+
 enum HostelType {
   STAY
-  TRAVELS
+  TRAVELS 
+  PG
   BOTH
 }
 enum StayHostelCategories {
@@ -425,6 +468,49 @@ enum WeekDays {
   THURSDAY
   FRIDAY
   SATURDAY
+}
+
+enum RoomStatus {
+  IDLE
+  AVAILABLE
+  BOOKED
+  INACTIVE
+}
+
+
+enum RoomCapacity {
+  ONE_BED
+  TWO_BED
+  THREE_BED
+  FOUR_BED
+  FIVE_BED
+  SIX_BED
+  SEVEN_BED
+  EIGHT_BED
+  MULTI_BED
+} 
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum Currency {
+  NPR
+  USD
+}
+
+enum PaymentPlatformName {
+  STRIPE
+  ESEWA
+  KHALTI
+}
+
+enum DiscountType {
+  PERCENTAGE 
+  FIXED
+  
 }
 
 //!for advertisement 
@@ -535,23 +621,3 @@ enum WeekDays {
 //   @@unique([hostelId, supplierId])
 // }
 
-model FoodMenu{
-  foodMenuId Int    @id @unique @default(autoincrement())
-  day        WeekDays @unique
-  lunch      String?
-  dinner     String?
-  snacks     String?
-  lunchTime  String?
-  snacksTime String?
-  dinnerTime String?
-
-  hostelId Int
-
-  // Define a relation to Hostel
-  hostel Hostel? @relation(fields: [hostelId], references: [hostelId])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-
-  @@index([hostelId, foodMenuId])
-}

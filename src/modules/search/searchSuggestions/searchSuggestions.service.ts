@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 
-import { SearchQuerys } from '@src/models/global.model';
-
 @Injectable()
 export class SearchSuggestionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSearchSuggestions(query: string): Promise<SearchQuerys[] | null> {
-    const suggestions = await this.prisma.searchQueries.findMany({
+  async getSearchSuggestions(query: string) {
+    const suggestions = await this.prisma.searchQuery.findMany({
       where: {
         OR: [{ city: { contains: query } }, { subCity: { contains: query } }],
       },
@@ -31,11 +29,14 @@ export class SearchSuggestionsService {
       }
     });
 
-    return sortedSuggestions;
+    return {
+      data: sortedSuggestions,
+      error: null,
+    };
   }
 
-  async getCitySuggestions(query: string): Promise<SearchQuerys[] | null> {
-    const suggestions = await this.prisma.searchQueries.findMany({
+  async getCitySuggestions(query: string) {
+    const suggestions = await this.prisma.searchQuery.findMany({
       where: {
         city: { contains: query },
         NOT: { subCity: { not: null } }, // Filter out suggestions with tole
@@ -43,17 +44,23 @@ export class SearchSuggestionsService {
       take: 5,
     });
 
-    return suggestions;
+    return {
+      data: suggestions,
+      error: null,
+    };
   }
 
-  async getToleSuggestions(query: string): Promise<SearchQuerys[] | null> {
-    const suggestions = await this.prisma.searchQueries.findMany({
+  async getToleSuggestions(query: string) {
+    const suggestions = await this.prisma.searchQuery.findMany({
       where: {
         subCity: { contains: query },
       },
       take: 10,
     });
 
-    return suggestions;
+    return {
+      data: suggestions,
+      error: null,
+    };
   }
 }

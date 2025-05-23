@@ -1,32 +1,31 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { SearchSuggestionsService } from './searchSuggestions.service';
-import { SearchQuerys } from '@src/models/global.model';
+import { SearchQuery } from '@src/models/global.model';
 
-@Resolver(() => SearchQuerys)
-// @Controller('hostel') // thats not possible to just create hostel namespace I guess. It must have something
+@Resolver(() => SearchQuery)
 export class SearchSuggestionsResolver {
   constructor(
     private readonly searchSuggestionsService: SearchSuggestionsService,
   ) {}
 
-  @Query(() => [SearchQuerys], { nullable: true })
-  async getHostelSearchSuggestions(
+  @Query(() => [SearchQuery], { nullable: true })
+  async getHomestaySearchSuggestions(
     @Args('query') query: string,
-  ): Promise<SearchQuerys[] | null> {
+  ): Promise<SearchQuery | null> {
     return this.searchSuggestionsService.getSearchSuggestions(query);
   }
 
-  @Query(() => [SearchQuerys], { nullable: true })
+  @Query(() => [SearchQuery], { nullable: true })
   async getCitySearchSuggestions(
     @Args('query') query: string,
-  ): Promise<SearchQuerys[] | null> {
+  ): Promise<SearchQuery | null> {
     return this.searchSuggestionsService.getCitySuggestions(query);
   }
 
-  @Query(() => [SearchQuerys], { nullable: true })
+  @Query(() => [SearchQuery], { nullable: true })
   async getToleSearchSuggestions(
     @Args('query') query: string,
-  ): Promise<SearchQuerys[] | null> {
+  ): Promise<SearchQuery | null> {
     return this.searchSuggestionsService.getToleSuggestions(query);
   }
 }

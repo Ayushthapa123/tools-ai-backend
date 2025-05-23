@@ -1,21 +1,9 @@
-// src/hostel/dto/create-hostel.input.ts
-
-import { InputType, Field, Int } from '@nestjs/graphql';
-import { GenderType, HostelType } from '@prisma/client';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateHostelInput {
   @Field()
   name: string;
-
-  @Field()
-  genderType: GenderType;
-
-  @Field()
-  hostelType: HostelType;
-
-  @Field(() => Int, { nullable: true })
-  capacity?: number;
 
   @Field({ nullable: true })
   description?: string;
