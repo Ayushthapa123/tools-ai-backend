@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Mutation, Context, Int } from '@nestjs/graphql';
 import { RoomImageService } from './room-image.service';
-import { RoomImage } from '@src/models/global.model';
+import { RoomImage, RoomImageList } from '@src/models/global.model';
 import { CreateRoomImageInput } from './dtos/create-room-image.input';
 import { UpdateRoomImageInput } from './dtos/update-room-image.input';
 import { AuthGuard } from '@src/guards/auth.guard';
@@ -10,15 +10,15 @@ import { UseGuards } from '@nestjs/common';
 export class RoomImageResolver {
   constructor(private readonly roomImageService: RoomImageService) {}
 
-  @Query(() => RoomImage, { nullable: true })
+  @Query(() => RoomImageList, { nullable: true })
   @UseGuards(AuthGuard)
   async getRoomImagesByRoomId(
     @Args('roomId', { type: () => Int }) roomId: number,
     @Context() ctx: any,
-  ): Promise<RoomImage> {
+  ): Promise<RoomImageList> {
     const { data, error } = await this.roomImageService.getRoomImagesByRoomId(
       roomId,
-      ctx.user.homestayId,
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }

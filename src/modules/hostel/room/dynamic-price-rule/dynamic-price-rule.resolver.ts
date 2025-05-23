@@ -6,67 +6,67 @@ import { UpdateDynamicPriceRuleInput } from './dtos/update-dynamic-price-rule.in
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@src/guards/auth.guard';
 import {
-  DynamicPriceRule as DynamicPriceRuleResponse,
-  // DynamicPricingRule,
+  DynamicPricingRule,
+  DynamicPricingRuleList,
 } from '@src/models/global.model';
 
-@Resolver(() => DynamicPriceRuleResponse)
+@Resolver(() => DynamicPricingRule)
 export class DynamicPriceRuleResolver {
   constructor(private readonly priceService: DynamicPriceRuleService) {}
 
-  @Mutation(() => DynamicPriceRuleResponse)
+  @Mutation(() => DynamicPricingRule)
   @UseGuards(AuthGuard)
   createPriceRule(
     @Args('createPriceRuleInput')
     createPriceRuleInput: CreateDynamicPriceRuleInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
+    if (!ctx.user?.hostelId) {
       return {
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
-    return this.priceService.create(createPriceRuleInput, ctx.user.homestayId);
+    return this.priceService.create(createPriceRuleInput, ctx.user.hostelId);
   }
 
-  @Query(() => [DynamicPriceRuleResponse], { name: 'pricesRules' })
+  @Query(() => DynamicPricingRuleList, { name: 'pricesRules' })
   findAll() {
     return this.priceService.findAll();
   }
 
-  @Query(() => DynamicPriceRuleResponse, { name: 'priceRule' })
+  @Query(() => DynamicPricingRule, { name: 'priceRule' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.priceService.findOne(id);
   }
 
-  @Query(() => [DynamicPriceRuleResponse], { name: 'priceRulesByRoom' })
+  @Query(() => DynamicPricingRuleList, { name: 'priceRulesByRoom' })
   findPriceRulesByRoomId(@Args('roomId', { type: () => Int }) roomId: number) {
     return this.priceService.findPriceRulesByRoomId(roomId);
   }
 
-  @Mutation(() => DynamicPriceRuleResponse)
+  @Mutation(() => DynamicPricingRule)
   @UseGuards(AuthGuard)
   updatePriceRule(
     @Args('updatePriceInput') updatePriceInput: UpdateDynamicPriceRuleInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
-      throw new Error('User does not have a homestay associated');
+    if (!ctx.user?.hostelId) {
+      throw new Error('User does not have a hostel associated');
     }
-    return this.priceService.update(updatePriceInput, ctx.user.homestayId);
+    return this.priceService.update(updatePriceInput, ctx.user.hostelId);
   }
 
-  @Mutation(() => DynamicPriceRuleResponse)
+  @Mutation(() => DynamicPricingRule)
   @UseGuards(AuthGuard)
   removePriceRule(
     @Args('id', { type: () => Int }) id: number,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
-      throw new Error('User does not have a homestay associated');
+    if (!ctx.user?.hostelId) {
+      throw new Error('User does not have a hostel associated');
     }
-    return this.priceService.remove(id, ctx.user.homestayId);
+    return this.priceService.remove(id, ctx.user.hostelId);
   }
 }

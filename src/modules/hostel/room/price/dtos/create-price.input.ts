@@ -4,7 +4,10 @@ import { Currency, DiscountType } from '@src/models/global.enum';
 @InputType()
 export class CreatePriceInput {
   @Field(() => Int)
-  baseAmount: number;
+  baseAmountPerDay: number;
+
+  @Field(() => Int)
+  baseAmountPerMonth: number;
 
   @Field(() => Currency)
   currency: Currency;

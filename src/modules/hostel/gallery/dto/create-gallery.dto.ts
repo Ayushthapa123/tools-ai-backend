@@ -1,9 +1,9 @@
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CreateHomestayWallpaperInput {
+export class CreateGalleryInput {
   @Field()
-  homestayId: number;
+  hostelId: number;
 
   @Field()
   url: string;

@@ -4,7 +4,7 @@ import { CreateBookingInput } from './dtos/create-booking.input';
 import { UpdateBookingInput } from './dtos/update-booking.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@src/guards/auth.guard';
-import { Booking, MultipleBooking } from '@src/models/global.model';
+import { Booking, BookingList } from '@src/models/global.model';
 import { ValidInvalidBooking } from './models/valid-booking.model';
 import { ConfirmBooking } from './models/confirm-booking.model';
 @Resolver(() => Booking)
@@ -28,7 +28,7 @@ export class BookingResolver {
     return this.bookingService.create(createBookingInput, ctx.user.sub);
   }
 
-  @Query(() => MultipleBooking)
+  @Query(() => BookingList)
   async bookings() {
     const bookings = await this.bookingService.findAll();
     if (!bookings) {
@@ -41,19 +41,19 @@ export class BookingResolver {
     }
     return { data: bookings, error: null };
   }
-  // get booking by homestay id insteasd of pasding id get id from auth context
-  @Query(() => MultipleBooking)
+  // get booking by hostel id insteasd of pasding id get id from auth context
+  @Query(() => BookingList)
   @UseGuards(AuthGuard)
-  async bookingsByHomestay(@Context() ctx: any) {
-    if (!ctx.user?.homestayId) {
+  async bookingsByHostel(@Context() ctx: any) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
-    return this.bookingService.findBookingsByHomestayId(ctx.user.homestayId);
+    return this.bookingService.findBookingsByHostelId(ctx.user.hostelId);
   }
 
   @Query(() => Booking)
@@ -70,7 +70,7 @@ export class BookingResolver {
     return { data: booking, error: null };
   }
 
-  @Query(() => MultipleBooking)
+  @Query(() => BookingList)
   async bookingsWithKey(@Args('bookingKey') bookingKey: string) {
     return this.bookingService.findBookingsWithKey(bookingKey);
   }
@@ -105,7 +105,7 @@ export class BookingResolver {
     return this.bookingService.remove(id, ctx.user.sub);
   }
 
-  @Query(() => MultipleBooking)
+  @Query(() => BookingList)
   @UseGuards(AuthGuard)
   async myBookings(@Context() ctx: any) {
     if (!ctx.user?.sub) {
@@ -119,7 +119,7 @@ export class BookingResolver {
     return this.bookingService.findBookingsByGuestId(ctx.user.sub);
   }
 
-  @Query(() => MultipleBooking)
+  @Query(() => BookingList)
   async roomBookings(@Args('roomId') roomId: number) {
     return this.bookingService.findBookingsByRoomId(roomId);
   }

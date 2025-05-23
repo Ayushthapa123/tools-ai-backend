@@ -144,6 +144,12 @@ export class RoomImage extends BaseResponse {
   data?: RoomImageData;
 }
 
+@ObjectType()
+export class RoomImageList extends BaseResponse {
+  @Field(() => [RoomImageData], { nullable: true })
+  data?: RoomImageData[];
+}
+
 // Booking related types
 @ObjectType()
 export class BookingData {
@@ -188,6 +194,12 @@ export class BookingData {
 export class Booking extends BaseResponse {
   @Field(() => BookingData, { nullable: true })
   data?: BookingData;
+}
+
+@ObjectType()
+export class BookingList extends BaseResponse {
+  @Field(() => [BookingData], { nullable: true })
+  data?: BookingData[];
 }
 
 // Price related types
@@ -277,6 +289,12 @@ export class DynamicPricingRuleData {
 export class DynamicPricingRule extends BaseResponse {
   @Field(() => DynamicPricingRuleData, { nullable: true })
   data?: DynamicPricingRuleData;
+}
+
+@ObjectType()
+export class DynamicPricingRuleList extends BaseResponse {
+  @Field(() => [DynamicPricingRuleData], { nullable: true })
+  data?: DynamicPricingRuleData[];
 }
 
 // RoomAmenity related types
@@ -372,12 +390,17 @@ export class Room extends BaseResponse {
 export class GalleryData {
   @Field(() => ID)
   id: number;
+  @Field(() => Int)
+  hostelId: number;
 
   @Field(() => GalleryType)
   type: GalleryType;
 
   @Field({ nullable: true })
   caption?: string;
+
+  @Field({ nullable: true })
+  isSelected?: boolean;
 
   @Field()
   url: string;
@@ -387,15 +410,18 @@ export class GalleryData {
 
   @Field(() => Date)
   updatedAt: Date;
-
-  @Field(() => Int)
-  hostelId: number;
 }
 
 @ObjectType()
 export class Gallery extends BaseResponse {
   @Field(() => GalleryData, { nullable: true })
   data?: GalleryData;
+}
+
+@ObjectType()
+export class GalleryList extends BaseResponse {
+  @Field(() => [GalleryData], { nullable: true })
+  data?: GalleryData[];
 }
 
 // Social related types
@@ -634,7 +660,7 @@ export class Amenities extends BaseResponse {
 @ObjectType()
 export class ServiceData {
   @Field(() => ID)
-  servicesId: number;
+  id: number;
 
   @Field(() => Int)
   hostelId: number;
@@ -735,8 +761,8 @@ export class HostelData {
   @Field(() => HostelType)
   hostelType: HostelType;
 
-  @Field(() => Int, { nullable: true })
-  ownerId?: number;
+  @Field(() => Int)
+  ownerId: number;
 
   @Field({ nullable: true })
   whatsappId?: string;
@@ -747,41 +773,44 @@ export class HostelData {
   @Field()
   verifiedBySuperAdmin: boolean;
 
-  @Field(() => User, { nullable: true })
-  owner?: User;
+  @Field()
+  verifiedByCommunityOwner: boolean;
 
-  @Field(() => Social, { nullable: true })
-  social?: Social;
+  @Field(() => UserData, { nullable: true })
+  owner?: UserData;
 
-  @Field(() => Address, { nullable: true })
-  address?: Address;
+  @Field(() => SocialData, { nullable: true })
+  social?: SocialData;
 
-  @Field(() => ContactDetail, { nullable: true })
-  contact?: ContactDetail;
+  @Field(() => AddressData, { nullable: true })
+  address?: AddressData;
 
-  @Field(() => HostelSetting, { nullable: true })
-  hostelSettings?: HostelSetting;
+  @Field(() => ContactDetailData, { nullable: true })
+  contact?: ContactDetailData;
 
-  @Field(() => Amenities, { nullable: true })
-  amenities?: Amenities;
+  @Field(() => HostelSettingData, { nullable: true })
+  hostelSettings?: HostelSettingData;
 
-  @Field(() => Service, { nullable: true })
-  service?: Service;
+  @Field(() => AmenitiesData, { nullable: true })
+  amenities?: AmenitiesData;
 
-  @Field(() => HostelRules, { nullable: true })
-  hostelRules?: HostelRules;
+  @Field(() => ServiceData, { nullable: true })
+  service?: ServiceData;
 
-  @Field(() => [Gallery])
-  gallery: Gallery[];
+  @Field(() => HostelRulesData, { nullable: true })
+  hostelRules?: HostelRulesData;
 
-  @Field(() => [Room])
+  @Field(() => [GalleryData])
+  gallery: GalleryData[];
+
+  @Field(() => [RoomData])
   rooms: Room[];
 
-  @Field(() => [NearbyPlace])
-  nearbyPlaces: NearbyPlace[];
+  @Field(() => [NearbyPlaceData])
+  nearbyPlaces: NearbyPlaceData[];
 
-  @Field(() => [FoodMenu])
-  foodMenu: FoodMenu[];
+  @Field(() => [FoodMenuData])
+  foodMenu: FoodMenuData[];
 
   @Field(() => Date)
   createdAt: Date;
@@ -797,4 +826,31 @@ export class HostelData {
 export class Hostel extends BaseResponse {
   @Field(() => HostelData, { nullable: true })
   data?: HostelData;
+}
+
+@ObjectType()
+export class Ctx {
+  @Field()
+  sub: number;
+
+  @Field(() => UserType)
+  userType: UserType;
+
+  @Field({ nullable: true })
+  hostelId?: number;
+}
+
+@ObjectType()
+export class CtxType {
+  @Field(() => Ctx)
+  user: Ctx;
+}
+
+@ObjectType()
+export class BookingConfirmationMailData {
+  @Field(() => [Int])
+  roomNumbers: string[];
+
+  @Field()
+  name: string;
 }

@@ -1,10 +1,11 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 @InputType()
 export class CreateRulesInput {
   @Field(() => Int)
-  homestayId: number;
+  hostelId: number;
 
-  @Field()
-  rules: string; // JSON string
+  @Field(() => GraphQLJSON)
+  rules: any; // JSON string
 }

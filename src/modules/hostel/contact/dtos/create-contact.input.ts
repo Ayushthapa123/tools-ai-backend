@@ -3,7 +3,7 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class CreateContactInput {
   @Field()
-  homestayId: number;
+  hostelId: number;
   @Field()
   email: string;
 

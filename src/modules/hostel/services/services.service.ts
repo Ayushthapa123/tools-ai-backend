@@ -8,8 +8,10 @@ export class ServicesService {
   constructor(private prisma: PrismaService) {}
 
   async createService(createServiceDto: CreateServiceDto) {
-    const service = await this.prisma.services.create({
-      data: createServiceDto,
+    const service = await this.prisma.service.create({
+      data: {
+        ...createServiceDto,
+      },
     });
 
     return {
@@ -18,9 +20,9 @@ export class ServicesService {
     };
   }
 
-  async findByHomestayId(homestayId: number) {
-    const service = await this.prisma.services.findUnique({
-      where: { homestayId },
+  async findByHomestayId(hostelId: number) {
+    const service = await this.prisma.service.findUnique({
+      where: { hostelId },
     });
 
     return {
@@ -31,7 +33,7 @@ export class ServicesService {
 
   async updateService(updateServiceDto: UpdateServiceDto) {
     const { id, ...data } = updateServiceDto;
-    const service = await this.prisma.services.update({
+    const service = await this.prisma.service.update({
       where: { id },
       data,
     });
@@ -43,7 +45,7 @@ export class ServicesService {
   }
 
   async removeService(id: number) {
-    const service = await this.prisma.services.delete({
+    const service = await this.prisma.service.delete({
       where: { id },
     });
 

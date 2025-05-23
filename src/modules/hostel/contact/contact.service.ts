@@ -8,8 +8,8 @@ export class ContactService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getContactsByHomestayId(homestayId: number) {
-    const contact = await this.prisma.contactDetails.findUnique({
-      where: { homestayId: homestayId },
+    const contact = await this.prisma.contactDetail.findUnique({
+      where: { hostelId: homestayId },
     });
     if (!contact) {
       return {
@@ -26,7 +26,7 @@ export class ContactService {
   }
 
   async createContacts(data: CreateContactInput) {
-    const contact = await this.prisma.contactDetails.create({ data });
+    const contact = await this.prisma.contactDetail.create({ data });
     return {
       data: contact,
       error: null,
@@ -34,7 +34,7 @@ export class ContactService {
   }
 
   async updateContacts(contactId: number, data: UpdateContactInput) {
-    const contact = await this.prisma.contactDetails.update({
+    const contact = await this.prisma.contactDetail.update({
       where: { id: contactId },
       data,
     });
@@ -45,7 +45,7 @@ export class ContactService {
   }
 
   async deleteContacts(contactId: number) {
-    const contact = await this.prisma.contactDetails.delete({
+    const contact = await this.prisma.contactDetail.delete({
       where: { id: contactId },
     });
     return {

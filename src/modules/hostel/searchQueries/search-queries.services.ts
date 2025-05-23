@@ -8,7 +8,7 @@ export class SearchQueriesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSearchQueries(query: string) {
-    const res = await this.prisma.searchQueries.findMany({
+    const res = await this.prisma.searchQuery.findMany({
       where: {
         OR: [
           { city: { contains: query, mode: 'insensitive' } },
@@ -23,7 +23,7 @@ export class SearchQueriesService {
     };
   }
   async getAllSearchQueries() {
-    const res = await this.prisma.searchQueries.findMany({});
+    const res = await this.prisma.searchQuery.findMany({});
     return {
       data: res,
       error: null,
@@ -31,7 +31,7 @@ export class SearchQueriesService {
   }
 
   async getSearchQueryById(searchQueryId: number) {
-    const res = await this.prisma.searchQueries.findUnique({
+    const res = await this.prisma.searchQuery.findUnique({
       where: { id: searchQueryId },
     });
     return {
@@ -41,11 +41,11 @@ export class SearchQueriesService {
   }
 
   async createSearchQuery(data: CreateSearchQueriesInput) {
-    const searchQuery = await this.prisma.searchQueries.findFirst({
+    const searchQuery = await this.prisma.searchQuery.findFirst({
       where: { country: data.country, city: data.city, subCity: data.subCity },
     });
     if (!searchQuery) {
-      const res = await this.prisma.searchQueries.create({
+      const res = await this.prisma.searchQuery.create({
         data,
       });
       return {
@@ -66,12 +66,12 @@ export class SearchQueriesService {
     searchQueryId: number,
     data: UpdateSearchQueriesInput,
   ) {
-    const searchQuery = this.prisma.searchQueries.findFirst({
+    const searchQuery = this.prisma.searchQuery.findFirst({
       where: { country: data.country, city: data.city, subCity: data.subCity },
     });
 
     if (!searchQuery) {
-      const res = await this.prisma.searchQueries.update({
+      const res = await this.prisma.searchQuery.update({
         where: { id: searchQueryId },
         data,
       });
@@ -90,7 +90,7 @@ export class SearchQueriesService {
   }
 
   async deleteSearchQuery(searchQueryId: number) {
-    const res = await this.prisma.searchQueries.delete({
+    const res = await this.prisma.searchQuery.delete({
       where: { id: searchQueryId },
     });
     return {

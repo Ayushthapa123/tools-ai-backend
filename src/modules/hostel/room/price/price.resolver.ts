@@ -16,10 +16,10 @@ export class PriceResolver {
     @Args('createPriceInput') createPriceInput: CreatePriceInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
-      throw new Error('User does not have a homestay associated');
+    if (!ctx.user?.hostelId) {
+      throw new Error('User does not have a hostel associated');
     }
-    return this.priceService.create(createPriceInput, ctx.user.homestayId);
+    return this.priceService.create(createPriceInput, ctx.user.hostelId);
   }
 
   @Query(() => [Price], { name: 'prices' })
@@ -43,15 +43,15 @@ export class PriceResolver {
     @Args('updatePriceInput') updatePriceInput: UpdatePriceInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
-    return this.priceService.update(updatePriceInput, ctx.user.homestayId);
+    return this.priceService.update(updatePriceInput, ctx.user.hostelId);
   }
 
   @Mutation(() => Price)
@@ -60,9 +60,9 @@ export class PriceResolver {
     @Args('id', { type: () => Int }) id: number,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
-      throw new Error('User does not have a homestay associated');
+    if (!ctx.user?.hostelId) {
+      throw new Error('User does not have a hostel associated');
     }
-    return this.priceService.remove(id, ctx.user.homestayId);
+    return this.priceService.remove(id, ctx.user.hostelId);
   }
 }

@@ -74,9 +74,9 @@ export class BookingService {
     };
   }
 
-  async findBookingsByHomestayId(homestayId: number) {
+  async findBookingsByHostelId(hostelId: number) {
     const bookings = await this.prisma.booking.findMany({
-      where: { room: { homestayId } },
+      where: { room: { hostelId } },
       include: {
         room: { include: { price: true } },
         guest: true,
@@ -370,14 +370,14 @@ export class BookingService {
                   r.isActive &&
                   r.isWeekend === isThisDateWeekend
                 );
-              })?.amount ?? room?.price?.baseAmount)
-          : (room?.price?.baseAmount ?? 0);
+              })?.amount ?? room?.price?.baseAmountPerDay)
+          : (room?.price?.baseAmountPerDay ?? 0);
         totalPrice += price;
         totalPriceOfRoom += price;
       }
       bookingSummary.push({
         roomId,
-        price: room?.price?.baseAmount,
+        price: room?.price?.baseAmountPerDay,
         totalPriceOfRoom,
         priceType: room?.price?.isDynamicPricing
           ? 'Dynamic Pricing'

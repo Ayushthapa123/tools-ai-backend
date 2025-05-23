@@ -16,12 +16,12 @@ export class RoomResolver {
     @Args('createRoomInput') createRoomInput: CreateRoomInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
-      throw new Error('User does not have a homestay associated');
+    if (!ctx.user?.hostelId) {
+      throw new Error('User does not have a hostel associated');
     }
     const { data, error } = await this.roomService.create(
       createRoomInput,
-      ctx.user.homestayId,
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }
@@ -38,17 +38,17 @@ export class RoomResolver {
     @Args('id', { type: () => Int }) id: number,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
     const { data, error } = await this.roomService.findOne(
       id,
-      ctx.user.homestayId,
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }
@@ -66,17 +66,17 @@ export class RoomResolver {
     @Args('updateRoomInput') updateRoomInput: UpdateRoomInput,
     @Context() ctx: any,
   ) {
-    if (!ctx.user?.homestayId) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
     const { data, error } = await this.roomService.update(
       updateRoomInput,
-      ctx.user.homestayId,
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }
@@ -87,34 +87,34 @@ export class RoomResolver {
     @Args('id', { type: () => Int }) id: number,
     @Context() ctx: any,
   ): Promise<Room> {
-    if (!ctx.user?.homestayId) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
     const { data, error } = await this.roomService.remove(
       id,
-      ctx.user.homestayId,
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }
 
-  @Query(() => Room, { name: 'roomsByHomestay' })
+  @Query(() => Room, { name: 'roomsByHostel' })
   @UseGuards(AuthGuard)
-  async findRoomsByHomestayId(@Context() ctx: any) {
-    if (!ctx.user?.homestayId) {
+  async findRoomsByHostelId(@Context() ctx: any) {
+    if (!ctx.user?.hostelId) {
       return {
         data: null,
         error: {
-          message: 'User does not have a homestay associated',
+          message: 'User does not have a hostel associated',
         },
       };
     }
-    const { data, error } = await this.roomService.findRoomsByHomestayId(
-      ctx.user.homestayId,
+    const { data, error } = await this.roomService.findRoomsByHostelId(
+      ctx.user.hostelId,
     );
     return { data: data, error };
   }

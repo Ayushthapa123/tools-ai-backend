@@ -45,14 +45,14 @@ export class ImageController {
 
       await s3Client.send(
         new PutObjectCommand({
-          Bucket: 'homestay',
+          Bucket: 'hostel',
           Key: key,
           Body: image.buffer,
           ACL: 'public-read',
         }),
       );
       return {
-        imageUrl: `https://s3-np1.datahub.com.np/homestay/${key}`,
+        imageUrl: `https://s3-np1.datahub.com.np/hostel/${key}`,
       };
     } catch (error) {
       console.error('Error uploading image:', error);

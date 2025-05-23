@@ -7,9 +7,10 @@ import { UpdatePriceInput } from './dtos/update-price.input';
 export class PriceService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createPriceInput: CreatePriceInput, homestayId: number) {
+  async create(createPriceInput: CreatePriceInput, hostelId: number) {
     const {
-      baseAmount,
+      baseAmountPerDay,
+      baseAmountPerMonth,
       currency,
       roomId,
       isDynamicPricing,
@@ -22,7 +23,7 @@ export class PriceService {
       isDiscountActive,
     } = createPriceInput;
 
-    // Check if room exists and belongs to the homestay
+    // Check if room exists and belongs to the hostel
     const room = await this.prisma.room.findUnique({
       where: { id: roomId },
     });
@@ -36,7 +37,7 @@ export class PriceService {
       };
     }
 
-    if (room.homestayId !== homestayId) {
+    if (room.hostelId !== hostelId) {
       return {
         data: null,
         error: {
@@ -47,7 +48,8 @@ export class PriceService {
 
     const createPrice = await this.prisma.price.create({
       data: {
-        baseAmount,
+        baseAmountPerDay,
+        baseAmountPerMonth,
         currency,
         roomId,
         isDynamicPricing,
@@ -88,7 +90,7 @@ export class PriceService {
     return { data: price, error: null };
   }
 
-  async update(updatePriceInput: UpdatePriceInput, homestayId: number) {
+  async update(updatePriceInput: UpdatePriceInput, hostelId: number) {
     const { id, ...rest } = updatePriceInput;
 
     const price = await this.prisma.price.findUnique({
@@ -107,7 +109,7 @@ export class PriceService {
       };
     }
 
-    if (price.room.homestayId !== homestayId) {
+    if (price.room.hostelId !== hostelId) {
       return {
         error: {
           message: 'You do not have permission to update this price',
@@ -123,7 +125,7 @@ export class PriceService {
     return { data: updatedPrice, error: null };
   }
 
-  async remove(id: number, homestayId: number) {
+  async remove(id: number, hostelId: number) {
     const price = await this.prisma.price.findUnique({
       where: { id },
       include: {
@@ -140,7 +142,7 @@ export class PriceService {
       };
     }
 
-    if (price.room.homestayId !== homestayId) {
+    if (price.room.hostelId !== hostelId) {
       return {
         error: {
           message: 'You do not have permission to delete this price',

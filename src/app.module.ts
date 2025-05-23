@@ -14,8 +14,9 @@ import { JwtService } from '@nestjs/jwt'; //remove this
 import { SearchModule } from './modules/search/search.module';
 import { SearchSuggestionsModule } from './modules/search/searchSuggestions/searchSuggestions.module';
 import { ImageModule } from './modules/image/image.module';
-import { AmenityModule } from './modules/amenity/amenity.module';
 import { MailersendModule } from './modules/mailersend/mailersend.module';
+import { HostelModule } from './modules/hostel/hostel.module';
+import { SearchQueriesModule } from './modules/hostel/searchQueries/search-queries.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,11 +33,12 @@ import { MailersendModule } from './modules/mailersend/mailersend.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    HostelModule,
+    SearchQueriesModule,
     SearchModule,
     SearchSuggestionsModule,
     ImageModule,
     MailersendModule,
-    AmenityModule,
   ],
 
   controllers: [AppController], //we don't need it now

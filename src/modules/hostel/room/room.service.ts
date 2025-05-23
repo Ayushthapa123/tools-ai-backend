@@ -7,7 +7,7 @@ import { UpdateRoomInput } from './dtos/update-room.input';
 export class RoomService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createRoomInput: CreateRoomInput, homestayId: number) {
+  async create(createRoomInput: CreateRoomInput, hostelId: number) {
     const {
       status,
       capacity,
@@ -17,16 +17,16 @@ export class RoomService {
       maxOccupancy,
     } = createRoomInput;
 
-    // Check if homestay exists
-    const homestay = await this.prisma.homestay.findUnique({
-      where: { id: homestayId },
+    // Check if hostel exists
+    const hostel = await this.prisma.hostel.findUnique({
+      where: { id: hostelId },
     });
 
-    if (!homestay) {
+    if (!hostel) {
       return {
         data: null,
         error: {
-          message: `Homestay with ID ${homestayId} not found`,
+          message: `Hostel with ID ${hostelId} not found`,
         },
       };
     }
@@ -38,7 +38,7 @@ export class RoomService {
         attachBathroom,
         caption,
         roomNumber,
-        homestayId,
+        hostelId,
         maxOccupancy,
       },
       include: {
@@ -67,9 +67,9 @@ export class RoomService {
     };
   }
 
-  async findOne(id: number, homestayId: number) {
+  async findOne(id: number, hostelId: number) {
     const room = await this.prisma.room.findUnique({
-      where: { id, homestayId },
+      where: { id, hostelId },
       include: {
         image: true,
         price: true,
@@ -99,19 +99,19 @@ export class RoomService {
         },
       },
       include: {
-        homestay: true,
+        hostel: true,
       },
     });
     const roomNumbers = rooms.map((room) => room.roomNumber);
-    const homestayName = rooms[0].homestay.name;
-    return { roomNumbers, name: homestayName };
+    const hostelName = rooms[0].hostel.name;
+    return { roomNumbers, name: hostelName };
   }
 
-  async update(updateRoomInput: UpdateRoomInput, homestayId: number) {
+  async update(updateRoomInput: UpdateRoomInput, hostelId: number) {
     const { id, ...rest } = updateRoomInput;
     const dataToUpdate = Object.fromEntries(
       Object.entries(rest).filter(
-        ([key]) => !['homestayId', 'price'].includes(key),
+        ([key]) => !['hostelId', 'price'].includes(key),
       ),
     );
 
@@ -128,7 +128,7 @@ export class RoomService {
       };
     }
 
-    if (room.homestayId !== homestayId) {
+    if (room.hostelId !== hostelId) {
       return {
         data: null,
         error: {
@@ -152,7 +152,7 @@ export class RoomService {
     };
   }
 
-  async remove(id: number, homestayId: number) {
+  async remove(id: number, hostelId: number) {
     try {
       const room = await this.prisma.room.findUnique({
         where: { id },
@@ -167,7 +167,7 @@ export class RoomService {
         };
       }
 
-      if (room.homestayId !== homestayId) {
+      if (room.hostelId !== hostelId) {
         return {
           data: null,
           error: {
@@ -194,9 +194,9 @@ export class RoomService {
     }
   }
 
-  async findRoomsByHomestayId(homestayId: number) {
+  async findRoomsByHostelId(hostelId: number) {
     const rooms = await this.prisma.room.findMany({
-      where: { homestayId },
+      where: { hostelId },
       include: {
         image: true,
         booking: true,

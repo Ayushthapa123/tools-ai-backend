@@ -43,15 +43,16 @@ model Hostel {
   description String?
   slug        String  @unique
   ranking     Int? @default(0)
-  genderType  GenderType
+  genderType  HostelGenderType @default(BOTH)
   hostelType  HostelType @default(STAY) 
 
-  ownerId Int? @unique
+  ownerId     Int @unique
 
   whatsappId  String?
   telegramId  String?
 
-  verifiedBySuperAdmin    Boolean @default(false)
+  verifiedBySuperAdmin    Boolean @default(false) 
+  verifiedByCommunityOwner    Boolean @default(false)
 
   owner            User?             @relation(fields: [ownerId], references: [id])
 
@@ -198,14 +199,17 @@ model RoomAmenity {
 
 model Gallery {
   id        Int     @id @unique @default(autoincrement())
+  hostelId  Int     
+
   type      GalleryType @default(ROOM)
   caption   String?// Like Room no1, Room No2, 
   url       String
+  isSelected Boolean @default(false)
+
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  hostelId  Int     
   // Define a relation to Hostel
   hostel Hostel @relation(fields: [hostelId], references: [id])
 
@@ -321,9 +325,9 @@ model Amenities {
 }
 
 model Service {
-  servicesId    Int             @id @unique @default(autoincrement())
+  id    Int             @id @unique @default(autoincrement())
   hostelId       Int             @unique 
-  amenities      Json     
+  services      Json     
 
   hostel Hostel  @relation(fields: [hostelId], references: [id])
 
@@ -364,6 +368,7 @@ enum UserType {
   HOSTEL_OWNER
   SUPPLIERS 
   SUPERADMIN
+  COMMUNITY_OWNER
   OTHERS
 }
 

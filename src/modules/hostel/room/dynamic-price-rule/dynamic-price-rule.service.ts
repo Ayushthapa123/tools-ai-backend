@@ -7,8 +7,8 @@ import { PrismaService } from '@src/prisma/prisma.service';
 import { CreateDynamicPriceRuleInput } from './dtos/create-dynamic-price-rule.input';
 import { UpdateDynamicPriceRuleInput } from './dtos/update-dynamic-price-rule.input';
 import {
-  DynamicPriceRule as DynamicPriceRuleResponse,
-  // DynamicPricingRule,
+  DynamicPricingRule,
+  DynamicPricingRuleList,
 } from '@src/models/global.model';
 
 @Injectable()
@@ -17,8 +17,8 @@ export class DynamicPriceRuleService {
 
   async create(
     createPriceInput: CreateDynamicPriceRuleInput,
-    homestayId: number,
-  ): Promise<DynamicPriceRuleResponse> {
+    hostelId: number,
+  ): Promise<DynamicPricingRule> {
     const {
       name,
       description,
@@ -31,7 +31,7 @@ export class DynamicPriceRuleService {
       priority,
     } = createPriceInput;
 
-    // Check if room exists and belongs to the homestay
+    // Check if room exists and belongs to the hostel
     const room = await this.prisma.room.findUnique({
       where: { id: roomId },
     });
@@ -45,7 +45,7 @@ export class DynamicPriceRuleService {
       };
     }
 
-    if (room.homestayId !== homestayId) {
+    if (room.hostelId !== hostelId) {
       throw new ForbiddenException(
         'You do not have permission to create price for this room',
       );
@@ -93,15 +93,15 @@ export class DynamicPriceRuleService {
     };
   }
 
-  async findAll(): Promise<DynamicPriceRuleResponse[]> {
+  async findAll(): Promise<DynamicPricingRuleList> {
     const data = await this.prisma.dynamicPricingRule.findMany();
-    return data.map((item) => ({
-      data: item,
+    return {
+      data,
       error: null,
-    }));
+    };
   }
 
-  async findOne(id: number): Promise<DynamicPriceRuleResponse> {
+  async findOne(id: number): Promise<DynamicPricingRule> {
     const price = await this.prisma.dynamicPricingRule.findUnique({
       where: { id },
     });
@@ -123,8 +123,8 @@ export class DynamicPriceRuleService {
 
   async update(
     updatePriceInput: UpdateDynamicPriceRuleInput,
-    homestayId: number,
-  ): Promise<DynamicPriceRuleResponse> {
+    hostelId: number,
+  ): Promise<DynamicPricingRule> {
     const { id, ...rest } = updatePriceInput;
 
     const price = await this.prisma.dynamicPricingRule.findUnique({
@@ -143,7 +143,7 @@ export class DynamicPriceRuleService {
       };
     }
 
-    if (price.room.homestayId !== homestayId) {
+    if (price.room.hostelId !== hostelId) {
       return {
         error: {
           message: 'You do not have permission to update this price',
@@ -163,10 +163,7 @@ export class DynamicPriceRuleService {
     };
   }
 
-  async remove(
-    id: number,
-    homestayId: number,
-  ): Promise<DynamicPriceRuleResponse> {
+  async remove(id: number, hostelId: number): Promise<DynamicPricingRule> {
     const price = await this.prisma.dynamicPricingRule.findUnique({
       where: { id },
       include: {
@@ -183,7 +180,7 @@ export class DynamicPriceRuleService {
       };
     }
 
-    if (price.room.homestayId !== homestayId) {
+    if (price.room.hostelId !== hostelId) {
       throw new ForbiddenException(
         'You do not have permission to delete this price',
       );
@@ -201,7 +198,7 @@ export class DynamicPriceRuleService {
 
   async findPriceRulesByRoomId(
     roomId: number,
-  ): Promise<DynamicPriceRuleResponse[]> {
+  ): Promise<DynamicPricingRuleList> {
     const price = await this.prisma.dynamicPricingRule.findMany({
       where: { roomId: roomId },
     });
@@ -212,9 +209,9 @@ export class DynamicPriceRuleService {
       );
     }
 
-    return price.map((item) => ({
-      data: item,
+    return {
+      data: price,
       error: null,
-    }));
+    };
   }
 }

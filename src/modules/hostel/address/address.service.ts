@@ -7,9 +7,9 @@ import { CreateAddressInput } from './dtos/create-address.input';
 export class AddressService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAddressByHomestayId(homestayId: number) {
+  async getAddressByHomestayId(hostelId: number) {
     const address = await this.prisma.address.findUnique({
-      where: { homestayId: homestayId },
+      where: { hostelId },
     });
     if (!address) {
       return {
@@ -27,26 +27,35 @@ export class AddressService {
 
   async createAddress(data: CreateAddressInput) {
     //check whether a searchQueries already have address
-    const searchCity = await this.prisma.searchQueries.findFirst({
+    const searchCity = await this.prisma.searchQuery.findFirst({
       where: { city: data.city, country: data.country },
     });
     if (!searchCity) {
       //create searchquery with just country and city
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: { country: data.country, city: data.city },
       });
     }
-    const searchSubCity = await this.prisma.searchQueries.findFirst({
+    const searchSubCity = await this.prisma.searchQuery.findFirst({
       where: { subCity: data.subCity, city: data.city, country: data.country },
     });
     if (!searchSubCity && data.subCity) {
       //create searchquery with country and city subcity
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: { country: data.country, city: data.city, subCity: data.subCity },
       });
     }
-
-    const address = await this.prisma.address.create({ data });
+    const address = await this.prisma.address.create({
+      data: {
+        hostelId: data.hostelId,
+        country: data.country,
+        city: data.city,
+        subCity: data.subCity,
+        street: data.street,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
+    });
     return {
       data: address,
       error: null,
@@ -55,7 +64,7 @@ export class AddressService {
 
   async updateAddress(addressId: number, data: UpdateAddressInput) {
     //check whether a searchQueries already have address
-    const searchCity = await this.prisma.searchQueries.findFirst({
+    const searchCity = await this.prisma.searchQuery.findFirst({
       where: {
         city: {
           equals: data.city,
@@ -70,14 +79,14 @@ export class AddressService {
 
     if (!searchCity) {
       //create searchquery with just country and city
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: {
           country: data.country.toLowerCase(),
           city: data.city.toLowerCase(),
         },
       });
     }
-    const searchSubCity = await this.prisma.searchQueries.findFirst({
+    const searchSubCity = await this.prisma.searchQuery.findFirst({
       where: {
         subCity: data.subCity.toLowerCase(),
         city: data.city.toLowerCase(),
@@ -86,7 +95,7 @@ export class AddressService {
     });
     if (!searchSubCity && data.subCity) {
       //create searchquery with country and city subcity
-      await this.prisma.searchQueries.create({
+      await this.prisma.searchQuery.create({
         data: {
           country: data.country.toLowerCase(),
           city: data.city.toLowerCase(),

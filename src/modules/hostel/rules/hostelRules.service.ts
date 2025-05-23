@@ -4,11 +4,11 @@ import { CreateRulesInput } from './dtos/create-rules.input';
 import { UpdateRulesInput } from './dtos/update-rules.input';
 
 @Injectable()
-export class HomestayRulesService {
+export class HostelRulesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getRulesById(rulesId: number) {
-    const rules = await this.prisma.homestayRules.findUnique({
+    const rules = await this.prisma.hostelRules.findUnique({
       where: { id: rulesId },
     });
     return {
@@ -17,9 +17,9 @@ export class HomestayRulesService {
     };
   }
 
-  async getRulesByHomestayId(homestayId: number) {
-    const rules = await this.prisma.homestayRules.findUnique({
-      where: { homestayId },
+  async getRulesByHostelId(hostelId: number) {
+    const rules = await this.prisma.hostelRules.findUnique({
+      where: { hostelId },
     });
     return {
       data: rules,
@@ -28,7 +28,7 @@ export class HomestayRulesService {
   }
 
   async createRules(data: CreateRulesInput) {
-    const rules = await this.prisma.homestayRules.create({
+    const rules = await this.prisma.hostelRules.create({
       data,
     });
     return {
@@ -38,7 +38,7 @@ export class HomestayRulesService {
   }
 
   async updateRules(rulesId: number, data: UpdateRulesInput) {
-    const rules = await this.prisma.homestayRules.update({
+    const rules = await this.prisma.hostelRules.update({
       where: { id: rulesId },
       data,
     });
@@ -49,7 +49,7 @@ export class HomestayRulesService {
   }
 
   async deleteRules(rulesId: number) {
-    const rules = await this.prisma.homestayRules.delete({
+    const rules = await this.prisma.hostelRules.delete({
       where: { id: rulesId },
     });
     return {

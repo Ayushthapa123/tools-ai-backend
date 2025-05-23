@@ -1,10 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 @InputType()
 export class CreateServiceDto {
-  @Field()
-  service: string;
+  @Field(() => GraphQLJSON)
+  services: any;
 
   @Field()
-  homestayId: number;
+  hostelId: number;
 }

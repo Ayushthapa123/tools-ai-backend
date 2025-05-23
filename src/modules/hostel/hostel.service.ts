@@ -1,25 +1,25 @@
-import { UpdateHomestayInput } from './dtos/update-homestay.input';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Homestay } from '@src/models/global.model';
+import { UpdateHostelInput } from './dtos/update-hostel.input';
+import { Injectable } from '@nestjs/common';
+// import { HostelData } from '@src/models/global.model';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateHomestayInput } from './dtos/create-homestay.input';
+import { CreateHostelInput } from './dtos/create-hostel.input';
 import { UserType } from '@src/models/global.enum';
 
 @Injectable()
-export class HomestayService {
+export class HostelService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllHomestays(pageSize: number, pageNumber: number) {
+  async getAllHostels(pageSize: number, pageNumber: number) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
-    const homestays = await this.prisma.homestay.findMany({
+    const hostels = await this.prisma.hostel.findMany({
       skip,
       take,
       include: {
         address: true,
         contact: true,
-        image: true,
+        gallery: true,
         rooms: {
           include: {
             image: true,
@@ -29,42 +29,38 @@ export class HomestayService {
       },
     });
 
-    const convertedHomestays = homestays.map((homestay) => ({
-      ...homestay,
-      rooms: homestay.rooms.map((room) => ({
+    const convertedHostels = hostels?.map((hostel) => ({
+      ...hostel,
+      rooms: hostel.rooms.map((room) => ({
         ...room,
-        status: room.status as any, // Type assertion to handle enum conversion
+        // status: room.status as any, // Type assertion to handle enum conversion
       })),
-    })) as Homestay[];
+    }));
 
     return {
-      data: convertedHomestays,
+      data: convertedHostels,
       error: null,
     };
   }
 
-  async getHomestayById(homestayId: number) {
-    const homestay = await this.prisma.homestay.findUnique({
-      where: { id: homestayId },
+  async getHostelById(hostelId: number) {
+    const hostel = await this.prisma.hostel.findUnique({
+      where: { id: hostelId },
     });
     return {
-      data: homestay,
+      data: hostel,
       error: null,
     };
   }
 
-  async getHomestayBySlug(
-    slug: string,
-    checkInDate?: Date,
-    checkOutDate?: Date,
-  ) {
+  async getHostelBySlug(slug: string, checkInDate?: Date, checkOutDate?: Date) {
     const userCheckInDate = checkInDate || new Date('1970-01-01');
     const userCheckOutDate = checkOutDate || new Date('1970-01-01');
-    const homestay = await this.prisma.homestay.findUnique({
+    const hostel = await this.prisma.hostel.findUnique({
       where: { slug },
       include: {
         address: true,
-        image: true,
+        gallery: true,
         contact: true,
         rooms: {
           include: {
@@ -97,37 +93,37 @@ export class HomestayService {
       },
     });
 
-    if (!homestay)
+    if (!hostel)
       return {
         data: null,
         error: {
-          message: 'homestay not found',
+          message: 'hostel not found',
         },
       };
-    console.log('aaaaaaaaaa', homestay.rooms?.[0]?.image);
+    console.log('aaaaaaaaaa', hostel.rooms?.[0]?.image);
 
     // Convert Prisma RoomStatus to global RoomStatus
-    const convertedHomestay = {
-      ...homestay,
-      rooms: homestay.rooms.map((room) => ({
+    const convertedHostel = {
+      ...hostel,
+      rooms: hostel.rooms.map((room) => ({
         ...room,
         status: room.status as any, // Type assertion to handle enum conversion
       })),
     };
 
     return {
-      data: convertedHomestay,
+      data: convertedHostel,
       error: null,
     };
   }
 
-  async getHomestayBytoken(userId: number) {
+  async getHostelBytoken(userId: number) {
     try {
-      const homestay = await this.prisma.homestay.findFirst({
+      const hostel = await this.prisma.hostel.findFirst({
         where: { ownerId: Number(userId) },
       });
       return {
-        data: homestay,
+        data: hostel,
         error: null,
       };
     } catch (error) {
@@ -135,23 +131,23 @@ export class HomestayService {
       return {
         data: null,
         error: {
-          message: 'homestay not found',
+          message: 'hostel not found',
         },
       };
     }
   }
 
-  async createHomestay(userId: number, data: CreateHomestayInput) {
+  async createHostel(userId: number, data: CreateHostelInput) {
     const slug = generateSlug(data.name);
 
     try {
-      const res = await this.prisma.homestay.create({
+      const res = await this.prisma.hostel.create({
         data: { ...data, slug: slug, ownerId: userId },
       });
       if (res.id) {
         await this.prisma.user.update({
           where: { id: userId },
-          data: { homestayId: res?.id },
+          data: { hostelId: res?.id },
         });
         return {
           data: res,
@@ -175,9 +171,9 @@ export class HomestayService {
     }
   }
 
-  async updateHomestay(homestayId: number, data: UpdateHomestayInput) {
-    const res = await this.prisma.homestay.update({
-      where: { id: homestayId },
+  async updateHostel(hostelId: number, data: UpdateHostelInput) {
+    const res = await this.prisma.hostel.update({
+      where: { id: hostelId },
       data,
     });
     return {
@@ -186,9 +182,9 @@ export class HomestayService {
     };
   }
 
-  async deleteHomestay(homestayId: number) {
-    const res = await this.prisma.homestay.delete({
-      where: { id: homestayId },
+  async deleteHostel(hostelId: number) {
+    const res = await this.prisma.hostel.delete({
+      where: { id: hostelId },
     });
     return {
       data: res,
@@ -196,22 +192,22 @@ export class HomestayService {
     };
   }
 
-  async verifyHomestay(homestayId: number, userType: string, status: boolean) {
-    if (userType === UserType.COMMUNITY_OWNER) {
-      const res = await this.prisma.homestay.update({
-        where: { id: homestayId },
+  async verifyHostel(hostelId: number, userType: string, status: boolean) {
+    if (userType === UserType.SUPERADMIN) {
+      const res = await this.prisma.hostel.update({
+        where: { id: hostelId },
         data: {
-          moderatedByCommunityOwner: status,
+          verifiedBySuperAdmin: status,
         },
       });
       return {
         data: res,
         error: null,
       };
-    } else if (userType === UserType.SUPERADMIN) {
-      const res = await this.prisma.homestay.update({
-        where: { id: homestayId },
-        data: { moderatedBySuperAdmin: status },
+    } else if (userType === UserType.COMMUNITY_OWNER) {
+      const res = await this.prisma.hostel.update({
+        where: { id: hostelId },
+        data: { verifiedByCommunityOwner: status },
       });
       return {
         data: res,

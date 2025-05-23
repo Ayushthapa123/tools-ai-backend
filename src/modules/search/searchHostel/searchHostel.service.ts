@@ -47,8 +47,8 @@ export class SearchHostelService {
                 sin(radians($1)) * sin(radians(a."latitude"))
               )
             ) AS distance
-          FROM "Homestay" h
-          INNER JOIN "Address" a ON h."id" = a."homestayId"
+          FROM "Hostel" h
+          INNER JOIN "Address" a ON h."id" = a."hostelId"
           WHERE 
             ($3 = '' OR a."city" ILIKE '%' || $3 || '%')
             AND ($4 = '' OR a."subCity" ILIKE '%' || $4 || '%')
@@ -120,10 +120,10 @@ export class SearchHostelService {
     }
 
     // Map rooms with RoomStatus correctly
-    return homestays.map((homestay) => ({
-      ...homestay,
+    return homestays.map((hostel) => ({
+      ...hostel,
       rooms:
-        homestay.rooms?.map((room) => ({
+        hostel.rooms?.map((room) => ({
           ...room,
           status: room.status as RoomStatus,
         })) || [],

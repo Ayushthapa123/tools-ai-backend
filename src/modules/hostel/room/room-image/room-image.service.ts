@@ -7,9 +7,9 @@ import { UpdateRoomImageInput } from './dtos/update-room-image.input';
 export class RoomImageService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getRoomImagesByRoomId(roomId: number, homestayId: number) {
+  async getRoomImagesByRoomId(roomId: number, hostelId: number) {
     const roomImages = await this.prisma.roomImage.findMany({
-      where: { roomId, room: { homestayId } },
+      where: { roomId, room: { hostelId } },
       take: 5,
     });
     return {
@@ -21,7 +21,7 @@ export class RoomImageService {
   async createRoomImage(data: CreateRoomImageInput) {
     const roomImage = await this.prisma.roomImage.create({ data });
     return {
-      data: [roomImage],
+      data: roomImage,
       error: null,
     };
   }
@@ -32,7 +32,7 @@ export class RoomImageService {
       data,
     });
     return {
-      data: [roomImage],
+      data: roomImage,
       error: null,
     };
   }
@@ -41,7 +41,7 @@ export class RoomImageService {
       where: { id: roomImageId },
     });
     return {
-      data: [roomImage],
+      data: roomImage,
       error: null,
     };
   }

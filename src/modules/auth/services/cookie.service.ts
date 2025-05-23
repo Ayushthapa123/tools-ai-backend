@@ -20,7 +20,7 @@ export class CookieService {
 
       if (hostname === 'localhost') return 'localhost';
 
-      return '.homestay.wiseyak.com'; // ✅
+      return '.hosteladmin.com'; // ✅
     } catch (error) {
       console.error('Invalid WEB_URL in env:', webUrl);
       return 'localhost';
