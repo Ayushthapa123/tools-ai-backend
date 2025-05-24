@@ -156,7 +156,7 @@ export class MailersendService {
   async sendMailAfterBooking(email: string, data: BookingConfirmationEmailDto) {
     const {
       guestName,
-      homestayName,
+      hostelName,
       roomName,
       paidAmount,
       checkInDate,
@@ -194,7 +194,7 @@ export class MailersendService {
               </div>
 
               <div style="color: #555; font-size: 15px; line-height: 1.6;">
-                <p><strong>Hostel Name:</strong> ${homestayName}</p>
+                <p><strong>Hostel Name:</strong> ${hostelName}</p>
                 <p><strong>Room numbers:</strong> ${roomNumbers}</p>
                 <p><strong>Paid Amount:</strong> NPR ${paidAmount}</p>
                 <p><strong>Check-in:</strong> ${checkInDate}</p>

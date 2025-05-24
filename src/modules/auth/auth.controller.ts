@@ -12,7 +12,7 @@ import * as dotenv from 'dotenv';
 import {
   UsersAndToken,
   VerifyEmailResponse,
-  UsersHomestayIdAndToken,
+  UsersHostelIdAndToken,
   ForgotPasswordResponse,
   LogoutResponse,
 } from './models/user.model';
@@ -61,7 +61,7 @@ export class AuthResolver {
     return { ...user, token };
   }
 
-  @Mutation(() => UsersHomestayIdAndToken)
+  @Mutation(() => UsersHostelIdAndToken)
   async refreshTokens(@Context() context: { req: Request; res: Response }) {
     const refreshToken = context.req.cookies.refreshToken;
 

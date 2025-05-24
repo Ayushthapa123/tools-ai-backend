@@ -6,7 +6,7 @@ export class BookingConfirmationEmailDto {
   guestName: string;
 
   @Field()
-  homestayName: string;
+  hostelName: string;
 
   @Field(() => [Int])
   roomName: number[];

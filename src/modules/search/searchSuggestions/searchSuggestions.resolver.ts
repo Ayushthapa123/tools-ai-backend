@@ -9,7 +9,7 @@ export class SearchSuggestionsResolver {
   ) {}
 
   @Query(() => [SearchQuery], { nullable: true })
-  async getHomestaySearchSuggestions(
+  async getHostelSearchSuggestions(
     @Args('query') query: string,
   ): Promise<SearchQuery | null> {
     return this.searchSuggestionsService.getSearchSuggestions(query);

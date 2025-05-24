@@ -24,7 +24,7 @@ export class CreateRoomInput {
   attachBathroom?: boolean;
 
   @Field(() => Int)
-  homestayId: number;
+  hostelId: number;
 
   @Field(() => CreatePriceInput, { nullable: true })
   price?: CreatePriceInput;

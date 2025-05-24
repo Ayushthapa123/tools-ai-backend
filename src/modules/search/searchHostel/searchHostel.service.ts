@@ -25,7 +25,7 @@ export class SearchHostelService {
     const maxRadius = 50; // Maximum allowed radius expansion
 
     let radiusInKm = initialRadius;
-    let homestays: any[] = [];
+    let hostels: any[] = [];
 
     // Prepare whereCondition for Prisma fallback search
     const whereCondition: any = {
@@ -38,7 +38,7 @@ export class SearchHostelService {
     // If lat/lng provided, search by distance
     if (userLat && userLng) {
       while (radiusInKm <= maxRadius) {
-        homestays = await this.prisma.$queryRawUnsafe<any[]>(
+        hostels = await this.prisma.$queryRawUnsafe<any[]>(
           `
           SELECT h.*, 
             (
@@ -71,7 +71,7 @@ export class SearchHostelService {
           take,
         );
 
-        if (homestays.length > 0) {
+        if (hostels.length > 0) {
           break; // Found some results
         }
 
@@ -80,7 +80,7 @@ export class SearchHostelService {
     }
     // If no lat/lng, fallback to Prisma query (city/subCity based)
     else {
-      homestays = await this.prisma.hostel.findMany({
+      hostels = await this.prisma.hostel.findMany({
         skip,
         take,
         include: {
@@ -120,7 +120,7 @@ export class SearchHostelService {
     }
 
     // Map rooms with RoomStatus correctly
-    return homestays.map((hostel) => ({
+    return hostels.map((hostel) => ({
       ...hostel,
       rooms:
         hostel.rooms?.map((room) => ({

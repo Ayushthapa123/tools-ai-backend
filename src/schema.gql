@@ -40,7 +40,7 @@ input BookingConfirmationEmailDto {
   checkInDate: String!
   checkOutDate: String!
   guestName: String!
-  homestayName: String!
+  hostelName: String!
   paidAmount: Float!
   roomName: [Int!]!
 }
@@ -188,7 +188,7 @@ input CreateRoomInput {
   capacity: RoomCapacity!
   caption: String!
   description: String
-  homestayId: Int!
+  hostelId: Int!
   images: [RoomImageInput!]
   maxOccupancy: String
   price: CreatePriceInput
@@ -468,7 +468,7 @@ type Mutation {
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
   logout: LogoutResponse!
-  refreshTokens: UsersHomestayIdAndToken!
+  refreshTokens: UsersHostelIdAndToken!
   removeAmenity(id: Int!): Amenities!
   removeBooking(id: Float!): Booking!
   removePrice(id: Int!): Price!
@@ -544,18 +544,18 @@ type Query {
   findAmenityByRoomId(roomId: Int!): RoomAmenity!
   findAnAmenityById(id: Int!): RoomAmenity!
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
-  findServiceByHomestayId(homestayId: Float!): Service!
-  getAddressByHomestayId(hostelId: Float!): Address
+  findServiceByHostelId(hostelId: Float!): Service!
+  getAddressByHostelId(hostelId: Float!): Address
   getAllHostels(pageNumber: Int! = 1, pageSize: Int! = 10): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
   getCitySearchSuggestions(query: String!): [SearchQuery!]
-  getContactByHomestayId(homestayId: Float!): ContactDetail
+  getContactByHostelId(hostelId: Float!): ContactDetail
   getGalleryByHostelId(hostelId: Int!): GalleryList
   getGoogleAuthUrl: GoogleOauthUrl!
-  getHomestaySearchSuggestions(query: String!): [SearchQuery!]
   getHostelById(hostelId: Float!): Hostel
   getHostelBySlug(checkInDate: DateTime, checkOutDate: DateTime, slug: String!): Hostel
   getHostelByToken: Hostel
+  getHostelSearchSuggestions(query: String!): [SearchQuery!]
   getHostelsBySearch(input: SearchHostelInput!): [Hostel!]!
   getRoomImagesByRoomId(roomId: Int!): RoomImageList
   getRulesByHostel: HostelRules!
@@ -828,7 +828,7 @@ input UpdateRoomInput {
   capacity: RoomCapacity
   caption: String
   description: String
-  homestayId: Int
+  hostelId: Int
   id: Int!
   images: [RoomImageInput!]
   maxOccupancy: String
@@ -913,7 +913,7 @@ type UsersAndToken {
   userType: UserType!
 }
 
-type UsersHomestayIdAndToken {
+type UsersHostelIdAndToken {
   token: Token!
   user: UserData!
 }

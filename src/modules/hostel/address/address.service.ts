@@ -7,7 +7,7 @@ import { CreateAddressInput } from './dtos/create-address.input';
 export class AddressService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAddressByHomestayId(hostelId: number) {
+  async getAddressByHostelId(hostelId: number) {
     const address = await this.prisma.address.findUnique({
       where: { hostelId },
     });

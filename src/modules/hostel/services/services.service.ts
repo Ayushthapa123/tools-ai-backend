@@ -20,7 +20,7 @@ export class ServicesService {
     };
   }
 
-  async findByHomestayId(hostelId: number) {
+  async findByHostelId(hostelId: number) {
     const service = await this.prisma.service.findUnique({
       where: { hostelId },
     });

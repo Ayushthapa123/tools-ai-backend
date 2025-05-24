@@ -11,10 +11,10 @@ export class ContactResolver {
   constructor(private readonly contactService: ContactService) {}
 
   @Query(() => ContactDetail, { nullable: true })
-  async getContactByHomestayId(
-    @Args('homestayId') homestayId: number,
+  async getContactByHostelId(
+    @Args('hostelId') hostelId: number,
   ): Promise<ContactDetail | null> {
-    return this.contactService.getContactsByHomestayId(homestayId);
+    return this.contactService.getContactsByHostelId(hostelId);
   }
 
   @Mutation(() => ContactDetail)

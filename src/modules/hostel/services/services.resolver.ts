@@ -16,8 +16,8 @@ export class ServicesResolver {
   }
 
   @Query(() => Service)
-  async findServiceByHomestayId(@Args('homestayId') homestayId: number) {
-    return this.servicesService.findByHomestayId(homestayId);
+  async findServiceByHostelId(@Args('hostelId') hostelId: number) {
+    return this.servicesService.findByHostelId(hostelId);
   }
 
   @Mutation(() => Service)

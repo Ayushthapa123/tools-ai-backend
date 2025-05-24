@@ -7,9 +7,9 @@ import { CreateContactInput } from './dtos/create-contact.input';
 export class ContactService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getContactsByHomestayId(homestayId: number) {
+  async getContactsByHostelId(hostelId: number) {
     const contact = await this.prisma.contactDetail.findUnique({
-      where: { hostelId: homestayId },
+      where: { hostelId: hostelId },
     });
     if (!contact) {
       return {

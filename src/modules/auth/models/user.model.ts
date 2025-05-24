@@ -51,7 +51,7 @@ export class UsersAndToken {
 }
 
 @ObjectType()
-export class UsersHomestayIdAndToken {
+export class UsersHostelIdAndToken {
   @Field()
   user: UserData;
 

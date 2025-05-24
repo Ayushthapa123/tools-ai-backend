@@ -50,7 +50,7 @@ export class RoomAmenityService {
   async create(
     createAmenityInput: CreateRoomAmenityInput,
   ): Promise<RoomAmenity> {
-    // Verify that the homestay exists
+    // Verify that the Hostel exists
     const room = await this.prisma.room.findFirst({
       where: { id: createAmenityInput.roomId },
     });
@@ -77,7 +77,7 @@ export class RoomAmenityService {
     // Verify that the amenity exists
     await this.findOne(updateAmenityInput.id);
 
-    // If homestayId is being updated, verify that the homestay exists
+    // If hostelId is being updated, verify that the hostel exists
     if (updateAmenityInput.roomId) {
       const room = await this.prisma.room.findUnique({
         where: { id: updateAmenityInput.roomId },
@@ -85,7 +85,7 @@ export class RoomAmenityService {
 
       if (!room) {
         throw new NotFoundException(
-          `Homestay with ID ${updateAmenityInput.roomId} not found`,
+          `Hostel with ID ${updateAmenityInput.roomId} not found`,
         );
       }
     }

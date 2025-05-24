@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   dotenv.config();
+  console.log(process.env.WEB_URL);
 
   const app = await NestFactory.create(AppModule, {
     cors: {
