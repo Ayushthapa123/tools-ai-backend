@@ -34,6 +34,7 @@ export class AuthResolver {
     @Context() context: { res: Response },
   ) {
     const result = await this.authService.signupUser(signupInput);
+    console.log('result', result);
     this.cookieService.setAuthCookies(
       context.res,
       result.token.accessToken,

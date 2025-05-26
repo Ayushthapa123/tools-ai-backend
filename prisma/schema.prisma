@@ -150,7 +150,7 @@ model Booking {
 
 model Price {
   id               Int           @id @unique @default(autoincrement())
-  baseAmountPerDay       Int     
+  baseAmountPerDay       Int?     
   baseAmountPerMonth     Int     
   currency         Currency 
   isDynamicPricing Boolean @default(false) 

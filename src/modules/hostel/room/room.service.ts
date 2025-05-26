@@ -15,6 +15,7 @@ export class RoomService {
       caption,
       roomNumber,
       maxOccupancy,
+      description,
     } = createRoomInput;
 
     // Check if hostel exists
@@ -40,15 +41,12 @@ export class RoomService {
         roomNumber,
         hostelId,
         maxOccupancy,
-      },
-      include: {
-        image: true,
-        booking: true,
+        description,
       },
     });
 
     return {
-      data: [room],
+      data: room,
       error: null,
     };
   }
@@ -86,7 +84,7 @@ export class RoomService {
     }
 
     return {
-      data: [room],
+      data: room,
       error: null,
     };
   }
@@ -147,7 +145,7 @@ export class RoomService {
     });
 
     return {
-      data: [updatedRoom],
+      data: updatedRoom,
       error: null,
     };
   }
@@ -181,7 +179,7 @@ export class RoomService {
       });
 
       return {
-        data: [deletedRoom],
+        data: deletedRoom,
         error: null,
       };
     } catch (error) {

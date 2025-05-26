@@ -61,7 +61,7 @@ export class MailersendService {
            </html>
          `;
     sendSmtpEmail.sender = {
-      name: 'Hosteladmin',
+      name: 'Homestay',
       email: 'sagarregmi0710@gmail.com',
     };
     sendSmtpEmail.to = [{ email, name: 'Sagar regmi' }]; // replace with real recipient

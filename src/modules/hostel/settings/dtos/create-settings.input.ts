@@ -1,6 +1,6 @@
 // src/hostel/dto/create-hostel-settings.input.ts
 
-import { Badges } from '@src/dtos/global.dtos';
+// import { Badges } from '@prisma/client';
 import { VisibilityType } from '@prisma/client';
 import { InputType, Field } from '@nestjs/graphql';
 
@@ -39,6 +39,6 @@ export class CreateHostelSettingsInput {
   @Field({ defaultValue: false })
   allowRating: boolean;
 
-  @Field(() => [Badges], { defaultValue: [] })
-  badges: Badges[];
+  // @Field(() => [Badges], { defaultValue: [] })
+  // badges: Badges[];
 }

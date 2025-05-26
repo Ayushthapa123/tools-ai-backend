@@ -31,6 +31,16 @@ type AmenitiesData {
   id: ID!
 }
 
+enum Badges {
+  FAMOUS
+  GOOD_FOOD
+  GOOD_LOCATION
+  NEW
+  PEOPLE_CHOICE
+  SOCIAL_BUTTERFLY
+  TECH_SAVVY
+}
+
 type Booking {
   data: BookingData
   error: GraphQLError
@@ -58,6 +68,7 @@ type BookingData {
   guestId: Int!
   id: ID!
   paymentPlatformName: PaymentPlatformName!
+  room: RoomData!
   roomId: Int!
   startDate: DateTime!
   status: BookingStatus!
@@ -158,11 +169,26 @@ input CreateGalleryInput {
 
 input CreateHostelInput {
   description: String
+  genderType: String
+  hostelType: String
   name: String!
 }
 
+input CreateHostelSettingsInput {
+  active: Boolean! = true
+  allowBooking: Boolean! = false
+  allowComments: Boolean! = false
+  allowMessages: Boolean! = false
+  allowPrivateFeedbacks: Boolean! = false
+  allowRating: Boolean! = false
+  currency: String
+  deActivate: Boolean! = false
+  fontSize: Float! = 14
+  visibility: String! = "ALL"
+}
+
 input CreatePriceInput {
-  baseAmountPerDay: Int!
+  baseAmountPerDay: Int
   baseAmountPerMonth: Int!
   currency: Currency!
   discountAmount: Int
@@ -215,19 +241,13 @@ input CreateServiceDto {
 input CreateUserInput {
   altPhoneNumber: String
   city: String
-  createdAt: DateTime!
   dateOfBirth: DateTime
-  deletedAt: DateTime
   email: String!
   fullName: String!
   gender: Gender
-  hashedRefreshToken: String
   hostelId: Float
-  isVerified: Boolean! = false
-  passwordHash: String
   phoneNumber: String
   profilePicture: String
-  updatedAt: DateTime!
   userType: UserType! = HOSTEL_OWNER
 }
 
@@ -403,6 +423,11 @@ type HostelRulesData {
   rules: JSON!
 }
 
+type HostelSetting {
+  data: HostelSettingData
+  error: GraphQLError
+}
+
 type HostelSettingData {
   active: Boolean!
   allowBooking: Boolean!
@@ -410,6 +435,7 @@ type HostelSettingData {
   allowMessages: Boolean!
   allowPrivateFeedbacks: Boolean!
   allowRating: Boolean!
+  badges: [Badges!]!
   createdAt: DateTime!
   currency: String
   deActivate: Boolean!
@@ -459,12 +485,14 @@ type Mutation {
   createRules(createRulesInput: CreateRulesInput!): HostelRules!
   createSearchQuery(createSearchQueriesInput: CreateSearchQueriesInput!): SearchQuery!
   createService(createServiceInput: CreateServiceDto!): Service!
+  createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSetting!
   createUser(input: CreateUserInput!): User!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
   deleteRoomImage(roomImageId: Int!): RoomImage!
   deleteRules(rulesId: Int!): HostelRules!
   deleteSearchQuery(searchQueryId: Int!): SearchQuery!
+  deleteSettings(hostelSettingId: Float!): HostelSetting!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
   logout: LogoutResponse!
@@ -496,6 +524,7 @@ type Mutation {
   updateRules(rulesId: Int!, updateRulesInput: UpdateRulesInput!): HostelRules!
   updateSearchQuery(searchQueryId: Int!, updateSearchQueriesInput: UpdateSearchQueriesInput!): SearchQuery!
   updateService(updateServiceInput: UpdateServiceDto!): Service!
+  updateSettings(data: UpdateHostelSettingsInput!, hostelSettingId: Float!): HostelSetting!
   updateUser(input: UpdateUserInput!): User!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
   verifyHostel(hostelId: Int!, status: Boolean!): Hostel!
@@ -520,7 +549,7 @@ type Price {
 }
 
 type PriceData {
-  baseAmountPerDay: Int!
+  baseAmountPerDay: Int
   baseAmountPerMonth: Int!
   createdAt: DateTime!
   currency: Currency!
@@ -560,6 +589,7 @@ type Query {
   getRoomImagesByRoomId(roomId: Int!): RoomImageList
   getRulesByHostel: HostelRules!
   getRulesById(rulesId: Int!): HostelRules!
+  getSettingsByHostelId(hostelId: Float!): HostelSetting
   getToleSearchSuggestions(query: String!): [SearchQuery!]
   getUserByAccessToken(accessToken: String!): User
   getUserById(id: Float!): User
@@ -573,8 +603,8 @@ type Query {
   pricesRules: DynamicPricingRuleList!
   room(id: Int!): Room!
   roomBookings(roomId: Float!): BookingList!
-  rooms: [Room!]!
-  roomsByHostel: Room!
+  rooms: RoomList!
+  roomsByHostel: RoomList!
   searchQueries(query: String!): [SearchQuery!]!
   searchQuery(searchQueryId: Int!): SearchQuery!
   sendVerificationEmail(email: String!, token: String!): Boolean!
@@ -658,6 +688,11 @@ type RoomImageList {
   error: GraphQLError
 }
 
+type RoomList {
+  data: [RoomData!]
+  error: GraphQLError
+}
+
 enum RoomStatus {
   AVAILABLE
   BOOKED
@@ -705,20 +740,14 @@ type ServiceData {
 input SignupInput {
   altPhoneNumber: String
   city: String
-  createdAt: DateTime
   dateOfBirth: DateTime
-  deletedAt: DateTime
   email: String!
   fullName: String!
   gender: Gender
-  hashedRefreshToken: String
   hostelId: Float
-  isVerified: Boolean = false
   password: String!
-  passwordHash: String
   phoneNumber: String
   profilePicture: String
-  updatedAt: DateTime
   userType: String!
 }
 
@@ -799,6 +828,20 @@ input UpdateHostelInput {
   slug: String
 }
 
+input UpdateHostelSettingsInput {
+  active: Boolean = true
+  allowBooking: Boolean = false
+  allowComments: Boolean = false
+  allowMessages: Boolean = false
+  allowPrivateFeedbacks: Boolean = false
+  allowRating: Boolean = false
+  currency: String
+  deActivate: Boolean = false
+  fontSize: Float = 14
+  hostelSettingId: Int!
+  visibility: String = "ALL"
+}
+
 input UpdatePriceInput {
   baseAmountPerDay: Int
   baseAmountPerMonth: Int
@@ -848,26 +891,22 @@ input UpdateSearchQueriesInput {
 }
 
 input UpdateServiceDto {
+  hostelId: Float!
   id: Float!
+  services: JSON!
 }
 
 input UpdateUserInput {
   altPhoneNumber: String
   city: String
-  createdAt: DateTime
   dateOfBirth: DateTime
-  deletedAt: DateTime
   email: String
   fullName: String
   gender: Gender
-  hashedRefreshToken: String
   hostelId: Float
   id: Int!
-  isVerified: Boolean = false
-  passwordHash: String
   phoneNumber: String
   profilePicture: String
-  updatedAt: DateTime
   userType: UserType = HOSTEL_OWNER
 }
 

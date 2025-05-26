@@ -11,6 +11,7 @@ import { ServicesModule } from './services/services.module';
 import { RoomModule } from './room/room.module';
 import { HostelRulesModule } from './rules/hostelRules.module';
 import { BookingModule } from './booking/booking.module';
+import { SettingsModule } from './settings/settings.module';
 @Module({
   imports: [
     ContactModule,
@@ -21,6 +22,7 @@ import { BookingModule } from './booking/booking.module';
     AmenityModule,
     HostelRulesModule,
     BookingModule,
+    SettingsModule
   ],
   providers: [HostelResolver, HostelService, JwtService],
 })

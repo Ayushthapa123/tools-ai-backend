@@ -24,7 +24,7 @@ import {
   BookingStatus,
   PaymentPlatformName,
   DiscountType,
-  // Badges,
+  Badges,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -150,66 +150,14 @@ export class RoomImageList extends BaseResponse {
   data?: RoomImageData[];
 }
 
-// Booking related types
-@ObjectType()
-export class BookingData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Int)
-  guestId: number;
-
-  @Field(() => Date)
-  startDate: Date;
-
-  @Field(() => Date)
-  endDate: Date;
-
-  @Field(() => BookingStatus)
-  status: BookingStatus;
-
-  @Field(() => PaymentPlatformName)
-  paymentPlatformName: PaymentPlatformName;
-
-  @Field()
-  bookingKey: string;
-
-  @Field(() => UserData)
-  guest: UserData;
-
-  // @Field(() => RoomData)
-  // room: RoomData;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Booking extends BaseResponse {
-  @Field(() => BookingData, { nullable: true })
-  data?: BookingData;
-}
-
-@ObjectType()
-export class BookingList extends BaseResponse {
-  @Field(() => [BookingData], { nullable: true })
-  data?: BookingData[];
-}
-
 // Price related types
 @ObjectType()
 export class PriceData {
   @Field(() => ID)
   id: number;
 
-  @Field(() => Int)
-  baseAmountPerDay: number;
+  @Field(() => Int, { nullable: true })
+  baseAmountPerDay?: number;
 
   @Field(() => Int)
   baseAmountPerMonth: number;
@@ -381,6 +329,64 @@ export class RoomData {
 export class Room extends BaseResponse {
   @Field(() => RoomData, { nullable: true })
   data?: RoomData;
+}
+
+@ObjectType()
+export class RoomList extends BaseResponse {
+  @Field(() => [RoomData], { nullable: true })
+  data?: RoomData[];
+}
+
+// Booking related types
+@ObjectType()
+export class BookingData {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => Int)
+  roomId: number;
+
+  @Field(() => Int)
+  guestId: number;
+
+  @Field(() => Date)
+  startDate: Date;
+
+  @Field(() => Date)
+  endDate: Date;
+
+  @Field(() => BookingStatus)
+  status: BookingStatus;
+
+  @Field(() => PaymentPlatformName)
+  paymentPlatformName: PaymentPlatformName;
+
+  @Field()
+  bookingKey: string;
+
+  @Field(() => UserData)
+  guest: UserData;
+
+  @Field(() => RoomData)
+  room: RoomData;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class Booking extends BaseResponse {
+  @Field(() => BookingData, { nullable: true })
+  data?: BookingData;
+}
+
+@ObjectType()
+export class BookingList extends BaseResponse {
+  @Field(() => [BookingData], { nullable: true })
+  data?: BookingData[];
 }
 
 // RoomImage related types
@@ -596,8 +602,8 @@ export class HostelSettingData {
   @Field()
   allowRating: boolean;
 
-  // @Field(() => [Badges])
-  // badges: Badges[];
+  @Field(() => [Badges])
+  badges: Badges[];
 
   @Field(() => Date)
   createdAt: Date;

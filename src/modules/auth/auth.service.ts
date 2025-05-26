@@ -32,7 +32,7 @@ export class AuthService {
   ) {}
 
   //SignUp Logic
-  async signupUser(signupInput: SignupInput) {
+  async signupUser(signupInput: SignupInput): Promise<UsersAndToken> {
     const { email, password, fullName, userType } = signupInput;
 
     // Check whether email already exists
@@ -63,18 +63,21 @@ export class AuthService {
       });
 
       if (user.email) {
+        console.log('user.email', user.email);
         const verificationToken = this.generateVerificationToken(user?.id);
-        await this.mailersendService.sendEmailForVerification(
-          user?.email,
-          verificationToken,
-        );
+        console.log('verificationToken', verificationToken); //logged
+        // await this.mailersendService.sendEmailForVerification(
+        //   user?.email,
+        //   verificationToken,
+        // );
       }
 
       const { accessToken, refreshToken } = generateJwtTokens(
         user.id,
-        user.userType as UserType,
+        user.userType,
         user?.hostelId ?? null,
       );
+      console.log('accessToken', accessToken);
 
       // Save refreshToken in the database
       await this.prisma.user.update({
@@ -84,6 +87,7 @@ export class AuthService {
 
       return { ...user, token: { accessToken, refreshToken } };
     } catch (error) {
+      console.log(error);
       // Handle any database-related errors
       // throw new Error('Error creating user');
     }

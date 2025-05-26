@@ -6,8 +6,6 @@ import { Gender, UserType } from '@src/models/global.enum';
 export class CreateUserInput {
   @Field()
   email: string;
-  @Field({ nullable: true })
-  passwordHash?: string;
 
   @Field()
   fullName: string;
@@ -25,9 +23,6 @@ export class CreateUserInput {
   altPhoneNumber?: string;
 
   @Field({ nullable: true })
-  hashedRefreshToken?: string;
-
-  @Field({ nullable: true })
   city?: string;
 
   @Field({ nullable: true })
@@ -36,18 +31,6 @@ export class CreateUserInput {
   @Field(() => Gender, { nullable: true })
   gender?: Gender;
 
-  @Field({ defaultValue: false })
-  isVerified: boolean;
-
   @Field({ nullable: true })
   hostelId?: number;
-
-  @Field()
-  createdAt: Date;
-
-  @Field()
-  updatedAt: Date;
-
-  @Field({ nullable: true })
-  deletedAt?: Date;
 }

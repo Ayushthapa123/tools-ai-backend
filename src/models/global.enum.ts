@@ -136,3 +136,29 @@ export enum GalleryType {
 registerEnumType(GalleryType, {
   name: 'GalleryType',
 });
+
+// badges
+
+// enum Badges {
+//   NEW
+//   PEOPLES_CHOICE
+//   FAMOUS
+//   GOOD_FOOD
+//   GOOD_LOCATION
+//   SOCIAL_BUTTERFLY
+//   TECH_SAVVY
+// }
+
+export enum Badges {
+  NEW = 'NEW',
+  PEOPLE_CHOICE = 'PEOPLE_CHOICE',
+  FAMOUS = 'FAMOUS',
+  GOOD_FOOD = 'GOOD_FOOD',
+  GOOD_LOCATION = 'GOOD_LOCATION',
+  SOCIAL_BUTTERFLY = 'SOCIAL_BUTTERFLY',
+  TECH_SAVVY = 'TECH_SAVVY',
+}
+
+registerEnumType(Badges, {
+  name: 'Badges',
+});

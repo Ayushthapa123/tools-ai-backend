@@ -1,6 +1,10 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { RoomService } from './room.service';
-import { BookingConfirmationMailData, Room } from '@src/models/global.model';
+import {
+  BookingConfirmationMailData,
+  Room,
+  RoomList,
+} from '@src/models/global.model';
 import { CreateRoomInput } from './dtos/create-room.input';
 import { UpdateRoomInput } from './dtos/update-room.input';
 import { UseGuards } from '@nestjs/common';
@@ -17,7 +21,12 @@ export class RoomResolver {
     @Context() ctx: any,
   ) {
     if (!ctx.user?.hostelId) {
-      throw new Error('User does not have a hostel associated');
+      return {
+        data: null,
+        error: {
+          message: 'User does not have a hostel associated',
+        },
+      };
     }
     const { data, error } = await this.roomService.create(
       createRoomInput,
@@ -26,7 +35,7 @@ export class RoomResolver {
     return { data: data, error };
   }
 
-  @Query(() => [Room], { name: 'rooms' })
+  @Query(() => RoomList, { name: 'rooms' })
   async findAll() {
     const { data, error } = await this.roomService.findAll();
     return { data: data, error };
@@ -102,7 +111,7 @@ export class RoomResolver {
     return { data: data, error };
   }
 
-  @Query(() => Room, { name: 'roomsByHostel' })
+  @Query(() => RoomList, { name: 'roomsByHostel' })
   @UseGuards(AuthGuard)
   async findRoomsByHostelId(@Context() ctx: any) {
     if (!ctx.user?.hostelId) {
