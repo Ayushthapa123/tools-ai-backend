@@ -5,54 +5,37 @@ import {
   UploadedFile,
   HttpException,
   UseInterceptors,
-  Get,
 } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
+import * as Cloudinary from 'cloudinary';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
+dotenv.config();
 
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import * as dotenv from 'dotenv'; // Import dotenv to access environment variables
-
-dotenv.config(); // Load environment variables from .env file if present
+Cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 @Controller('upload/image')
 export class ImageController {
   constructor() {}
 
-  @Get()
-  getHello() {
-    return { message: 'Hello from Image Controller!' };
-  }
-
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(@UploadedFile() image: any) {
+    console.log('iii', image);
     try {
-      // Configure the client
-      const s3Client = new S3Client({
-        region: 'us-east-1', // fake region; required even for S3-compatible
-        endpoint: 'https://s3-np1.datahub.com.np', // change this to your custom endpoint
-        forcePathStyle: true, // required for many S3-compatible providers
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY,
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-        },
-      });
+      const key = `${uuidv4()}.${image.originalname.split('.').pop()}`;
+      console.log('kkkk', key);
 
-      const imageType = String(image.originalname).split('.')[1];
-      const key = `${uuidv4()}.${imageType}`;
+      const result = await this.uploadToCloudinary(image.buffer, key);
 
-      await s3Client.send(
-        new PutObjectCommand({
-          Bucket: 'hostel',
-          Key: key,
-          Body: image.buffer,
-          ACL: 'public-read',
-        }),
-      );
+      console.log('Successfully uploaded object:', result);
       return {
-        imageUrl: `https://s3-np1.datahub.com.np/hostel/${key}`,
+        imageUrl: result.secure_url,
       };
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -61,5 +44,24 @@ export class ImageController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  private uploadToCloudinary(buffer: Buffer, key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const uploadStream = Cloudinary.v2.uploader.upload_stream(
+        {
+          public_id: key,
+          folder: 'uploads',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        },
+      );
+      uploadStream.end(buffer);
+    });
   }
 }

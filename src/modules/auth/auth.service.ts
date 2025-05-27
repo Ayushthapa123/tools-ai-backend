@@ -66,10 +66,10 @@ export class AuthService {
         console.log('user.email', user.email);
         const verificationToken = this.generateVerificationToken(user?.id);
         console.log('verificationToken', verificationToken); //logged
-        // await this.mailersendService.sendEmailForVerification(
-        //   user?.email,
-        //   verificationToken,
-        // );
+        await this.mailersendService.sendEmailForVerification(
+          user?.email,
+          verificationToken,
+        );
       }
 
       const { accessToken, refreshToken } = generateJwtTokens(

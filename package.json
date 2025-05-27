@@ -49,6 +49,7 @@
     "prisma": "^5.9.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "sib-api-v3-sdk": "^8.5.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
