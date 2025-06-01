@@ -25,6 +25,7 @@ import {
   PaymentPlatformName,
   DiscountType,
   Badges,
+  HostelAmenityType,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -832,6 +833,90 @@ export class HostelData {
 export class Hostel extends BaseResponse {
   @Field(() => HostelData, { nullable: true })
   data?: HostelData;
+}
+
+@ObjectType()
+export class AmenityOptionData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  iconUrl?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => HostelAmenityType)
+  hostelAmenityType: HostelAmenityType;
+}
+
+@ObjectType()
+export class AmenityOption extends BaseResponse {
+  @Field(() => AmenityOptionData, { nullable: true })
+  data?: AmenityOptionData;
+}
+
+@ObjectType()
+export class AmenityOptionList extends BaseResponse {
+  @Field(() => [AmenityOptionData], { nullable: true })
+  data?: AmenityOptionData[];
+}
+
+@ObjectType()
+export class ServiceOptionData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  iconUrl?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+}
+
+@ObjectType()
+export class ServiceOption extends BaseResponse {
+  @Field(() => ServiceOptionData, { nullable: true })
+  data?: ServiceOptionData;
+}
+
+@ObjectType()
+export class ServiceOptionList extends BaseResponse {
+  @Field(() => [ServiceOptionData], { nullable: true })
+  data?: ServiceOptionData[];
+}
+
+@ObjectType()
+export class RoomAmenityOptionData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  iconUrl?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+}
+
+@ObjectType()
+export class RoomAmenityOption extends BaseResponse {
+  @Field(() => RoomAmenityOptionData, { nullable: true })
+  data?: RoomAmenityOptionData;
+}
+
+@ObjectType()
+export class RoomAmenityOptionList extends BaseResponse {
+  @Field(() => [RoomAmenityOptionData], { nullable: true })
+  data?: RoomAmenityOptionData[];
 }
 
 @ObjectType()

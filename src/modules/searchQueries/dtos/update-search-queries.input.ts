@@ -1,13 +1,7 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, PartialType } from '@nestjs/graphql';
+import { CreateSearchQueriesInput } from './create-search-queries.input';
 
 @InputType()
-export class UpdateSearchQueriesInput {
-  @Field({ nullable: true })
-  country?: string;
-
-  @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
-  subCity?: string;
-}
+export class UpdateSearchQueriesInput extends PartialType(
+  CreateSearchQueriesInput,
+) {}

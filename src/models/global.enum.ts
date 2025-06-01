@@ -7,6 +7,8 @@ import {
   UserType as UserTypee,
 } from '@prisma/client';
 
+// If enum is not generated in frontend that's because you have not included the enum anywhere in the Model
+
 export {
   RoomCapacityy as RoomCapacity,
   RoomStatuss as RoomStatus,
@@ -161,4 +163,17 @@ export enum Badges {
 
 registerEnumType(Badges, {
   name: 'Badges',
+});
+
+export enum HostelAmenityType {
+  PROPERTY_ESSENTIALS = 'PROPERTY_ESSENTIALS',
+  ROOM_ESSENTIALS = 'ROOM_ESSENTIALS',
+  BATHROOM_ESSENTIALS = 'BATHROOM_ESSENTIALS',
+  KITCHEN_ESSENTIALS = 'KITCHEN_ESSENTIALS',
+  SAFETY_AND_HYGENE_ESSENTIALS = 'SAFETY_AND_HYGENE_ESSENTIALS',
+  OTHER = 'OTHER',
+}
+
+registerEnumType(HostelAmenityType, {
+  name: 'HostelAmenityType',
 });

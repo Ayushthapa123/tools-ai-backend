@@ -362,6 +362,38 @@ model FoodMenu{
   @@index([hostelId, day])
 }
 
+
+model AmenityOption {
+  id Int @id @unique @default(autoincrement()) 
+  name String 
+  iconUrl String? 
+  description String?
+  hostelAmenityType HostelAmenityType
+}
+
+model RoomAmenityOption {
+  id Int @id @unique @default(autoincrement()) 
+  name String 
+  iconUrl String? 
+  description String?
+}
+
+model ServiceOption {
+  id Int @id @unique @default(autoincrement()) 
+  name String 
+  iconUrl String? 
+  description String?
+}
+
+enum HostelAmenityType {
+  PROPERTY_ESSENTIALS
+  ROOM_ESSENTIALS 
+  BATHROOM_ESSENTIALS
+  KITCHEN_ESSENTIALS
+  SAFETY_AND_HYGENE_ESSENTIALS
+  OTHER
+}
+
 //Enums 
 enum UserType {
   STUDENT

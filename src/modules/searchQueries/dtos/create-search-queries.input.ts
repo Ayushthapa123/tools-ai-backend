@@ -11,15 +11,3 @@ export class CreateSearchQueriesInput {
   @Field({ nullable: true })
   subCity?: string;
 }
-
-@InputType()
-export class UpdateSearchQueriesInput {
-  @Field({ nullable: true })
-  country?: string;
-
-  @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
-  subCity?: string;
-}

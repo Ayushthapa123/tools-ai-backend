@@ -31,6 +31,24 @@ type AmenitiesData {
   id: ID!
 }
 
+type AmenityOption {
+  data: AmenityOptionData
+  error: GraphQLError
+}
+
+type AmenityOptionData {
+  description: String
+  hostelAmenityType: HostelAmenityType!
+  iconUrl: String
+  id: ID!
+  name: String!
+}
+
+type AmenityOptionList {
+  data: [AmenityOptionData!]
+  error: GraphQLError
+}
+
 enum Badges {
   FAMOUS
   GOOD_FOOD
@@ -132,6 +150,13 @@ input CreateAmenityInput {
   hostelId: Int!
 }
 
+input CreateAmenityOptionInput {
+  description: String
+  hostelAmenityType: String
+  iconUrl: String
+  name: String!
+}
+
 input CreateBookingInput {
   bookingKey: String!
   endDate: DateTime!
@@ -203,6 +228,13 @@ input CreateRoomAmenityInput {
   roomId: Int!
 }
 
+input CreateRoomAmenityOptionInput {
+  description: String
+  hostelAmenityType: String
+  iconUrl: String
+  name: String!
+}
+
 input CreateRoomImageInput {
   caption: String!
   roomId: Float!
@@ -236,6 +268,12 @@ input CreateSearchQueriesInput {
 input CreateServiceDto {
   hostelId: Float!
   services: JSON!
+}
+
+input CreateServiceOptionInput {
+  description: String
+  iconUrl: String
+  name: String!
 }
 
 input CreateUserInput {
@@ -371,6 +409,15 @@ type Hostel {
   error: GraphQLError
 }
 
+enum HostelAmenityType {
+  BATHROOM_ESSENTIALS
+  KITCHEN_ESSENTIALS
+  OTHER
+  PROPERTY_ESSENTIALS
+  ROOM_ESSENTIALS
+  SAFETY_AND_HYGENE_ESSENTIALS
+}
+
 type HostelArrayResponse {
   data: [HostelData!]!
   error: GraphQLError
@@ -473,6 +520,7 @@ type Mutation {
   confirmBooking(bookingKey: String!): ConfirmBooking!
   createAddress(data: CreateAddressInput!): Address!
   createAmenity(createAmenityInput: CreateAmenityInput!): Amenities!
+  createAmenityOption(createAmenityOptionInput: CreateAmenityOptionInput!): AmenityOption!
   createBooking(createBookingInput: CreateBookingInput!): Booking!
   createContact(data: CreateContactInput!): ContactDetail!
   createGallery(data: CreateGalleryInput!): Gallery!
@@ -481,17 +529,22 @@ type Mutation {
   createPriceRule(createPriceRuleInput: CreateDynamicPriceRuleInput!): DynamicPricingRule!
   createRoom(createRoomInput: CreateRoomInput!): Room!
   createRoomAmenity(createAmenityInput: CreateRoomAmenityInput!): RoomAmenity!
+  createRoomAmenityOption(createRoomAmenityOptionInput: CreateRoomAmenityOptionInput!): RoomAmenityOption!
   createRoomImage(data: CreateRoomImageInput!): RoomImage!
   createRules(createRulesInput: CreateRulesInput!): HostelRules!
   createSearchQuery(createSearchQueriesInput: CreateSearchQueriesInput!): SearchQuery!
   createService(createServiceInput: CreateServiceDto!): Service!
+  createServiceOption(createServiceOptionInput: CreateServiceOptionInput!): ServiceOption!
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSetting!
   createUser(input: CreateUserInput!): User!
+  deleteAmenityOption(amenityOptionId: Int!): AmenityOption!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
+  deleteRoomAmenityOption(roomAmenityOptionId: Int!): RoomAmenityOption!
   deleteRoomImage(roomImageId: Int!): RoomImage!
   deleteRules(rulesId: Int!): HostelRules!
   deleteSearchQuery(searchQueryId: Int!): SearchQuery!
+  deleteServiceOption(serviceOptionId: Int!): ServiceOption!
   deleteSettings(hostelSettingId: Float!): HostelSetting!
   forgotPassword(email: String!): ForgotPasswordResponse!
   loginUser(input: LoginInput!): UsersAndToken!
@@ -512,6 +565,7 @@ type Mutation {
   signupUser(input: SignupInput!): UsersAndToken!
   updateAddress(addressId: Float!, data: UpdateAddressInput!): Address!
   updateAmenity(updateAmenityInput: UpdateAmenityInput!): Amenities!
+  updateAmenityOption(amenityOptionId: Int!, updateAmenityOptionInput: UpdateAmenityOptionInput!): AmenityOption!
   updateBooking(id: Float!, updateBookingInput: UpdateBookingInput!): Booking!
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetail!
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
@@ -520,10 +574,12 @@ type Mutation {
   updatePriceRule(updatePriceInput: UpdateDynamicPriceRuleInput!): DynamicPricingRule!
   updateRoom(updateRoomInput: UpdateRoomInput!): Room!
   updateRoomAmenity(updateAmenityInput: UpdateRoomAmenityInput!): RoomAmenity!
+  updateRoomAmenityOption(roomAmenityOptionId: Int!, updateRoomAmenityOptionInput: UpdateRoomAmenityOptionInput!): RoomAmenityOption!
   updateRoomImage(data: UpdateRoomImageInput!, roomImageId: Int!): RoomImage!
   updateRules(rulesId: Int!, updateRulesInput: UpdateRulesInput!): HostelRules!
   updateSearchQuery(searchQueryId: Int!, updateSearchQueriesInput: UpdateSearchQueriesInput!): SearchQuery!
   updateService(updateServiceInput: UpdateServiceDto!): Service!
+  updateServiceOption(serviceOptionId: Int!, updateServiceOptionInput: UpdateServiceOptionInput!): ServiceOption!
   updateSettings(data: UpdateHostelSettingsInput!, hostelSettingId: Float!): HostelSetting!
   updateUser(input: UpdateUserInput!): User!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
@@ -563,6 +619,8 @@ type PriceData {
 }
 
 type Query {
+  amenityOptionById(id: Int!): AmenityOption!
+  amenityOptions: AmenityOptionList!
   booking(id: Float!): Booking!
   bookings: BookingList!
   bookingsByHostel: BookingList!
@@ -602,12 +660,16 @@ type Query {
   prices: [Price!]!
   pricesRules: DynamicPricingRuleList!
   room(id: Int!): Room!
+  roomAmenityOptionById(id: Int!): RoomAmenityOption!
+  roomAmenityOptions: RoomAmenityOptionList!
   roomBookings(roomId: Float!): BookingList!
   rooms: RoomList!
   roomsByHostel: RoomList!
   searchQueries(query: String!): [SearchQuery!]!
   searchQuery(searchQueryId: Int!): SearchQuery!
   sendVerificationEmail(email: String!, token: String!): Boolean!
+  serviceOptionById(id: Int!): ServiceOption!
+  serviceOptions: ServiceOptionList!
 }
 
 input ResetPasswordInput {
@@ -631,6 +693,23 @@ type RoomAmenityData {
   id: ID!
   roomId: Int!
   updatedAt: DateTime!
+}
+
+type RoomAmenityOption {
+  data: RoomAmenityOptionData
+  error: GraphQLError
+}
+
+type RoomAmenityOptionData {
+  description: String
+  iconUrl: String
+  id: ID!
+  name: String!
+}
+
+type RoomAmenityOptionList {
+  data: [RoomAmenityOptionData!]
+  error: GraphQLError
 }
 
 enum RoomCapacity {
@@ -737,6 +816,23 @@ type ServiceData {
   services: JSON!
 }
 
+type ServiceOption {
+  data: ServiceOptionData
+  error: GraphQLError
+}
+
+type ServiceOptionData {
+  description: String
+  iconUrl: String
+  id: ID!
+  name: String!
+}
+
+type ServiceOptionList {
+  data: [ServiceOptionData!]
+  error: GraphQLError
+}
+
 input SignupInput {
   altPhoneNumber: String
   city: String
@@ -780,6 +876,13 @@ input UpdateAmenityInput {
   amenity: String
   hostelId: Int
   id: Int!
+}
+
+input UpdateAmenityOptionInput {
+  description: String
+  hostelAmenityType: String
+  iconUrl: String
+  name: String
 }
 
 input UpdateBookingInput {
@@ -860,6 +963,13 @@ input UpdateRoomAmenityInput {
   roomId: Int
 }
 
+input UpdateRoomAmenityOptionInput {
+  description: String
+  hostelAmenityType: String
+  iconUrl: String
+  name: String
+}
+
 input UpdateRoomImageInput {
   caption: String!
   id: Float!
@@ -894,6 +1004,12 @@ input UpdateServiceDto {
   hostelId: Float!
   id: Float!
   services: JSON!
+}
+
+input UpdateServiceOptionInput {
+  description: String
+  iconUrl: String
+  name: String
 }
 
 input UpdateUserInput {
