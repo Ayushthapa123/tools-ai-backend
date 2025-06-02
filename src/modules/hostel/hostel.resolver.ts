@@ -101,4 +101,10 @@ export class HostelResolver {
   ) {
     return this.hostelService.verifyHostel(hostelId, ctx.user.userType, status);
   }
+
+  @Query(() => Hostel)
+  @UseGuards(AuthGuard)
+  async getOnboardingData(@Context() ctx: CtxType) {
+    return this.hostelService.getOnboardingData(ctx.user.hostelId);
+  }
 }

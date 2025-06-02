@@ -222,4 +222,40 @@ export class HostelService {
       };
     }
   }
+
+  async getOnboardingData(hostelId: number) {
+    const res = await this.prisma.hostel.findUnique({
+      where: { id: hostelId },
+      select: {
+        id: true,
+        address: {
+          select: {
+            id: true,
+          },
+        },
+        contact: {
+          select: {
+            id: true,
+          },
+        },
+        gallery: {
+          select: {
+            id: true,
+          },
+          take: 1,
+        },
+        rooms: {
+          select: {
+            id: true,
+          },
+          take: 1,
+        },
+      },
+    });
+
+    return {
+      data: res,
+      error: null,
+    };
+  }
 }

@@ -783,6 +783,9 @@ export class HostelData {
   @Field()
   verifiedByCommunityOwner: boolean;
 
+  @Field()
+  hasOnboardingComplete: boolean;
+
   @Field(() => UserData, { nullable: true })
   owner?: UserData;
 

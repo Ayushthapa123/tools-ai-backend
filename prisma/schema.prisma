@@ -75,6 +75,9 @@ model Hostel {
 
   foodMenu FoodMenu[]
 
+  // Single field to track onboarding completion
+  hasOnboardingComplete Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
   deletedAt DateTime?
@@ -85,6 +88,7 @@ model Hostel {
   @@index([hostelType])
   @@index([verifiedBySuperAdmin])
   @@index([createdAt])
+  @@index([hasOnboardingComplete])
 }
 model Room {
   id             Int          @id @unique @default(autoincrement())
