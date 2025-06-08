@@ -21,3 +21,19 @@ export const generateJwtTokens = (
   );
   return { accessToken, refreshToken };
 };
+
+export const generateUserJwtToken = (userId: number, userType: UserType) => {
+  return jwt.sign({ sub: userId, userType }, process.env.JWT_SECRET, {
+    expiresIn: '1d',
+  });
+};
+
+export const generateHostelGuestJwtToken = (
+  userId: number,
+  email: string,
+  hostelId: number,
+) => {
+  return jwt.sign({ sub: userId, email, hostelId }, process.env.JWT_SECRET, {
+    expiresIn: '3d',
+  });
+};

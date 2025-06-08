@@ -107,4 +107,10 @@ export class HostelResolver {
   async getOnboardingData(@Context() ctx: CtxType) {
     return this.hostelService.getOnboardingData(ctx.user.hostelId);
   }
+
+  @Mutation(() => Hostel)
+  @UseGuards(AuthGuard)
+  async completeOnboarding(@Context() ctx: CtxType) {
+    return this.hostelService.completeOnboarding(ctx.user.hostelId);
+  }
 }

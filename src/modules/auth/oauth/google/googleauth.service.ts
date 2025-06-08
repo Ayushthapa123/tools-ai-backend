@@ -51,7 +51,7 @@ export class GoogleAuthService {
         data: {
           email,
           fullName: name,
-          userType: UserType.STUDENT,
+          userType: UserType.HOSTEL_OWNER,
           isVerified: true,
         },
       });
@@ -60,7 +60,7 @@ export class GoogleAuthService {
     // Generate JWT tokens
     const authTokens = generateJwtTokens(
       user.id,
-      UserType.STUDENT,
+      UserType.HOSTEL_OWNER,
       user.hostelId,
     );
 

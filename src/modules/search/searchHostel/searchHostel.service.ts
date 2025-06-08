@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { SearchHostelInput } from './dtos/search-hostel.input';
-import { RoomStatus } from '@src/models/global.enum';
 
 @Injectable()
 export class SearchHostelService {
@@ -46,9 +45,62 @@ export class SearchHostelService {
                 cos(radians($1)) * cos(radians(a."latitude")) * cos(radians(a."longitude") - radians($2)) +
                 sin(radians($1)) * sin(radians(a."latitude"))
               )
-            ) AS distance
+            ) AS distance,
+            jsonb_build_object(
+              'id', a.id,
+              'hostelId', a."hostelId",
+              'city', a.city,
+              'subCity', a."subCity",
+              'street', a.street,
+              'country', COALESCE(a.country, 'Nepal'),
+              'latitude', a.latitude,
+              'longitude', a.longitude,
+              'createdAt', a."createdAt",
+              'updatedAt', a."updatedAt"
+            ) as address,
+            COALESCE(
+              json_agg(
+                DISTINCT jsonb_build_object(
+                  'id', g.id,
+                  'hostelId', g."hostelId",
+                  'type', g.type,
+                  'caption', g.caption,
+                  'url', g.url,
+                  'isSelected', g."isSelected",
+                  'createdAt', g."createdAt",
+                  'updatedAt', g."updatedAt"
+                )
+              ) FILTER (WHERE g.id IS NOT NULL),
+              '[]'::json
+            ) as gallery,
+            COALESCE(
+              (
+                SELECT jsonb_build_object(
+                  'id', c.id,
+                  'phone', COALESCE(c.phone, ''),
+                  'altPhone', COALESCE(c."altPhone", ''),
+                  'email', COALESCE(c.email, ''),
+                  'hostelId', h.id,
+                  'createdAt', c."createdAt",
+                  'updatedAt', c."updatedAt"
+                )
+                FROM "ContactDetail" c
+                WHERE c."hostelId" = h.id
+                LIMIT 1
+              ),
+              jsonb_build_object(
+                'id', null,
+                'phone', '',
+                'altPhone', '',
+                'email', '',
+                'hostelId', h.id,
+                'createdAt', null,
+                'updatedAt', null
+              )
+            ) as contact
           FROM "Hostel" h
           INNER JOIN "Address" a ON h."id" = a."hostelId"
+          LEFT JOIN "Gallery" g ON h."id" = g."hostelId"
           WHERE 
             ($3 = '' OR a."city" ILIKE '%' || $3 || '%')
             AND ($4 = '' OR a."subCity" ILIKE '%' || $4 || '%')
@@ -58,6 +110,7 @@ export class SearchHostelService {
                 sin(radians($1)) * sin(radians(a."latitude"))
               )
             ) <= $5
+          GROUP BY h.id, a.id
           ORDER BY distance ASC
           OFFSET $6
           LIMIT $7;
@@ -86,47 +139,20 @@ export class SearchHostelService {
         include: {
           address: true,
           contact: true,
+          gallery: true,
           // image: true,
-          rooms: {
-            include: {
-              price: true,
-              image: true,
-            },
-            where: {
-              booking: {
-                none: {
-                  AND: [
-                    {
-                      status: 'CONFIRMED',
-                    },
-                    {
-                      startDate: {
-                        lt: checkOutDate,
-                      },
-                    },
-                    {
-                      endDate: {
-                        gt: checkInDate,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
         },
         where: whereCondition,
       });
     }
-
+    console.log('hhhhhhhhh', hostels);
     // Map rooms with RoomStatus correctly
-    return hostels.map((hostel) => ({
+    const mappedHostels = hostels.map((hostel) => ({
       ...hostel,
-      rooms:
-        hostel.rooms?.map((room) => ({
-          ...room,
-          status: room.status as RoomStatus,
-        })) || [],
     }));
+    return {
+      data: mappedHostels,
+      error: null,
+    };
   }
 }

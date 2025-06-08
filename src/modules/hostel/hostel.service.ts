@@ -224,6 +224,14 @@ export class HostelService {
   }
 
   async getOnboardingData(hostelId: number) {
+    if (!hostelId) {
+      return {
+        data: null,
+        error: {
+          message: 'hostelId is required',
+        },
+      };
+    }
     const res = await this.prisma.hostel.findUnique({
       where: { id: hostelId },
       select: {
@@ -234,6 +242,11 @@ export class HostelService {
           },
         },
         contact: {
+          select: {
+            id: true,
+          },
+        },
+        amenities: {
           select: {
             id: true,
           },
@@ -253,6 +266,43 @@ export class HostelService {
       },
     });
 
+    return {
+      data: res,
+      error: null,
+    };
+  }
+
+  async completeOnboarding(hostelId: number) {
+    // also validate if the hostel has all the required fields for onboarding
+    const hostel = await this.prisma.hostel.findUnique({
+      where: { id: hostelId },
+      select: {
+        address: true,
+        contact: true,
+        gallery: true,
+        rooms: true,
+        amenities: true,
+      },
+    });
+    if (
+      !hostel.address ||
+      !hostel.contact ||
+      !hostel.gallery.length ||
+      !hostel.rooms.length ||
+      !hostel.amenities
+    ) {
+      return {
+        data: null,
+        error: {
+          message: 'Please fill all the required fields',
+        },
+      };
+    }
+
+    const res = await this.prisma.hostel.update({
+      where: { id: hostelId },
+      data: { hasOnboardingComplete: true },
+    });
     return {
       data: res,
       error: null,

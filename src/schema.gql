@@ -192,6 +192,25 @@ input CreateGalleryInput {
   url: String!
 }
 
+input CreateHostelGuestInput {
+  checkinDate: String
+  checkoutDate: String
+  dateOfBirth: DateTime
+  email: String!
+  emergencyContact: String
+  fullName: String!
+  gender: Gender
+  hostelId: Int!
+  nationality: String
+  notes: String
+  occupation: String
+  permanentAddress: String
+  phoneNumber: String
+  profilePicture: String
+  religion: String
+  roomId: Int
+}
+
 input CreateHostelInput {
   description: String
   genderType: String
@@ -460,6 +479,43 @@ enum HostelGenderType {
   GIRLS
 }
 
+type HostelGuest {
+  data: HostelGuestData
+  error: GraphQLError
+}
+
+type HostelGuestData {
+  checkinDate: DateTime
+  checkoutDate: DateTime
+  createdAt: DateTime!
+  dateOfBirth: DateTime
+  email: String!
+  emergencyContact: String
+  fullName: String!
+  gender: Gender
+  hostelId: Int!
+  id: ID!
+  nationality: String
+  notes: String
+  occupation: String
+  permanentAddress: String
+  phoneNumber: String
+  profilePicture: String
+  religion: String
+  roomId: Int!
+  updatedAt: DateTime!
+}
+
+type HostelGuestList {
+  data: [HostelGuestData!]
+  error: GraphQLError
+}
+
+type HostelList {
+  data: [HostelData!]
+  error: GraphQLError
+}
+
 type HostelRules {
   data: HostelRulesData
   error: GraphQLError
@@ -518,6 +574,7 @@ type LogoutResponse {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
+  completeOnboarding: Hostel!
   confirmBooking(bookingKey: String!): ConfirmBooking!
   createAddress(data: CreateAddressInput!): Address!
   createAmenity(createAmenityInput: CreateAmenityInput!): Amenities!
@@ -526,6 +583,7 @@ type Mutation {
   createContact(data: CreateContactInput!): ContactDetail!
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
+  createHostelGuest(createHostelGuestInput: CreateHostelGuestInput!, withEmail: Boolean!): HostelGuest!
   createPrice(createPriceInput: CreatePriceInput!): Price!
   createPriceRule(createPriceRuleInput: CreateDynamicPriceRuleInput!): DynamicPricingRule!
   createRoom(createRoomInput: CreateRoomInput!): Room!
@@ -553,6 +611,7 @@ type Mutation {
   refreshTokens: UsersHostelIdAndToken!
   removeAmenity(id: Int!): Amenities!
   removeBooking(id: Float!): Booking!
+  removeHostelGuest(id: Int!): HostelGuest!
   removePrice(id: Int!): Price!
   removePriceRule(id: Int!): DynamicPricingRule!
   removeRoom(id: Int!): Room!
@@ -571,6 +630,7 @@ type Mutation {
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetail!
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+  updateHostelGuest(updateHostelGuestInput: UpdateHostelGuestInput!): HostelGuest!
   updatePrice(updatePriceInput: UpdatePriceInput!): Price!
   updatePriceRule(updatePriceInput: UpdateDynamicPriceRuleInput!): DynamicPricingRule!
   updateRoom(updateRoomInput: UpdateRoomInput!): Room!
@@ -631,6 +691,7 @@ type Query {
   findAmenityByHostelId(hostelId: Int!): Amenities!
   findAmenityByRoomId(roomId: Int!): RoomAmenity!
   findAnAmenityById(id: Int!): RoomAmenity!
+  findHostelGuestsByHostelRoomId(hostelRoomId: Int!): BookingConfirmationMailData!
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
@@ -644,7 +705,7 @@ type Query {
   getHostelBySlug(checkInDate: DateTime, checkOutDate: DateTime, slug: String!): Hostel
   getHostelByToken: Hostel
   getHostelSearchSuggestions(query: String!): [SearchQuery!]
-  getHostelsBySearch(input: SearchHostelInput!): [Hostel!]!
+  getHostelsBySearch(input: SearchHostelInput!): HostelList!
   getOnboardingData: Hostel!
   getRoomImagesByRoomId(roomId: Int!): RoomImageList
   getRulesByHostel: HostelRules!
@@ -654,6 +715,9 @@ type Query {
   getUserByAccessToken(accessToken: String!): User
   getUserById(id: Float!): User
   getUsers: [User!]!
+  hostelGuest(id: Int!): HostelGuest!
+  hostelGuestsByHostelId: HostelGuestList!
+  hostelGuestsByToken(token: String!): HostelGuestList!
   myBookings: BookingList!
   price(id: Int!): Price!
   priceByRoom(roomId: Int!): Price!
@@ -669,7 +733,7 @@ type Query {
   roomsByHostel: RoomList!
   searchQueries(query: String!): [SearchQuery!]!
   searchQuery(searchQueryId: Int!): SearchQuery!
-  sendVerificationEmail(email: String!, token: String!): Boolean!
+  sendVerificationEmail(email: String!, name: String!, token: String!): Boolean!
   serviceOptionById(id: Int!): ServiceOption!
   serviceOptions: ServiceOptionList!
 }
@@ -922,6 +986,26 @@ input UpdateGalleryInput {
   hostelId: Float
   id: Float!
   url: String
+}
+
+input UpdateHostelGuestInput {
+  checkinDate: String
+  checkoutDate: String
+  dateOfBirth: DateTime
+  email: String
+  emergencyContact: String
+  fullName: String
+  gender: Gender
+  hostelId: Int
+  id: Int!
+  nationality: String
+  notes: String
+  occupation: String
+  permanentAddress: String
+  phoneNumber: String
+  profilePicture: String
+  religion: String
+  roomId: Int
 }
 
 input UpdateHostelInput {

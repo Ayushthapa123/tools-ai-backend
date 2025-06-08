@@ -9,7 +9,12 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.WEB_URL!,
+      origin: [
+        process.env.WEB_URL!,
+        process.env.WEB_URL_1!,
+        process.env.WEB_URL_2!,
+        process.env.WEB_URL_3!,
+      ],
       // Specify exact origin
       credentials: true,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

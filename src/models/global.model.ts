@@ -116,6 +116,78 @@ export class User extends BaseResponse {
 }
 
 @ObjectType()
+export class HostelGuestData {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => Int)
+  hostelId: number;
+
+  @Field(() => Int)
+  roomId: number;
+
+  @Field(() => String)
+  fullName: string;
+
+  @Field(() => String)
+  email: string;
+
+  @Field(() => String, { nullable: true })
+  phoneNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  emergencyContact?: string;
+
+  @Field(() => Gender, { nullable: true })
+  gender?: Gender;
+
+  @Field(() => Date, { nullable: true })
+  dateOfBirth?: Date;
+
+  @Field(() => String, { nullable: true })
+  nationality?: string;
+
+  @Field(() => String, { nullable: true })
+  permanentAddress?: string;
+
+  @Field(() => String, { nullable: true })
+  religion?: string;
+
+  @Field(() => String, { nullable: true })
+  occupation?: string;
+
+  @Field(() => String, { nullable: true })
+  profilePicture?: string;
+
+  @Field(() => Date, { nullable: true })
+  checkinDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  checkoutDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  notes?: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class HostelGuest extends BaseResponse {
+  @Field(() => HostelGuestData, { nullable: true })
+  data?: HostelGuestData;
+}
+
+@ObjectType()
+export class HostelGuestList extends BaseResponse {
+  @Field(() => [HostelGuestData], { nullable: true })
+  data?: HostelGuestData[];
+}
+
+@ObjectType()
 export class RoomImageData {
   @Field(() => ID)
   id: number;
@@ -836,6 +908,12 @@ export class HostelData {
 export class Hostel extends BaseResponse {
   @Field(() => HostelData, { nullable: true })
   data?: HostelData;
+}
+
+@ObjectType()
+export class HostelList extends BaseResponse {
+  @Field(() => [HostelData], { nullable: true })
+  data?: HostelData[];
 }
 
 @ObjectType()

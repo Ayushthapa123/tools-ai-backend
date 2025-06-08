@@ -10,8 +10,9 @@ export class MailersendResolver {
   async sendVerificationEmail(
     @Args('email') email: string,
     @Args('token') token: string,
+    @Args('name') name: string,
   ) {
-    return this.mailersendService.sendEmailForVerification(email, token);
+    return this.mailersendService.sendEmailForVerification(email, token, name);
   }
 
   @Mutation(() => Boolean)

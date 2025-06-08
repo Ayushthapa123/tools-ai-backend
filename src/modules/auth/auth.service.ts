@@ -69,6 +69,7 @@ export class AuthService {
         await this.mailersendService.sendEmailForVerification(
           user?.email,
           verificationToken,
+          user?.fullName,
         );
       }
 
@@ -101,6 +102,7 @@ export class AuthService {
       await this.mailersendService.sendEmailForVerification(
         user?.email,
         verificationToken,
+        user?.fullName,
       );
       return true;
     } catch (error) {
@@ -214,6 +216,7 @@ export class AuthService {
 
       await this.mailersendService.sendEmailForForgotPassword(
         user.email,
+        user.fullName,
         verificationToken,
       );
 
@@ -238,7 +241,7 @@ export class AuthService {
       // Update the user's verification status in the database
       const userId = decoded.sub;
 
-      const userType = UserType.STUDENT; // TODO get userType from the decoded token
+      const userType = UserType.HOSTEL_OWNER; // TODO get userType from the decoded token
       // Hash the password before saving it
       const passwordHash = await bcrypt.hash(input.password, 10);
       const { accessToken, refreshToken } = generateJwtTokens(

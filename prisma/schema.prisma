@@ -37,6 +37,44 @@ model User {
   @@index([email])
 }
 
+model HostelGuest {
+  id                Int      @id @unique @default(autoincrement())
+
+  hostelId          Int      // Required relation to Hostel
+  hostel            Hostel   @relation(fields: [hostelId], references: [id]) 
+
+  roomId            Int?     // Optional relation to Room
+  room              Room?    @relation(fields: [roomId], references: [id])
+  
+  // Basic Information
+  fullName          String
+  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
+  phoneNumber       String?
+  emergencyContact  String?
+  gender            GenderType?
+  dateOfBirth       DateTime?
+  
+  // Guest specific information
+  nationality       String? 
+  permanentAddress  String? 
+  religion          String?
+  occupation        String?
+  // Visit history
+  checkinDate     DateTime?
+  checkoutDate    DateTime?
+  
+  // Additional notes
+  notes             String?
+  profilePicture    String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([hostelId])
+  @@index([email])
+  @@index([phoneNumber])
+}
+
 model Hostel {
   id         Int     @id @unique @default(autoincrement())
   name        String
@@ -74,6 +112,7 @@ model Hostel {
   // suppliers HostelSuppliers[]
 
   foodMenu FoodMenu[]
+  hostelGuests HostelGuest[]  // Added relation to HostelGuest
 
   // Single field to track onboarding completion
   hasOnboardingComplete Boolean @default(false)
@@ -108,6 +147,8 @@ model Room {
   roomAmenity RoomAmenity?
   hostel       Hostel     @relation(fields: [hostelId], references: [id])
   image          RoomImage[]
+
+  hostelGuest HostelGuest[]
 
   @@index([hostelId])
   @@index([status])

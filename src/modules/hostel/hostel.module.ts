@@ -12,6 +12,7 @@ import { RoomModule } from './room/room.module';
 import { HostelRulesModule } from './rules/hostelRules.module';
 import { BookingModule } from './booking/booking.module';
 import { SettingsModule } from './settings/settings.module';
+import { HostelGuestModule } from './hostelGuest/hostel-guest.module';
 @Module({
   imports: [
     ContactModule,
@@ -22,7 +23,8 @@ import { SettingsModule } from './settings/settings.module';
     AmenityModule,
     HostelRulesModule,
     BookingModule,
-    SettingsModule
+    SettingsModule,
+    HostelGuestModule,
   ],
   providers: [HostelResolver, HostelService, JwtService],
 })
