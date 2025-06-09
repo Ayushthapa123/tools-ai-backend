@@ -28,7 +28,7 @@ import { SuperadminModule } from './modules/superadmin/superadmin.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //It is schema first approach
       sortSchema: true,
       context: ({ req, res }) => ({ req, res }),
-      // playground:false
+      playground: process.env.NODE_ENV === 'development',
     }),
 
     PrismaModule,
