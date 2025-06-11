@@ -30,6 +30,9 @@ export class CreateHostelGuestInput {
   @Field(() => String, { nullable: true })
   religion?: string;
 
+  @Field(() => Boolean, { nullable: true })
+  isEditable?: boolean;
+
   @Field(() => String, { nullable: true })
   occupation?: string;
 

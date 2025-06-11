@@ -201,6 +201,7 @@ input CreateHostelGuestInput {
   fullName: String!
   gender: Gender
   hostelId: Int!
+  isEditable: Boolean
   nationality: String
   notes: String
   occupation: String
@@ -495,6 +496,7 @@ type HostelGuestData {
   gender: Gender
   hostelId: Int!
   id: ID!
+  isEditable: Boolean
   nationality: String
   notes: String
   occupation: String
@@ -502,7 +504,7 @@ type HostelGuestData {
   phoneNumber: String
   profilePicture: String
   religion: String
-  roomId: Int!
+  roomId: Int
   updatedAt: DateTime!
 }
 
@@ -583,7 +585,7 @@ type Mutation {
   createContact(data: CreateContactInput!): ContactDetail!
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
-  createHostelGuest(createHostelGuestInput: CreateHostelGuestInput!, withEmail: Boolean!): HostelGuest!
+  createHostelGuest(allowEdit: Boolean!, createHostelGuestInput: CreateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   createPrice(createPriceInput: CreatePriceInput!): Price!
   createPriceRule(createPriceRuleInput: CreateDynamicPriceRuleInput!): DynamicPricingRule!
   createRoom(createRoomInput: CreateRoomInput!): Room!
@@ -716,8 +718,8 @@ type Query {
   getUserById(id: Float!): User
   getUsers: [User!]!
   hostelGuest(id: Int!): HostelGuest!
+  hostelGuestByToken(token: String!): HostelGuest!
   hostelGuestsByHostelId: HostelGuestList!
-  hostelGuestsByToken(token: String!): HostelGuestList!
   myBookings: BookingList!
   price(id: Int!): Price!
   priceByRoom(roomId: Int!): Price!
@@ -998,6 +1000,7 @@ input UpdateHostelGuestInput {
   gender: Gender
   hostelId: Int
   id: Int!
+  isEditable: Boolean
   nationality: String
   notes: String
   occupation: String

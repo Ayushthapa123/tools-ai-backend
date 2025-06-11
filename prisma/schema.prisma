@@ -59,6 +59,8 @@ model HostelGuest {
   permanentAddress  String? 
   religion          String?
   occupation        String?
+
+  isEditable Boolean @default(true)
   // Visit history
   checkinDate     DateTime?
   checkoutDate    DateTime?

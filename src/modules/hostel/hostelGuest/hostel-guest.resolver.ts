@@ -19,8 +19,12 @@ export class HostelGuestResolver {
   async createHostelGuest(
     @Args('createHostelGuestInput')
     createHostelGuestInput: CreateHostelGuestInput,
-    @Args('withEmail', { type: () => Boolean })
-    withEmail: boolean,
+    @Args('withWelcomeEmail', { type: () => Boolean })
+    withWelcomeEmail: boolean,
+
+    @Args('allowEdit', { type: () => Boolean })
+    allowEdit: boolean,
+
     @Context() ctx: any,
   ) {
     if (!ctx.user?.hostelId) {
@@ -34,7 +38,8 @@ export class HostelGuestResolver {
     const { data, error } = await this.hostelGuestService.create(
       createHostelGuestInput,
       ctx.user.hostelId,
-      withEmail,
+      withWelcomeEmail,
+      allowEdit,
     );
     return { data: data, error };
   }
@@ -144,8 +149,9 @@ export class HostelGuestResolver {
     return { data: data, error };
   }
 
-  @Query(() => HostelGuestList, { name: 'hostelGuestsByToken' })
-  async findHostelGuestsByToken(
+  // for guest details by token while filling the Guest Form
+  @Query(() => HostelGuest, { name: 'hostelGuestByToken' })
+  async findHostelGuestByToken(
     @Args('token', { type: () => String }) token: string,
   ) {
     return this.hostelGuestService.guestsDetailsByToken(token);
