@@ -94,6 +94,10 @@ export class HostelGuestResolver {
     @Args('updateHostelGuestInput')
     updateHostelGuestInput: UpdateHostelGuestInput,
     @Context() ctx: any,
+    @Args('allowEdit', { type: () => Boolean })
+    allowEdit: boolean,
+    @Args('withWelcomeEmail', { type: () => Boolean })
+    withWelcomeEmail: boolean,
   ) {
     if (!ctx.user?.hostelId) {
       return {
@@ -106,6 +110,8 @@ export class HostelGuestResolver {
     const { data, error } = await this.hostelGuestService.update(
       updateHostelGuestInput,
       ctx.user.hostelId,
+      allowEdit,
+      withWelcomeEmail,
     );
     return { data: data, error };
   }

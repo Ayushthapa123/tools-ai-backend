@@ -56,7 +56,7 @@ export class HostelGuestService {
 
     if (withEmail) {
       // send welcome email
-      await this.mailersendService.sendWelcomeEmail(email, fullName);
+      await this.mailersendService.sendWelcomeEmail(email, fullName, hostelId);
     }
     if (allowEdit) {
       // send the link to edit the guest details
@@ -69,6 +69,7 @@ export class HostelGuestService {
         email,
         fullName,
         token,
+        hostelId,
         // hostelId, no need to send hostelId as it is already in the token
       );
     }
@@ -114,6 +115,8 @@ export class HostelGuestService {
   async update(
     updateHostelGuestInput: UpdateHostelGuestInput,
     hostelId: number,
+    allowEdit: boolean,
+    withWelcomeEmail: boolean,
   ) {
     const { id, ...rest } = updateHostelGuestInput;
     const dataToUpdate = Object.fromEntries(
@@ -149,6 +152,26 @@ export class HostelGuestService {
       data: dataToUpdate,
     });
 
+    if (withWelcomeEmail) {
+      await this.mailersendService.sendWelcomeEmail(
+        updatedHostelGuest.email,
+        updatedHostelGuest.fullName,
+        hostelId,
+      );
+    }
+    if (allowEdit) {
+      const token = generateHostelGuestJwtToken(
+        updatedHostelGuest.id,
+        updatedHostelGuest.email,
+        hostelId,
+      );
+      await this.mailersendService.sendEmailForHostelGuestForm(
+        updatedHostelGuest.email,
+        updatedHostelGuest.fullName,
+        token,
+        hostelId,
+      );
+    }
     return {
       data: updatedHostelGuest,
       error: null,
