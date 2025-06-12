@@ -17,6 +17,7 @@ export class HostelGuestService {
     createHostelGuestInput: CreateHostelGuestInput,
     hostelId: number,
     withEmail: boolean,
+    allowEdit: boolean,
   ) {
     const {
       fullName,
@@ -54,6 +55,11 @@ export class HostelGuestService {
     });
 
     if (withEmail) {
+      // send welcome email
+      await this.mailersendService.sendWelcomeEmail(email, fullName);
+    }
+    if (allowEdit) {
+      // send the link to edit the guest details
       const token = generateHostelGuestJwtToken(
         hostelGuest.id,
         email,
@@ -207,9 +213,12 @@ export class HostelGuestService {
       secret: process.env.JWT_SECRET,
       algorithms: ['HS256'], // Specify the algorithm
     });
+    console.log('pppppppp', payload);
     const hostelGuest = await this.prisma.hostelGuest.findUnique({
       where: { id: Number(payload.sub), email: payload.email },
     });
+
+    console.log('hostelGuest', hostelGuest);
 
     if (!hostelGuest) {
       return {

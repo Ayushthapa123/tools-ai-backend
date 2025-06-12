@@ -123,8 +123,8 @@ export class HostelGuestData {
   @Field(() => Int)
   hostelId: number;
 
-  @Field(() => Int)
-  roomId: number;
+  @Field(() => Int, { nullable: true })
+  roomId?: number;
 
   @Field(() => String)
   fullName: string;
@@ -167,6 +167,9 @@ export class HostelGuestData {
 
   @Field(() => String, { nullable: true })
   notes?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isEditable?: boolean;
 
   @Field(() => Date)
   createdAt: Date;

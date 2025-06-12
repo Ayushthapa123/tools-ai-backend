@@ -51,8 +51,10 @@ export class AuthResolver {
   @Mutation(() => UsersAndToken)
   async loginUser(
     @Args('input') loginInput: LoginInput,
-    @Context() context: { res: Response },
+    @Context() context: { req: Request; res: Response },
   ) {
+    const domainName = context.req.headers.host;
+    console.log('ddddddddddddddddddddddddd', domainName);
     const { user, token } = await this.authService.loginUser(loginInput);
     this.cookieService.setAuthCookies(
       context.res,
