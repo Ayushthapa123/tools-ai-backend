@@ -632,7 +632,7 @@ type Mutation {
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetail!
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
-  updateHostelGuest(updateHostelGuestInput: UpdateHostelGuestInput!): HostelGuest!
+  updateHostelGuest(allowEdit: Boolean!, updateHostelGuestInput: UpdateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   updatePrice(updatePriceInput: UpdatePriceInput!): Price!
   updatePriceRule(updatePriceInput: UpdateDynamicPriceRuleInput!): DynamicPricingRule!
   updateRoom(updateRoomInput: UpdateRoomInput!): Room!

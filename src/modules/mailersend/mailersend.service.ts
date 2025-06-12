@@ -7,7 +7,7 @@ import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 const BREVO_API_KEY =
   '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';
 const SENDER = {
-  name: 'Hosteladmin',
+  name: 'Hostel',
   email: 'sagarregmi0710@gmail.com',
 };
 
@@ -147,28 +147,37 @@ export class MailersendService {
     await this.sendEmail(sendSmtpEmail);
   }
 
-  async sendWelcomeEmail(email: string, name: string): Promise<void> {
+  async sendWelcomeEmail(
+    email: string,
+    name: string,
+    hostelId: number,
+  ): Promise<void> {
+    const hostel = await this.prismaService.hostel.findUnique({
+      where: {
+        id: hostelId,
+      },
+    });
     const sendSmtpEmail = this.createBaseEmail({ email, name: name });
-    sendSmtpEmail.subject = 'Welcome to hosteladmin.com';
+    sendSmtpEmail.subject = `Welcome to ${hostel?.name}`;
     sendSmtpEmail.htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to hosteladmin.com</title>
+        <title>Welcome to ${hostel?.name}</title>
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color:rgb(151, 247, 231);">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color:rgb(255, 255, 255); border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #333333; margin: 0; font-size: 24px;">Welcome to hostelpilot.com</h1>
+              <h1 style="color: #333333; margin: 0; font-size: 24px;">Welcome to ${hostel?.name}</h1>
             </div>
         
           
           </div>
           <div style="text-align: center; margin-top: 20px; color: #999999; font-size: 12px;">
-            <p>&copy; ${new Date().getFullYear()} Hosteladmin.com. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} ${hostel?.name}. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -182,25 +191,31 @@ export class MailersendService {
     email: string,
     name: string,
     token: string,
+    hostelId: number,
   ): Promise<void> {
+    const hostel = await this.prismaService.hostel.findUnique({
+      where: {
+        id: hostelId,
+      },
+    });
     const sendSmtpEmail = this.createBaseEmail({ email, name: name });
-    sendSmtpEmail.subject = 'Hostel Guest Form : hosteladmin.com';
+    sendSmtpEmail.subject = `Hostel Guest Form : ${hostel?.name}`;
     sendSmtpEmail.htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Hostel Guest Form</title>
+        <title>Hostel Guest Form : ${hostel?.name}</title>
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color:rgb(151, 247, 231);">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color:rgb(255, 255, 255); border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #333333; margin: 0; font-size: 24px;">Hostel Guest Form</h1>
+              <h1 style="color: #333333; margin: 0; font-size: 24px;">Hostel Guest Form : ${hostel?.name}</h1>
             </div>
             <div style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
-              <p>We received a request to fill the form for your Hosteladmin.com account.</p>
+              <p>You have received a request to fill the form:</p>
               <p>Click the button below to fill the form:</p>
             </div>
             <div style="text-align: center; margin: 30px 0;">
@@ -219,7 +234,7 @@ export class MailersendService {
             </div>
           </div>
           <div style="text-align: center; margin-top: 20px; color: #999999; font-size: 12px;">
-            <p>&copy; ${new Date().getFullYear()} Hosteladmin.com. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} ${hostel?.name}. All rights reserved.</p>
           </div>
         </div>
       </body>
