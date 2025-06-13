@@ -31,7 +31,7 @@ export class AuthResolver {
   @Mutation(() => UsersAndToken)
   async signupUser(
     @Args('input') signupInput: SignupInput,
-    @Context() context: { res: Response },
+    @Context() context: { res: Response; req: Request },
   ) {
     const result = await this.authService.signupUser(signupInput);
     console.log('result', result);
@@ -39,6 +39,7 @@ export class AuthResolver {
       context.res,
       result.token.accessToken,
       result.token.refreshToken,
+      context.req.headers.referer,
     );
     return result;
   }
@@ -60,6 +61,7 @@ export class AuthResolver {
       context.res,
       token.accessToken,
       token.refreshToken,
+      context.req.headers.referer,
     );
     return { ...user, token };
   }
@@ -77,6 +79,7 @@ export class AuthResolver {
       context.res,
       result.token.accessToken,
       result.token.refreshToken,
+      context.req.headers.referer,
     );
     return result;
   }
@@ -91,6 +94,7 @@ export class AuthResolver {
       context.res,
       result.token.accessToken,
       result.token.refreshToken,
+      context.req.headers.referer,
     );
     return { id: result.id };
   }
@@ -103,13 +107,14 @@ export class AuthResolver {
   @Mutation(() => UsersAndToken)
   async resetPassword(
     @Args('input') resetPasswordInput: ResetPasswordInput,
-    @Context() context: { res: Response },
+    @Context() context: { res: Response; req: Request },
   ): Promise<UsersAndToken> {
     const result = await this.authService.resetPassword(resetPasswordInput);
     this.cookieService.setAuthCookies(
       context.res,
       result.token.accessToken,
       result.token.refreshToken,
+      context.req.headers.referer,
     );
     return result;
   }
@@ -123,8 +128,11 @@ export class AuthResolver {
   }
 
   @Mutation(() => LogoutResponse)
-  async logout(@Context() context: { res: Response }) {
-    this.cookieService.clearAuthCookies(context.res);
+  async logout(@Context() context: { res: Response; req: Request }) {
+    this.cookieService.clearAuthCookies(
+      context.res,
+      context.req.headers.referer,
+    );
     return { success: true, message: 'Logged out successfully' };
   }
 }
