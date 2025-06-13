@@ -17,10 +17,9 @@ export class CookieService {
     try {
       const url = new URL(webUrl);
       const hostname = url.hostname;
+      console.log('hhhhhhhhhhhhhhhh', hostname);
 
-      if (hostname === 'localhost') return 'localhost';
-
-      return '.hosteladmin.com'; // ✅
+      return hostname;
     } catch (error) {
       console.error('Invalid WEB_URL in env:', webUrl);
       return 'localhost';
