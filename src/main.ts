@@ -14,6 +14,8 @@ async function bootstrap() {
         process.env.WEB_URL_1!,
         process.env.WEB_URL_2!,
         process.env.WEB_URL_3!,
+        process.env.WEB_URL_4!,
+        process.env.WEB_URL_5!,
       ],
       // Specify exact origin
       credentials: true,
