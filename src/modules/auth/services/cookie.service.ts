@@ -6,7 +6,7 @@ export class CookieService {
   private readonly baseCookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'lax' as const,
+    sameSite: 'none' as const,
     path: '/',
     maxAge: 0,
   };
