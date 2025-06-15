@@ -32,6 +32,7 @@ export class SearchHostelService {
         city: { contains: city, mode: 'insensitive' },
         subCity: { contains: subCity, mode: 'insensitive' },
       },
+      verifiedBySuperAdmin: true,
     };
 
     // If lat/lng provided, search by distance

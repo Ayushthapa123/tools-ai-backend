@@ -10,10 +10,20 @@ import { UserType } from '@src/models/global.enum';
 export class HostelService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllHostels(pageSize: number, pageNumber: number) {
+  async getAllHostels(
+    pageSize: number,
+    pageNumber: number,
+    isSuperAdmin: boolean,
+  ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
     const hostels = await this.prisma.hostel.findMany({
+      where: isSuperAdmin
+        ? {}
+        : {
+            verifiedBySuperAdmin: true,
+          },
       skip,
       take,
       include: {
@@ -25,6 +35,7 @@ export class HostelService {
             image: true,
           },
         },
+
         // owner: true,
       },
     });

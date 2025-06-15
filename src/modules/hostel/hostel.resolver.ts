@@ -39,10 +39,17 @@ export class HostelResolver {
     @Args('pageSize', { type: () => Int, defaultValue: 10 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })
     pageNumber: number,
+    @Args('isSuperAdmin', {
+      type: () => Boolean,
+      defaultValue: false,
+      nullable: true,
+    }) // make it optional
+    isSuperAdmin: boolean,
   ): Promise<HostelArrayResponse> {
     return this.hostelService.getAllHostels(
       pageSize,
       pageNumber,
+      isSuperAdmin,
     ) as unknown as HostelArrayResponse; // Issue is caused by the async return type. which is not required
   }
 
