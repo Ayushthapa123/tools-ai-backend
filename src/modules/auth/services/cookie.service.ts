@@ -24,6 +24,10 @@ export class CookieService {
         console.log('starts with wwww', hostname);
         hostname = hostname.slice(4); // remove first 4 characters
       }
+      if (hostname.startsWith('dev')) {
+        console.log('starts with dev', hostname);
+        hostname = hostname.slice(4); // remove first 4 characters
+      }
 
       return hostname;
     } catch (error) {
