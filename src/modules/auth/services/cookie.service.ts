@@ -17,10 +17,9 @@ export class CookieService {
     try {
       const url = new URL(webUrl);
       const hostname = url.hostname;
+      console.log('hhhhhhhhhhhhhhhh', hostname);
 
-      if (hostname === 'localhost') return 'localhost';
-
-      return '.hosteladmin.com'; // ✅
+      return hostname;
     } catch (error) {
       console.error('Invalid WEB_URL in env:', webUrl);
       return 'localhost';
@@ -31,10 +30,11 @@ export class CookieService {
     res: Response,
     accessToken: string,
     refreshToken: string,
+    userDomain: string,
   ): void {
     const cookieOptionsWithDomain = {
       ...this.baseCookieOptions,
-      domain: this.domain,
+      domain: this.getCookieDomain(userDomain),
     };
 
     res.cookie('accessToken', accessToken, {
@@ -52,10 +52,10 @@ export class CookieService {
     });
   }
 
-  clearAuthCookies(res: Response): void {
+  clearAuthCookies(res: Response, userDomain: string): void {
     const cookieOptionsWithDomain = {
       ...this.baseCookieOptions,
-      domain: this.domain,
+      domain: this.getCookieDomain(userDomain),
     };
 
     res.clearCookie('accessToken', cookieOptionsWithDomain);

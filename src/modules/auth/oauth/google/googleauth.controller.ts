@@ -5,7 +5,7 @@ import { GoogleAuthService } from './googleauth.service';
 import { GoogleOauthUrl } from './google.model';
 import { SignupWithGoogleInput } from './google.dto';
 import { UsersAndToken } from '@src/modules/auth/models/user.model';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 @Resolver()
 export class GoogleAuthResolver {
   constructor(private readonly authService: GoogleAuthService) {}
@@ -13,11 +13,15 @@ export class GoogleAuthResolver {
   @Mutation(() => UsersAndToken)
   async signUpWithGoogle(
     @Args('input') input: SignupWithGoogleInput,
-    @Context() context: { res: Response },
+    @Context() context: { res: Response; req: Request },
   ) {
+    console.log('ddddddddddddomain', context.req.headers.host); // it logged it's own domain. I want to get the domain of the user
+    console.log('userdomain', context.req.headers.referer);
+    const userDomain = context.req.headers.referer;
     const token = await this.authService.signUpWithGoogle(
       input.token,
       context.res,
+      userDomain,
     );
     return token;
   }

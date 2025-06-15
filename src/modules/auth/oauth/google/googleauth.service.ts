@@ -17,7 +17,7 @@ export class GoogleAuthService {
     private readonly cookieService: CookieService,
   ) {}
 
-  async signUpWithGoogle(code: string, res: Response) {
+  async signUpWithGoogle(code: string, res: Response, userDomain: string) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const redirectUri = `${process.env.WEB_URL}/oauth/google`;
@@ -69,6 +69,7 @@ export class GoogleAuthService {
       res,
       authTokens.accessToken,
       authTokens.refreshToken,
+      userDomain,
     );
 
     // Return user without tokens
