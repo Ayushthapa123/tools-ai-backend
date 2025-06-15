@@ -16,8 +16,14 @@ export class CookieService {
   private getCookieDomain(webUrl: string): string {
     try {
       const url = new URL(webUrl);
-      const hostname = url.hostname;
-      console.log('hhhhhhhhhhhhhhhh', hostname);
+      let hostname = url.hostname;
+      console.log('hostnamehhhh', hostname);
+
+      // Remove 'www.' if present
+      if (hostname.startsWith('www.')) {
+        console.log('starts with wwww', hostname);
+        hostname = hostname.slice(4); // remove first 4 characters
+      }
 
       return hostname;
     } catch (error) {
