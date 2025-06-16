@@ -215,7 +215,9 @@ export class HostelService {
           verifiedBySuperAdmin: status,
         },
       });
+      console.log('calling verify hostel', res.id, status);
       if (res.id && status) {
+        console.log('inside');
         // send email saying your hostle has been verified
         const owner = await this.prisma.user.findUnique({
           where: { id: res.ownerId },
