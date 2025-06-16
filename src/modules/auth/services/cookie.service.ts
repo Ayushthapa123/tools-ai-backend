@@ -6,7 +6,7 @@ export class CookieService {
   private readonly baseCookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'lax' as const,
+    sameSite: 'none' as const,
     path: '/',
     maxAge: 0,
   };
@@ -22,6 +22,10 @@ export class CookieService {
       // Remove 'www.' if present
       if (hostname.startsWith('www.')) {
         console.log('starts with wwww', hostname);
+        hostname = hostname.slice(4); // remove first 4 characters
+      }
+      if (hostname.startsWith('dev.')) {
+        console.log('starts with dev', hostname);
         hostname = hostname.slice(4); // remove first 4 characters
       }
 
@@ -47,14 +51,14 @@ export class CookieService {
       ...cookieOptionsWithDomain,
       maxAge: process.env.ACCESS_TOKEN_EXPIRATION_TIME
         ? parseInt(process.env.ACCESS_TOKEN_EXPIRATION_TIME)
-        : 45 * 60 * 1000, // 45 minutes
+        : 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.cookie('refreshToken', refreshToken, {
       ...cookieOptionsWithDomain,
       maxAge: process.env.REFRESH_TOKEN_EXPIRATION_TIME
         ? parseInt(process.env.REFRESH_TOKEN_EXPIRATION_TIME)
-        : 3 * 24 * 60 * 60 * 1000, // 3 days
+        : 14 * 24 * 60 * 60 * 1000, // 14 days
     });
   }
 

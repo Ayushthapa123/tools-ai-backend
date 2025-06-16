@@ -13,6 +13,7 @@ import { HostelRulesModule } from './rules/hostelRules.module';
 import { BookingModule } from './booking/booking.module';
 import { SettingsModule } from './settings/settings.module';
 import { HostelGuestModule } from './hostelGuest/hostel-guest.module';
+import { MailersendService } from '../mailersend/mailersend.service';
 @Module({
   imports: [
     ContactModule,
@@ -26,6 +27,6 @@ import { HostelGuestModule } from './hostelGuest/hostel-guest.module';
     SettingsModule,
     HostelGuestModule,
   ],
-  providers: [HostelResolver, HostelService, JwtService],
+  providers: [HostelResolver, HostelService, JwtService, MailersendService],
 })
 export class HostelModule {}

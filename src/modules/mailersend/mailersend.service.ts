@@ -298,4 +298,60 @@ export class MailersendService {
 
     await this.sendEmail(sendSmtpEmail);
   }
+
+  async sendHostelVerifiedEmail(
+    email: string,
+    name: string,
+    hostelId: number,
+  ): Promise<void> {
+    const hostel = await this.prismaService.hostel.findUnique({
+      where: {
+        id: hostelId,
+      },
+    });
+    const sendSmtpEmail = this.createBaseEmail({ email, name: name });
+    sendSmtpEmail.subject = `Your Hostel has been verified`;
+    sendSmtpEmail.htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Hostel has been verified</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color:rgb(151, 247, 231);">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color:rgb(255, 255, 255); border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #333333; margin: 0; font-size: 24px;">Welcome ${name},</h1>
+              <h1 style="color: #333333; margin: 0; font-size: 24px;">Your Hostel has been verified</h1>
+            </div>
+            <div> 
+              <p>Your hostel has been verified by the admin. You can now login to your account and start managing your hostel.</p>
+              <p>Thank you for using Hosteladmin.com</p>
+            </div>
+            <div>
+              <h3>Your Hostels Digital Profile link</h3>
+              <a href="https://hostelpilot.com/hostel/${hostel?.slug}">https://hostelpilot.com/hostel/${hostel?.slug}</a>
+            </div>
+            <div>
+              <h3>If You have not completed the onboarding process, please click the button below</h3>
+              <div> 
+                <a href="${process.env.WEB_URL}/app">Complete Onboarding</a>
+              </div>          
+              
+              </div>
+        
+          
+          </div>
+          <div style="text-align: center; margin-top: 20px; color: #999999; font-size: 12px;">
+            <p>&copy; ${new Date().getFullYear()} Hosteladmin.com. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await this.sendEmail(sendSmtpEmail);
+  }
 }

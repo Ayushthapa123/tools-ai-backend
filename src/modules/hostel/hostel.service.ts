@@ -5,10 +5,14 @@ import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { UserType } from '@src/models/global.enum';
+import { MailersendService } from '../mailersend/mailersend.service';
 
 @Injectable()
 export class HostelService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailersendService: MailersendService,
+  ) {}
 
   async getAllHostels(
     pageSize: number,
@@ -211,6 +215,18 @@ export class HostelService {
           verifiedBySuperAdmin: status,
         },
       });
+      if (res.id && status) {
+        // send email saying your hostle has been verified
+        const owner = await this.prisma.user.findUnique({
+          where: { id: res.ownerId },
+        });
+
+        this.mailersendService.sendHostelVerifiedEmail(
+          owner.email,
+          owner.fullName,
+          res.id,
+        );
+      }
       return {
         data: res,
         error: null,
