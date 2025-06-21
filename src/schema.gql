@@ -937,7 +937,12 @@ type Token {
 }
 
 input UpdateAddressInput {
-  id: Float!
+  city: String
+  country: String
+  latitude: Float
+  longitude: Float
+  street: String
+  subCity: String
 }
 
 input UpdateAmenityInput {

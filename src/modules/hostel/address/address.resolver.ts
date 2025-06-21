@@ -19,6 +19,7 @@ export class AddressResolver {
   async createAddress(
     @Args('data') data: CreateAddressInput,
   ): Promise<Address> {
+    console.log(data);
     return this.addressService.createAddress(data);
   }
 
@@ -27,6 +28,7 @@ export class AddressResolver {
     @Args('addressId') addressId: number,
     @Args('data') data: UpdateAddressInput,
   ): Promise<Address> {
+    console.log(addressId, data);
     return this.addressService.updateAddress(addressId, data);
   }
 }
