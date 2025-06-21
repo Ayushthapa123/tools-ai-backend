@@ -29,6 +29,7 @@ export class ContactResolver {
     @Args('contactId') contactId: number,
     @Args('data') data: UpdateContactInput,
   ): Promise<ContactDetail> {
+    console.log('updating contact');
     return this.contactService.updateContacts(contactId, data);
   }
 }

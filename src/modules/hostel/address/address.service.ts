@@ -64,6 +64,7 @@ export class AddressService {
 
   async updateAddress(addressId: number, data: UpdateAddressInput) {
     //check whether a searchQueries already have address
+    console.log('....');
     const searchCity = await this.prisma.searchQuery.findFirst({
       where: {
         city: {
