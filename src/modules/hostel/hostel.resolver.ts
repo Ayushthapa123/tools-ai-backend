@@ -36,7 +36,7 @@ export class HostelResolver {
 
   @Query(() => HostelArrayResponse)
   async getAllHostels(
-    @Args('pageSize', { type: () => Int, defaultValue: 10 }) pageSize: number,
+    @Args('pageSize', { type: () => Int, defaultValue: 30 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })
     pageNumber: number,
     @Args('isSuperAdmin', {
