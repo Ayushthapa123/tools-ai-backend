@@ -22,4 +22,19 @@ export class MailersendResolver {
   ) {
     return this.mailersendService.sendMailAfterBooking(email, data);
   }
+
+  @Mutation(() => Boolean)
+  async sendCustomEmail(
+    @Args('email') email: string,
+    @Args('name') name: string,
+    @Args('subject') subject: string,
+    @Args('htmlContent') htmlContent: string,
+  ) {
+    return this.mailersendService.sendCustomEmail(
+      email,
+      name,
+      subject,
+      htmlContent,
+    );
+  }
 }
