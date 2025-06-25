@@ -34,6 +34,7 @@ export class HostelService {
         address: true,
         contact: true,
         gallery: true,
+        owner: true,
         rooms: {
           include: {
             image: true,

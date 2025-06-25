@@ -77,6 +77,11 @@ model HostelGuest {
   @@index([phoneNumber])
 }
 
+// There Will Be Instititions similar to Hostel. 
+// They Will Have Admins/Staffs & Recommended Guest List. 
+// Instituions will have associated Hostels.  
+
+
 model Hostel {
   id         Int     @id @unique @default(autoincrement())
   name        String

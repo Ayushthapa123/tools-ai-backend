@@ -354,4 +354,22 @@ export class MailersendService {
 
     await this.sendEmail(sendSmtpEmail);
   }
+
+  async sendCustomEmail(
+    email: string,
+    name: string,
+    subject: string,
+    htmlContent: string,
+  ): Promise<boolean> {
+    try {
+      const sendSmtpEmail = this.createBaseEmail({ email, name: name });
+      sendSmtpEmail.subject = subject;
+      sendSmtpEmail.htmlContent = htmlContent;
+      await this.sendEmail(sendSmtpEmail);
+      return true;
+    } catch (error) {
+      this.logger.error('Error sending email:', error);
+      return false;
+    }
+  }
 }

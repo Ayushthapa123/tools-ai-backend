@@ -622,6 +622,7 @@ type Mutation {
   resendVerificationMail(id: Float!): Boolean!
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
   selectGallery(galleryId: Int!, hostelId: Int!): Gallery!
+  sendCustomEmail(email: String!, htmlContent: String!, name: String!, subject: String!): Boolean!
   sendMailAfterBooking(data: BookingConfirmationEmailDto!, email: String!): Boolean!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!

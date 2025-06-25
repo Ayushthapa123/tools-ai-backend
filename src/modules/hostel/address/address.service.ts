@@ -89,7 +89,7 @@ export class AddressService {
     }
     const searchSubCity = await this.prisma.searchQuery.findFirst({
       where: {
-        subCity: data.subCity.toLowerCase(),
+        subCity: data?.subCity?.toLowerCase(),
         city: data.city.toLowerCase(),
         country: data.country.toLowerCase(),
       },
@@ -100,7 +100,7 @@ export class AddressService {
         data: {
           country: data.country.toLowerCase(),
           city: data.city.toLowerCase(),
-          subCity: data.subCity.toLowerCase(),
+          subCity: data?.subCity?.toLowerCase(),
         },
       });
     }
