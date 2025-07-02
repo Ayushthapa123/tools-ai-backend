@@ -698,7 +698,7 @@ type Query {
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
-  getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 30): HostelArrayResponse!
+  getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
   getCitySearchSuggestions(query: String!): [SearchQuery!]
   getContactByHostelId(hostelId: Float!): ContactDetail

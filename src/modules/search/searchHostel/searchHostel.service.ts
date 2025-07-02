@@ -111,6 +111,7 @@ export class SearchHostelService {
                 sin(radians($1)) * sin(radians(a."latitude"))
               )
             ) <= $5
+            AND h."verifiedBySuperAdmin" = true
           GROUP BY h.id, a.id
           ORDER BY distance ASC
           OFFSET $6
