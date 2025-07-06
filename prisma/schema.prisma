@@ -33,7 +33,7 @@ model User {
   deletedAt DateTime?
 
   hostel     Hostel?
-
+  blogPosts  BlogPost[]
   @@index([email])
 }
 
@@ -135,6 +135,30 @@ model Hostel {
   @@index([verifiedBySuperAdmin])
   @@index([createdAt])
   @@index([hasOnboardingComplete])
+}
+
+model BlogPost {
+  id         Int     @id @unique @default(autoincrement())
+  title           String
+  slug            String       @unique
+  excerpt         String?      @db.Text
+  content         String       @db.Text
+  coverImageUrl   String?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  status          BlogStatus   @default(DRAFT)
+  views           Int          @default(0)
+  publishedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // relations
+  author   User?        @relation(fields: [authorId], references: [id])
+  authorId Int
+  tags     BlogTags[]
+  // places   Address[]  // through the join table
+
 }
 model Room {
   id             Int          @id @unique @default(autoincrement())
@@ -453,6 +477,7 @@ enum UserType {
   SUPPLIERS 
   SUPERADMIN
   COMMUNITY_OWNER
+  WRITER
   OTHERS
 }
 
@@ -597,6 +622,19 @@ enum DiscountType {
   
 }
 
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}   
+
+enum BlogTags {
+  TRAVEL
+  CITY
+  HOSTEL 
+  TOP_TEN_PLACES
+  OTHER
+}
 //!for advertisement 
 
 // model Advertisement {

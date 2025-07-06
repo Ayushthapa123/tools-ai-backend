@@ -59,6 +59,49 @@ enum Badges {
   TECH_SAVVY
 }
 
+type BlogPost {
+  data: BlogPostData
+  error: GraphQLError
+}
+
+type BlogPostData {
+  authorId: Float!
+  content: String!
+  coverImageUrl: String
+  createdAt: DateTime!
+  excerpt: String
+  id: ID!
+  metaDescription: String
+  metaKeywords: String
+  metaTitle: String
+  publishedAt: DateTime
+  slug: String!
+  status: BlogStatus!
+  tags: [BlogTags!]!
+  title: String!
+  updatedAt: DateTime!
+  views: Float
+}
+
+type BlogPostList {
+  data: [BlogPostData!]
+  error: GraphQLError
+}
+
+enum BlogStatus {
+  ARCHIVED
+  DRAFT
+  PUBLISHED
+}
+
+enum BlogTags {
+  CITY
+  HOSTEL
+  OTHER
+  TOP_TEN_PLACES
+  TRAVEL
+}
+
 type Booking {
   data: BookingData
   error: GraphQLError
@@ -155,6 +198,22 @@ input CreateAmenityOptionInput {
   hostelAmenityType: String
   iconUrl: String
   name: String!
+}
+
+input CreateBlogPostInput {
+  authorId: Int!
+  content: String!
+  coverImageUrl: String
+  excerpt: String
+  metaDescription: String
+  metaKeywords: String
+  metaTitle: String!
+  publishedAt: DateTime
+  slug: String!
+  status: BlogStatus!
+  tags: [BlogTags!]!
+  title: String!
+  views: Float
 }
 
 input CreateBookingInput {
@@ -581,6 +640,7 @@ type Mutation {
   createAddress(data: CreateAddressInput!): Address!
   createAmenity(createAmenityInput: CreateAmenityInput!): Amenities!
   createAmenityOption(createAmenityOptionInput: CreateAmenityOptionInput!): AmenityOption!
+  createBlogPost(data: CreateBlogPostInput!): BlogPost!
   createBooking(createBookingInput: CreateBookingInput!): Booking!
   createContact(data: CreateContactInput!): ContactDetail!
   createGallery(data: CreateGalleryInput!): Gallery!
@@ -599,6 +659,7 @@ type Mutation {
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSetting!
   createUser(input: CreateUserInput!): User!
   deleteAmenityOption(amenityOptionId: Int!): AmenityOption!
+  deleteBlogPost(id: Float!): BlogPost!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
   deleteRoomAmenityOption(roomAmenityOptionId: Int!): RoomAmenityOption!
@@ -629,6 +690,7 @@ type Mutation {
   updateAddress(addressId: Float!, data: UpdateAddressInput!): Address!
   updateAmenity(updateAmenityInput: UpdateAmenityInput!): Amenities!
   updateAmenityOption(amenityOptionId: Int!, updateAmenityOptionInput: UpdateAmenityOptionInput!): AmenityOption!
+  updateBlogPost(data: UpdateBlogPostInput!): BlogPost!
   updateBooking(id: Float!, updateBookingInput: UpdateBookingInput!): Booking!
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetail!
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
@@ -698,8 +760,11 @@ type Query {
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
+  getAllBlogPosts(pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
   getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
+  getBlogPostById(id: Float!): BlogPost
+  getBlogPostBySlug(slug: String!): BlogPost
   getCitySearchSuggestions(query: String!): [SearchQuery!]
   getContactByHostelId(hostelId: Float!): ContactDetail
   getGalleryByHostelId(hostelId: Int!): GalleryList
@@ -959,6 +1024,23 @@ input UpdateAmenityOptionInput {
   name: String
 }
 
+input UpdateBlogPostInput {
+  authorId: Int
+  content: String
+  coverImageUrl: String
+  excerpt: String
+  id: Int!
+  metaDescription: String
+  metaKeywords: String
+  metaTitle: String
+  publishedAt: DateTime
+  slug: String
+  status: BlogStatus
+  tags: [BlogTags!]
+  title: String
+  views: Float
+}
+
 input UpdateBookingInput {
   bookingKey: String
   endDate: DateTime
@@ -1153,6 +1235,7 @@ enum UserType {
   STUDENT
   SUPERADMIN
   SUPPLIERS
+  WRITER
 }
 
 type UsersAndToken {
