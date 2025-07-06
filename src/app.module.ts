@@ -18,6 +18,7 @@ import { MailersendModule } from './modules/mailersend/mailersend.module';
 import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchQueriesModule } from './modules/hostel/searchQueries/search-queries.module';
 import { SuperadminModule } from './modules/superadmin/superadmin.module';
+import { BlogPostModule } from './modules/blogPost/blogPost.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,7 @@ import { SuperadminModule } from './modules/superadmin/superadmin.module';
     ImageModule,
     MailersendModule,
     SuperadminModule,
+    BlogPostModule,
   ],
 
   controllers: [AppController], //we don't need it now

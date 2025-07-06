@@ -1,9 +1,14 @@
 import { ServiceOption, ServiceOptionList } from '@src/models/global.model';
 import { ServiceOptionService } from './service-option.services';
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { CreateServiceOptionInput } from './dtos/create-service-option.input';
 import { UpdateServiceOptionInput } from './dtos/update-service-option.input';
+import { ForbiddenException, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@src/guards/auth.guard';
+import { CtxType } from '@src/models/global.model';
+import { UserType } from '@prisma/client';
 
+@UseGuards(AuthGuard)
 @Resolver(() => ServiceOption)
 export class ServiceOptionResolver {
   constructor(private readonly serviceOptionService: ServiceOptionService) {}
@@ -14,7 +19,13 @@ export class ServiceOptionResolver {
   }
 
   @Query(() => ServiceOptionList, { name: 'serviceOptions' })
-  async serviceOptions() {
+  async serviceOptions(@Context() ctx: CtxType) {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.serviceOptionService.getAll();
   }
 
@@ -40,8 +51,15 @@ export class ServiceOptionResolver {
 
   @Mutation(() => ServiceOption)
   async deleteServiceOption(
+    @Context() ctx: CtxType,
     @Args('serviceOptionId', { type: () => Int }) serviceOptionId: number,
   ): Promise<ServiceOption> {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.serviceOptionService.delete(serviceOptionId);
   }
 }

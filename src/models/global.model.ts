@@ -1,14 +1,16 @@
 // src/models/hostel.model.ts
 
-import {} from // UserType,
-// HostelType,
-// VisibilityType,
-// GalleryType,
-// WeekDays,
-// RoomStatus,
-// RoomCapacity,
-// Currency,
-'@prisma/client';
+import {
+  BlogStatus,
+  BlogTags, // UserType,
+  // HostelType,
+  // VisibilityType,
+  // GalleryType,
+  // WeekDays,
+  // RoomStatus,
+  // RoomCapacity,
+  // Currency,
+} from '@prisma/client';
 import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
 import {
   UserType,
@@ -917,6 +919,68 @@ export class Hostel extends BaseResponse {
 export class HostelList extends BaseResponse {
   @Field(() => [HostelData], { nullable: true })
   data?: HostelData[];
+}
+
+@ObjectType()
+export class BlogPostData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  title: string;
+
+  @Field()
+  slug: string; // unique
+  @Field()
+  content: string;
+
+  @Field({ nullable: true })
+  excerpt?: string;
+
+  @Field({ nullable: true })
+  coverImageUrl?: string;
+
+  @Field({ nullable: true })
+  metaTitle?: string;
+
+  @Field({ nullable: true })
+  metaDescription?: string;
+
+  @Field({ nullable: true })
+  metaKeywords?: string;
+
+  @Field()
+  authorId: number;
+
+  @Field(() => [BlogTags])
+  tags: BlogTags[];
+
+  @Field({ nullable: true })
+  views?: number;
+
+  @Field(() => BlogStatus)
+  status: BlogStatus;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+
+  @Field(() => Date, { nullable: true })
+  publishedAt?: Date;
+}
+
+@ObjectType()
+export class BlogPost extends BaseResponse {
+  @Field(() => BlogPostData, { nullable: true })
+  data?: BlogPostData;
+}
+
+@ObjectType()
+export class BlogPostList extends BaseResponse {
+  @Field(() => [BlogPostData], { nullable: true })
+  data?: BlogPostData[];
 }
 
 @ObjectType()

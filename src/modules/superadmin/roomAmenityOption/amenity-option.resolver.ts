@@ -1,12 +1,17 @@
 import {
   RoomAmenityOption,
   RoomAmenityOptionList,
+  CtxType,
 } from '@src/models/global.model';
 import { RoomAmenityOptionService } from './amenity-option.services';
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { CreateRoomAmenityOptionInput } from './dtos/create-amenity-option.input';
 import { UpdateRoomAmenityOptionInput } from './dtos/update-amenity-option.input';
+import { AuthGuard } from '@src/guards/auth.guard';
+import { ForbiddenException, UseGuards } from '@nestjs/common';
+import { UserType } from '@prisma/client';
 
+@UseGuards(AuthGuard)
 @Resolver(() => RoomAmenityOption)
 export class RoomAmenityOptionResolver {
   constructor(
@@ -19,7 +24,13 @@ export class RoomAmenityOptionResolver {
   }
 
   @Query(() => RoomAmenityOptionList, { name: 'roomAmenityOptions' })
-  async roomAmenityOptions() {
+  async roomAmenityOptions(@Context() ctx: CtxType) {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.roomAmenityOptionService.getAll();
   }
 
@@ -46,9 +57,16 @@ export class RoomAmenityOptionResolver {
 
   @Mutation(() => RoomAmenityOption)
   async deleteRoomAmenityOption(
+    @Context() ctx: CtxType,
     @Args('roomAmenityOptionId', { type: () => Int })
     roomAmenityOptionId: number,
   ): Promise<RoomAmenityOption> {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.roomAmenityOptionService.delete(roomAmenityOptionId);
   }
 }

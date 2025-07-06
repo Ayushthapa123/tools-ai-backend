@@ -5,6 +5,8 @@ import {
   RoomCapacity as RoomCapacityy,
   RoomStatus as RoomStatuss,
   UserType as UserTypee,
+  BlogStatus as BlogStatuss,
+  BlogTags as BlogTags,
 } from '@prisma/client';
 
 // If enum is not generated in frontend that's because you have not included the enum anywhere in the Model
@@ -13,6 +15,8 @@ export {
   RoomCapacityy as RoomCapacity,
   RoomStatuss as RoomStatus,
   UserTypee as UserType,
+  BlogStatuss as BlogStatus,
+  BlogTags as BlogTags,
 };
 
 registerEnumType(UserTypee, {
@@ -21,6 +25,14 @@ registerEnumType(UserTypee, {
 
 registerEnumType(RoomStatuss, {
   name: 'RoomStatus',
+});
+
+registerEnumType(BlogStatuss, {
+  name: 'BlogStatus',
+});
+
+registerEnumType(BlogTags, {
+  name: 'BlogTags',
 });
 
 export enum BookingStatus {
