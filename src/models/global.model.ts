@@ -956,6 +956,8 @@ export class BlogPostData {
   tags: BlogTags[];
 
   @Field({ nullable: true })
+  videoUrl?: string;
+  @Field({ nullable: true })
   views?: number;
 
   @Field(() => BlogStatus)

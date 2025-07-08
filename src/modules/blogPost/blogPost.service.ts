@@ -4,17 +4,28 @@ import { Injectable } from '@nestjs/common';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBlogPostInput } from './dtos/create-blog.input';
-import { BlogTags } from '@prisma/client';
+import { BlogStatus, BlogTags } from '@prisma/client';
 import { BlogPost } from '@src/models/global.model';
 @Injectable()
 export class BlogPostService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllBlogPosts(pageSize: number, pageNumber: number) {
+  async getAllBlogPosts(
+    pageSize: number,
+    pageNumber: number,
+    blogTags: BlogTags[],
+  ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
     // superadmin should get all verified/non verified hostels but other should get only verified
     const blogPosts = await this.prisma.blogPost.findMany({
+      // also it should be published only
+      where: {
+        status: BlogStatus.PUBLISHED,
+        tags: {
+          hasSome: blogTags,
+        },
+      },
       skip,
       take,
     });
