@@ -80,6 +80,7 @@ type BlogPostData {
   tags: [BlogTags!]!
   title: String!
   updatedAt: DateTime!
+  videoUrl: String
   views: Float
 }
 
@@ -213,6 +214,7 @@ input CreateBlogPostInput {
   status: BlogStatus!
   tags: [BlogTags!]!
   title: String!
+  videoUrl: String
   views: Float
 }
 
@@ -760,7 +762,7 @@ type Query {
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
-  getAllBlogPosts(pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
+  getAllBlogPosts(blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
   getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
   getBlogPostById(id: Float!): BlogPost
@@ -1038,6 +1040,7 @@ input UpdateBlogPostInput {
   status: BlogStatus
   tags: [BlogTags!]
   title: String
+  videoUrl: String
   views: Float
 }
 

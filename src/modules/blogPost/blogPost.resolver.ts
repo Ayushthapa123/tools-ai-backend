@@ -5,6 +5,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@src/guards/auth.guard';
 import { CreateBlogPostInput } from './dtos/create-blog.input';
 import { UpdateBlogPostInput } from './dtos/update-blog.input';
+import { BlogTags } from '@prisma/client';
 // import { Controller } from '@nestjs/common';
 
 @Resolver(() => BlogPost)
@@ -16,8 +17,14 @@ export class BlogPostResolver {
     @Args('pageSize', { type: () => Int, defaultValue: 50 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })
     pageNumber: number,
+    @Args('blogTags', {
+      type: () => [BlogTags],
+      nullable: true,
+      defaultValue: [BlogTags.CITY],
+    })
+    blogTags: BlogTags[],
   ) {
-    return this.blogPostService.getAllBlogPosts(pageSize, pageNumber); // Issue is caused by the async return type. which is not required
+    return this.blogPostService.getAllBlogPosts(pageSize, pageNumber, blogTags); // Issue is caused by the async return type. which is not required
   }
 
   @Query(() => BlogPost, { nullable: true })

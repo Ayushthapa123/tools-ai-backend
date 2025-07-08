@@ -36,6 +36,9 @@ export class CreateBlogPostInput {
   @Field(() => [BlogTags])
   tags?: BlogTags[];
 
+  @Field({ nullable: true })
+  videoUrl?: string;
+
   @Field(() => Int)
   authorId: number;
 }
