@@ -17,8 +17,9 @@ import {
 } from '@src/models/global.model';
 import { CreateHostelInput } from './dtos/create-hostel.input';
 import { UpdateHostelInput } from './dtos/update-hostel.input';
-import { UseGuards } from '@nestjs/common';
+import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@src/guards/auth.guard';
+import { UserType } from '@prisma/client';
 
 // import { Controller } from '@nestjs/common';
 
@@ -106,6 +107,13 @@ export class HostelResolver {
     @Args('hostelId', { type: () => Int }) hostelId: number,
     @Args('status', { type: () => Boolean }) status: boolean,
   ) {
+    // prevent verify by other users then superadmin
+    if (
+      ctx.user.userType !== UserType.SUPERADMIN &&
+      ctx.user.userType !== UserType.COMMUNITY_OWNER
+    ) {
+      throw new ForbiddenException('You are not allowed to verify hostel');
+    }
     return this.hostelService.verifyHostel(hostelId, ctx.user.userType, status);
   }
 

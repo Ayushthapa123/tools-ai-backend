@@ -35,18 +35,32 @@ export class AmenityOptionResolver {
 
   @Mutation(() => AmenityOption)
   async createAmenityOption(
+    @Context() ctx: CtxType,
     @Args('createAmenityOptionInput')
     createAmenityOptionInput: CreateAmenityOptionInput,
   ) {
+    // prevent create by other users then superadmin
+    if (ctx.user.userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.amenityOptionService.create(createAmenityOptionInput);
   }
 
   @Mutation(() => AmenityOption)
   async updateAmenityOption(
+    @Context() ctx: CtxType,
     @Args('amenityOptionId', { type: () => Int }) amenityOptionId: number,
     @Args('updateAmenityOptionInput')
     updateAmenityOptionInput: UpdateAmenityOptionInput,
   ) {
+    // prevent update by other users then superadmin
+    if (ctx.user.userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.amenityOptionService.update(
       amenityOptionId,
       updateAmenityOptionInput,
