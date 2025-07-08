@@ -98,7 +98,57 @@ export class SearchHostelService {
                 'createdAt', null,
                 'updatedAt', null
               )
-            ) as contact
+            ) as contact,
+            COALESCE(
+              (
+                SELECT json_agg(
+                  jsonb_build_object(
+                    'id', r.id,
+                    'status', r.status,
+                    'capacity', r.capacity,
+                    'attachBathroom', r."attachBathroom",
+                    'caption', r.caption,
+                    'description', r.description,
+                    'roomNumber', r."roomNumber",
+                    'maxOccupancy', r."maxOccupancy",
+                    'createdAt', r."createdAt",
+                    'updatedAt', r."updatedAt",
+                    'image', (
+                      SELECT COALESCE(json_agg(
+                        jsonb_build_object(
+                          'id', ri.id,
+                          'caption', ri.caption,
+                          'url', ri.url,
+                          'createdAt', ri."createdAt",
+                          'updatedAt', ri."updatedAt"
+                        )
+                      ), '[]'::json)
+                      FROM "RoomImage" ri
+                      WHERE ri."roomId" = r.id
+                    ),
+                    'price', (
+                      SELECT jsonb_build_object(
+                        'id', p.id,
+                        'baseAmountPerDay', p."baseAmountPerDay",
+                        'baseAmountPerMonth', p."baseAmountPerMonth",
+                        'currency', p.currency,
+                        'isDynamicPricing', p."isDynamicPricing",
+                        'discountAmount', p."discountAmount",
+                        'discountType', p."discountType",
+                        'isDiscountActive', p."isDiscountActive",
+                        'createdAt', p."createdAt",
+                        'updatedAt', p."updatedAt"
+                      )
+                      FROM "Price" p
+                      WHERE p."roomId" = r.id
+                    )
+                  )
+                )
+                FROM "Room" r
+                WHERE r."hostelId" = h.id
+              ),
+              '[]'::json
+            ) as rooms
           FROM "Hostel" h
           INNER JOIN "Address" a ON h."id" = a."hostelId"
           LEFT JOIN "Gallery" g ON h."id" = g."hostelId"
@@ -142,6 +192,12 @@ export class SearchHostelService {
           address: true,
           contact: true,
           gallery: true,
+          rooms: {
+            include: {
+              image: true,
+              price: true,
+            },
+          },
           // image: true,
         },
         where: whereCondition,

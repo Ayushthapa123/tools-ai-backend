@@ -890,8 +890,8 @@ export class HostelData {
   @Field(() => [GalleryData])
   gallery: GalleryData[];
 
-  @Field(() => [RoomData])
-  rooms: Room[];
+  @Field(() => [RoomData], { nullable: true })
+  rooms?: RoomData[];
 
   @Field(() => [NearbyPlaceData])
   nearbyPlaces: NearbyPlaceData[];
