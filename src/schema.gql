@@ -524,7 +524,7 @@ type HostelData {
   owner: UserData
   ownerId: Int!
   ranking: Int
-  rooms: [RoomData!]!
+  rooms: [RoomData!]
   service: ServiceData
   slug: String!
   social: SocialData

@@ -38,6 +38,7 @@ export class HostelService {
         rooms: {
           include: {
             image: true,
+            price: true,
           },
         },
 
@@ -82,7 +83,7 @@ export class HostelService {
           include: {
             image: true,
             roomAmenity: true,
-            // price: true,
+            price: true,
           },
           where: {
             booking: {
