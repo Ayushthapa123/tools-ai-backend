@@ -31,18 +31,32 @@ export class ServiceOptionResolver {
 
   @Mutation(() => ServiceOption)
   async createServiceOption(
+    @Context() ctx: CtxType,
     @Args('createServiceOptionInput')
     createServiceOptionInput: CreateServiceOptionInput,
   ): Promise<ServiceOption | null> {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.serviceOptionService.create(createServiceOptionInput);
   }
 
   @Mutation(() => ServiceOption)
   async updateServiceOption(
+    @Context() ctx: CtxType,
     @Args('serviceOptionId', { type: () => Int }) serviceOptionId: number,
     @Args('updateServiceOptionInput')
     updateServiceOptionInput: UpdateServiceOptionInput,
   ): Promise<ServiceOption | null> {
+    const userType = ctx.user.userType;
+    if (userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource',
+      );
+    }
     return this.serviceOptionService.update(
       serviceOptionId,
       updateServiceOptionInput,

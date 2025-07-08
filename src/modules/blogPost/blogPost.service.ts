@@ -24,9 +24,7 @@ export class BlogPostService {
       where: {
         // add status if it is not null
         ...(blogStatus && { status: blogStatus }),
-        tags: {
-          hasSome: blogTags,
-        },
+        ...(blogTags.length > 0 && { tags: { hasSome: blogTags } }),
       },
       skip,
       take,
