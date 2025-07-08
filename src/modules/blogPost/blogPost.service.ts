@@ -14,6 +14,7 @@ export class BlogPostService {
     pageSize: number,
     pageNumber: number,
     blogTags: BlogTags[],
+    blogStatus?: BlogStatus,
   ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
@@ -21,7 +22,8 @@ export class BlogPostService {
     const blogPosts = await this.prisma.blogPost.findMany({
       // also it should be published only
       where: {
-        status: BlogStatus.PUBLISHED,
+        // add status if it is not null
+        ...(blogStatus && { status: blogStatus }),
         tags: {
           hasSome: blogTags,
         },
