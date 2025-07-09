@@ -39,6 +39,9 @@ export class CreateBlogPostInput {
   @Field({ nullable: true })
   videoUrl?: string;
 
+  @Field({ nullable: true })
+  oneLiner?: string;
+
   @Field(() => Int)
   authorId: number;
 }
