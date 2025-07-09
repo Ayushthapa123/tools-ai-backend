@@ -154,6 +154,7 @@ model BlogPost {
   updatedAt       DateTime     @updatedAt 
 
   videoUrl         String?
+  oneLiner         String?
 
   // relations
   author   User?        @relation(fields: [authorId], references: [id])

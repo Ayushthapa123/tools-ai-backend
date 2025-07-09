@@ -957,6 +957,10 @@ export class BlogPostData {
 
   @Field({ nullable: true })
   videoUrl?: string;
+
+  @Field({ nullable: true })
+  oneLiner?: string;
+
   @Field({ nullable: true })
   views?: number;
 
