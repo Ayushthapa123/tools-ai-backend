@@ -123,6 +123,7 @@ model Hostel {
 
   // Single field to track onboarding completion
   hasOnboardingComplete Boolean @default(false)
+  isCreatedFromDashboard Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
