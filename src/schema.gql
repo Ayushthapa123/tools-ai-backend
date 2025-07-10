@@ -74,6 +74,7 @@ type BlogPostData {
   metaDescription: String
   metaKeywords: String
   metaTitle: String
+  oneLiner: String
   publishedAt: DateTime
   slug: String!
   status: BlogStatus!
@@ -209,6 +210,7 @@ input CreateBlogPostInput {
   metaDescription: String
   metaKeywords: String
   metaTitle: String!
+  oneLiner: String
   publishedAt: DateTime
   slug: String!
   status: BlogStatus!
@@ -1035,6 +1037,7 @@ input UpdateBlogPostInput {
   metaDescription: String
   metaKeywords: String
   metaTitle: String
+  oneLiner: String
   publishedAt: DateTime
   slug: String
   status: BlogStatus

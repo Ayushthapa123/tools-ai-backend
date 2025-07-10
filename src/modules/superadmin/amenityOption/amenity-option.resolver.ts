@@ -23,13 +23,7 @@ export class AmenityOptionResolver {
 
   // @UseGuards(AuthGuard)
   @Query(() => AmenityOptionList, { name: 'amenityOptions' })
-  async getAllAmenityOptions(@Context() ctx: CtxType) {
-    const userType = ctx.user.userType;
-    if (userType !== UserType.SUPERADMIN) {
-      throw new ForbiddenException(
-        'You are not authorized to access this resource',
-      );
-    }
+  async getAllAmenityOptions() {
     return this.amenityOptionService.getAll();
   }
 

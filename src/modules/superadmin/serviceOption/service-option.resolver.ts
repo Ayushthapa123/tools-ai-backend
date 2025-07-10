@@ -19,13 +19,7 @@ export class ServiceOptionResolver {
   }
 
   @Query(() => ServiceOptionList, { name: 'serviceOptions' })
-  async serviceOptions(@Context() ctx: CtxType) {
-    const userType = ctx.user.userType;
-    if (userType !== UserType.SUPERADMIN) {
-      throw new ForbiddenException(
-        'You are not authorized to access this resource',
-      );
-    }
+  async serviceOptions() {
     return this.serviceOptionService.getAll();
   }
 
