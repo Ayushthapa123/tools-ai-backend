@@ -1,11 +1,8 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { HostelGenderType, HostelType } from '@prisma/client';
-import {
-  ContactDetailData,
-  AddressData,
-  GalleryData,
-} from '@src/models/global.model';
-
+import { CreateContactInput } from '../contact/dtos/create-contact.input';
+import { CreateAddressInput } from '../address/dtos/create-address.input';
+import { CreateGalleryInput } from '../gallery/dto/create-gallery.dto';
 @InputType()
 export class CreateHostelInput {
   @Field()
@@ -45,13 +42,13 @@ export class CreateOnboardingHostelInput {
   isVerifiedBySuperAdmin?: boolean;
 
   @Field({ nullable: true })
-  contact?: ContactDetailData;
+  contact?: CreateContactInput; // here exclude hosetelId
 
   @Field({ nullable: true })
-  address?: AddressData;
+  address?: CreateAddressInput;
 
   @Field({ nullable: true })
-  gallery?: GalleryData;
+  gallery?: CreateGalleryInput;
 
   @Field({ nullable: true })
   amenity?: string;

@@ -295,6 +295,20 @@ input CreateHostelSettingsInput {
   visibility: String! = "ALL"
 }
 
+input CreateOnboardingHostelInput {
+  address: CreateAddressInput
+  amenity: String
+  contact: CreateContactInput
+  description: String
+  gallery: CreateGalleryInput
+  genderType: String
+  hasOnboardingComplete: Boolean
+  hostelType: String
+  isCreatedFromDashboard: Boolean
+  isVerifiedBySuperAdmin: Boolean
+  name: String!
+}
+
 input CreatePriceInput {
   baseAmountPerDay: Int
   baseAmountPerMonth: Int!
@@ -650,6 +664,7 @@ type Mutation {
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelGuest(allowEdit: Boolean!, createHostelGuestInput: CreateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
+  createOnboardingHostel(data: CreateOnboardingHostelInput!): Hostel!
   createPrice(createPriceInput: CreatePriceInput!): Price!
   createPriceRule(createPriceRuleInput: CreateDynamicPriceRuleInput!): DynamicPricingRule!
   createRoom(createRoomInput: CreateRoomInput!): Room!

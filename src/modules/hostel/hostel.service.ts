@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 // import { HostelData } from '@src/models/global.model';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateHostelInput } from './dtos/create-hostel.input';
+import {
+  CreateHostelInput,
+  CreateOnboardingHostelInput,
+} from './dtos/create-hostel.input';
 import { UserType } from '@src/models/global.enum';
 import { MailersendService } from '../mailersend/mailersend.service';
 
@@ -178,6 +181,83 @@ export class HostelService {
           },
         };
       }
+    } catch (error) {
+      return {
+        data: null,
+        error: {
+          message: 'not allowed',
+        },
+      };
+    }
+  }
+
+  async createOnboardingHostel(
+    userId: number,
+    data: CreateOnboardingHostelInput,
+  ) {
+    const slug = generateSlug(data.name);
+
+    try {
+      const createHostel = await this.prisma.hostel.create({
+        data: {
+          slug: slug,
+          ownerId: userId,
+          hostelType: data.hostelType,
+          genderType: data.genderType,
+          description: data.description,
+          name: data.name,
+          verifiedBySuperAdmin: data.isVerifiedBySuperAdmin,
+        },
+      });
+      console.log('createHostel', createHostel);
+
+      const createAddress = await this.prisma.address.create({
+        data: {
+          hostelId: createHostel.id,
+          city: data.address.city,
+          country: data.address.country,
+          subCity: data.address.subCity,
+
+          street: data.address.street,
+          latitude: data.address.latitude,
+          longitude: data.address.longitude,
+        },
+      });
+      console.log('createAddress', createAddress);
+
+      if (data.amenity) {
+        const createAmenities = await this.prisma.amenities.create({
+          data: {
+            amenities: data.amenity,
+            hostelId: createHostel.id,
+          },
+        });
+        console.log('createAmenities', createAmenities);
+      }
+
+      const createContact = await this.prisma.contactDetail.create({
+        data: { ...data.contact, hostelId: createHostel.id },
+      });
+      console.log('createContact', createContact);
+
+      if (data.gallery) {
+        const createGallery = await this.prisma.gallery.create({
+          data: { ...data.gallery, hostelId: createHostel.id },
+        });
+        console.log('createGallery', createGallery);
+      }
+      // update the user with the hostel id
+      if (createHostel.id) {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { hostelId: createHostel.id },
+        });
+        console.log('updated user', createHostel);
+      }
+      return {
+        data: createHostel,
+        error: null,
+      };
     } catch (error) {
       return {
         data: null,
