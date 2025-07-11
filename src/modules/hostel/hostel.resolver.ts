@@ -15,7 +15,10 @@ import {
   Hostel,
   HostelData,
 } from '@src/models/global.model';
-import { CreateHostelInput } from './dtos/create-hostel.input';
+import {
+  CreateHostelInput,
+  CreateOnboardingHostelInput,
+} from './dtos/create-hostel.input';
 import { UpdateHostelInput } from './dtos/update-hostel.input';
 import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@src/guards/auth.guard';
@@ -80,11 +83,21 @@ export class HostelResolver {
   @Mutation(() => Hostel)
   @UseGuards(AuthGuard)
   async createHostel(
-    @Context() ctx: any,
+    @Context() ctx: CtxType,
     @Args('data') data: CreateHostelInput,
   ) {
     const userId = Number(ctx.user.sub);
     return this.hostelService.createHostel(userId, data);
+  }
+
+  @Mutation(() => Hostel)
+  @UseGuards(AuthGuard)
+  async createOnboardingHostel(
+    @Context() ctx: CtxType,
+    @Args('data') data: CreateOnboardingHostelInput,
+  ) {
+    const userId = Number(ctx.user.sub);
+    return this.hostelService.createOnboardingHostel(userId, data);
   }
 
   @Mutation(() => Hostel)
