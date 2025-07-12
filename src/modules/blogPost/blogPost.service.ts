@@ -73,6 +73,8 @@ export class BlogPostService {
         tags: data.tags as unknown as BlogTags[],
         slug: data.slug || generateSlug(data.title),
         authorId: data.authorId,
+        oneLiner: data.oneLiner,
+        videoUrl: data.videoUrl,
       },
     });
     return {
@@ -97,6 +99,8 @@ export class BlogPostService {
         publishedAt: data.publishedAt,
         tags: data.tags as unknown as BlogTags[],
         slug: data.slug,
+        oneLiner: data.oneLiner,
+        videoUrl: data.videoUrl,
       },
     });
     return {
