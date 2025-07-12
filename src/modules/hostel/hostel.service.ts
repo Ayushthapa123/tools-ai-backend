@@ -82,6 +82,7 @@ export class HostelService {
         address: true,
         gallery: true,
         contact: true,
+        service: true,
         rooms: {
           include: {
             image: true,

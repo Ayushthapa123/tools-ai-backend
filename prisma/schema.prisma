@@ -12,7 +12,9 @@ datasource db {
 
 model User {
   id             Int      @id @unique @default(autoincrement())
-  hostelId      Int?      //this needs to be included when creatng token. 
+  // id of an active hostel
+  hostelId      Int?      //this needs to be included when creatng token,checking onboarding,etc. // this may need frequent update to track multiple hostels. which hostel is currently active.
+
   email              String   @unique
   passwordHash       String?
   fullName           String

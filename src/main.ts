@@ -2,6 +2,7 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   dotenv.config();
@@ -30,6 +31,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.useGlobalGuards();
+  app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
   await app.listen(process.env.PORT || 3003);
 }
