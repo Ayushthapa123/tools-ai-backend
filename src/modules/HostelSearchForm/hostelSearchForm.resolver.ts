@@ -38,7 +38,6 @@ export class HostelSearchFormResolver {
   }
 
   @Mutation(() => HostelSearchForm)
-  @UseGuards(AuthGuard)
   async createHostelSearchForm(
     @Context() ctx: CtxType,
     @Args('data') data: CreateHostelSearchFormInput,
@@ -56,13 +55,18 @@ export class HostelSearchFormResolver {
 
   @Mutation(() => HostelSearchForm)
   @UseGuards(AuthGuard)
-  async deleteBlogPost(@Args('id') id: number, @Context() ctx: CtxType) {
+  async deleteHostelSearchForm(
+    @Args('id') id: number,
+    @Context() ctx: CtxType,
+  ) {
     // prevent delete by other users then writer or superadmin
     if (
       ctx.user.userType !== UserType.WRITER &&
       ctx.user.userType !== UserType.SUPERADMIN
     ) {
-      throw new ForbiddenException('You are not allowed to delete blog post');
+      throw new ForbiddenException(
+        'You are not allowed to delete hostel search form',
+      );
     }
 
     return this.hostelSearchFormService.deleteHostelSearchForm(id);

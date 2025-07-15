@@ -724,9 +724,10 @@ type Mutation {
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSetting!
   createUser(input: CreateUserInput!): User!
   deleteAmenityOption(amenityOptionId: Int!): AmenityOption!
-  deleteBlogPost(id: Float!): HostelSearchForm!
+  deleteBlogPost(id: Float!): BlogPost!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
+  deleteHostelSearchForm(id: Float!): HostelSearchForm!
   deleteRoomAmenityOption(roomAmenityOptionId: Int!): RoomAmenityOption!
   deleteRoomImage(roomImageId: Int!): RoomImage!
   deleteRules(rulesId: Int!): HostelRules!

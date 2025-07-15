@@ -2,7 +2,8 @@ import { UpdateHostelSearchFormInput } from './dtos/update-hostel-search-form.in
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateHostelSearchFormInput } from './dtos/hostel-search-form.input';
-
+import * as bcrypt from 'bcrypt';
+import { UserType } from '@prisma/client';
 @Injectable()
 export class HostelSearchFormService {
   constructor(private readonly prisma: PrismaService) {}
@@ -33,10 +34,32 @@ export class HostelSearchFormService {
   }
 
   async createHostelSearchForm(data: CreateHostelSearchFormInput) {
-    const { address, ...rest } = data;
+    const { address, password, ...rest } = data;
+    // if user is not present, create a new user
+    const user = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+    let newUser;
+    if (!user) {
+      const passwordHash = await bcrypt.hash(
+        password || Math.random().toString(36).substring(2, 15),
+        10,
+      );
+
+      newUser = await this.prisma.user.create({
+        data: {
+          email: data.email,
+          passwordHash: passwordHash,
+          fullName: data.fullName,
+          userType: UserType.STUDENT,
+        },
+      });
+    }
+
     const hostelSearchForm = await this.prisma.hostelSearchForm.create({
       data: {
         ...rest,
+        userId: user?.id || newUser?.id,
         address: {
           create: {
             ...address,
