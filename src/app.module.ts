@@ -19,6 +19,7 @@ import { HostelModule } from './modules/hostel/hostel.module';
 import { SearchQueriesModule } from './modules/hostel/searchQueries/search-queries.module';
 import { SuperadminModule } from './modules/superadmin/superadmin.module';
 import { BlogPostModule } from './modules/blogPost/blogPost.module';
+import { HostelSearchFormModule } from './modules/HostelSearchForm/hostelSearchForm.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -43,6 +44,7 @@ import { BlogPostModule } from './modules/blogPost/blogPost.module';
     MailersendModule,
     SuperadminModule,
     BlogPostModule,
+    HostelSearchFormModule,
   ],
 
   controllers: [AppController], //we don't need it now

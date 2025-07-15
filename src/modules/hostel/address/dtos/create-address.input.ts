@@ -1,9 +1,12 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateAddressInput {
-  @Field()
-  hostelId: number;
+  @Field(() => Int, { nullable: true })
+  hostelId?: number;
+
+  @Field(() => Int, { nullable: true })
+  hostelSearchFormId?: number;
 
   @Field()
   country: string;

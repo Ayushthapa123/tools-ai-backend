@@ -211,6 +211,14 @@ export class HostelService {
         },
       });
       console.log('createHostel', createHostel);
+      // update the user with the hostel id
+      if (createHostel?.id) {
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { hostelId: createHostel.id },
+        });
+        console.log('updated user', createHostel);
+      }
 
       const createAddress = await this.prisma.address.create({
         data: {
@@ -260,6 +268,7 @@ export class HostelService {
         error: null,
       };
     } catch (error) {
+      console.log('error', error);
       return {
         data: null,
         error: {
