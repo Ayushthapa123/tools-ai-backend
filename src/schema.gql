@@ -11,7 +11,8 @@ type AddressData {
   city: String!
   country: String!
   createdAt: DateTime!
-  hostelId: Int!
+  hostelId: Int
+  hostelSearchFormId: Int
   id: ID!
   latitude: Float
   longitude: Float
@@ -100,6 +101,7 @@ enum BlogTags {
   CITY
   HOSTEL
   OTHER
+  PLACES
   TOP_TEN_PLACES
   TRAVEL
 }
@@ -183,7 +185,8 @@ type ContactDetailData {
 input CreateAddressInput {
   city: String
   country: String!
-  hostelId: Float!
+  hostelId: Int
+  hostelSearchFormId: Int
   latitude: Float
   longitude: Float
   street: String
@@ -280,6 +283,21 @@ input CreateHostelInput {
   genderType: String
   hostelType: String
   name: String!
+}
+
+input CreateHostelSearchFormInput {
+  address: CreateAddressInput
+  checkinDate: String
+  checkoutDate: String
+  email: String!
+  fullName: String!
+  hostelGenderType: String!
+  hostelType: String!
+  isActive: Boolean
+  notes: String
+  occupation: String!
+  password: String
+  phoneNumber: String
 }
 
 input CreateHostelSettingsInput {
@@ -606,6 +624,33 @@ type HostelRulesData {
   rules: JSON!
 }
 
+type HostelSearchForm {
+  data: HostelSearchFormData
+  error: GraphQLError
+}
+
+type HostelSearchFormData {
+  address: AddressData
+  checkinDate: String
+  checkoutDate: String
+  createdAt: DateTime!
+  email: String!
+  fullName: String!
+  hostelGenderType: HostelGenderType!
+  hostelType: HostelType!
+  id: ID!
+  isActive: Boolean
+  notes: String
+  occupation: String!
+  phoneNumber: String
+  updatedAt: DateTime!
+}
+
+type HostelSearchFormList {
+  data: [HostelSearchFormData!]
+  error: GraphQLError
+}
+
 type HostelSetting {
   data: HostelSettingData
   error: GraphQLError
@@ -664,6 +709,7 @@ type Mutation {
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelGuest(allowEdit: Boolean!, createHostelGuestInput: CreateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
+  createHostelSearchForm(data: CreateHostelSearchFormInput!): HostelSearchForm!
   createOnboardingHostel(data: CreateOnboardingHostelInput!): Hostel!
   createPrice(createPriceInput: CreatePriceInput!): Price!
   createPriceRule(createPriceRuleInput: CreateDynamicPriceRuleInput!): DynamicPricingRule!
@@ -678,7 +724,7 @@ type Mutation {
   createSettings(data: CreateHostelSettingsInput!, hostelId: Float!): HostelSetting!
   createUser(input: CreateUserInput!): User!
   deleteAmenityOption(amenityOptionId: Int!): AmenityOption!
-  deleteBlogPost(id: Float!): BlogPost!
+  deleteBlogPost(id: Float!): HostelSearchForm!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
   deleteRoomAmenityOption(roomAmenityOptionId: Int!): RoomAmenityOption!
@@ -715,6 +761,7 @@ type Mutation {
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelGuest(allowEdit: Boolean!, updateHostelGuestInput: UpdateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
+  updateHostelSearchForm(data: UpdateHostelSearchFormInput!): HostelSearchForm!
   updatePrice(updatePriceInput: UpdatePriceInput!): Price!
   updatePriceRule(updatePriceInput: UpdateDynamicPriceRuleInput!): DynamicPricingRule!
   updateRoom(updateRoomInput: UpdateRoomInput!): Room!
@@ -780,6 +827,7 @@ type Query {
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
   getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
+  getAllHostelSearchForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
   getBlogPostById(id: Float!): BlogPost
@@ -791,6 +839,7 @@ type Query {
   getHostelById(hostelId: Float!): Hostel
   getHostelBySlug(checkInDate: DateTime, checkOutDate: DateTime, slug: String!): Hostel
   getHostelByToken: Hostel
+  getHostelSearchFormById(id: Float!): HostelSearchForm
   getHostelSearchSuggestions(query: String!): [SearchQuery!]
   getHostelsBySearch(input: SearchHostelInput!): HostelList!
   getOnboardingData: Hostel!
@@ -1127,6 +1176,22 @@ input UpdateHostelInput {
   name: String
   ownerId: Int
   slug: String
+}
+
+input UpdateHostelSearchFormInput {
+  address: CreateAddressInput
+  checkinDate: String
+  checkoutDate: String
+  email: String
+  fullName: String
+  hostelGenderType: String
+  hostelType: String
+  id: Int!
+  isActive: Boolean
+  notes: String
+  occupation: String
+  password: String
+  phoneNumber: String
 }
 
 input UpdateHostelSettingsInput {

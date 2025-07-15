@@ -569,8 +569,11 @@ export class AddressData {
   @Field(() => Float, { nullable: true })
   longitude?: number;
 
-  @Field(() => Int)
-  hostelId: number;
+  @Field(() => Int, { nullable: true })
+  hostelId?: number;
+
+  @Field(() => Int, { nullable: true })
+  hostelSearchFormId?: number;
 
   @Field(() => Date)
   createdAt: Date;
@@ -987,6 +990,63 @@ export class BlogPost extends BaseResponse {
 export class BlogPostList extends BaseResponse {
   @Field(() => [BlogPostData], { nullable: true })
   data?: BlogPostData[];
+}
+
+@ObjectType()
+export class HostelSearchFormData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  fullName: string;
+
+  @Field(() => String)
+  email: string;
+
+  @Field(() => String, { nullable: true })
+  phoneNumber?: string;
+
+  @Field(() => String)
+  occupation: string;
+
+  @Field(() => HostelType)
+  hostelType: HostelType;
+
+  @Field(() => HostelGenderType)
+  hostelGenderType: HostelGenderType;
+
+  @Field(() => String, { nullable: true })
+  checkinDate?: string;
+
+  @Field(() => String, { nullable: true })
+  checkoutDate?: string;
+
+  @Field(() => String, { nullable: true })
+  notes?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isActive?: boolean;
+
+  @Field(() => AddressData, { nullable: true })
+  address?: AddressData;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class HostelSearchForm extends BaseResponse {
+  @Field(() => HostelSearchFormData, { nullable: true })
+  data?: HostelSearchFormData;
+}
+
+@ObjectType()
+export class HostelSearchFormList extends BaseResponse {
+  @Field(() => [HostelSearchFormData], { nullable: true })
+  data?: HostelSearchFormData[];
 }
 
 @ObjectType()

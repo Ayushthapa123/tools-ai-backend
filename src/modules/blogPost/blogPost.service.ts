@@ -51,6 +51,8 @@ export class BlogPostService {
       where: { slug },
     });
 
+    console.log('blogPost', blogPost);
+
     return {
       data: blogPost,
       error: null,
@@ -84,6 +86,7 @@ export class BlogPostService {
   }
 
   async updateBlogPost(blogPostId: number, data: UpdateBlogPostInput) {
+    console.log('ddddd', data);
     const res = await this.prisma.blogPost.update({
       where: { id: blogPostId },
       data: {

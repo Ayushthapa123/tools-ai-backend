@@ -1,5 +1,14 @@
 //! Starting a entity name with capital letter caused unknown bug. when i put MonthlyPricing inside hostel
 //! it was giving null while there was a data. but changing name to monthlyPricing solved this
+
+// In one to one relation, foreign key may present in the parent table or in child table whichever is more logical. For example. You first create hostel then address
+// So while creating Address, you need to have hostelId and you save it in Address table. 
+
+// In one to many relation, foreign key should be present in the child table. 
+// In many to many relation, foreign key should be present in the join table.  
+
+ // Currently most of the relation are options for flexibility. may be in future we have to make it more rigid.
+
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
@@ -36,6 +45,7 @@ model User {
 
   hostel     Hostel?
   blogPosts  BlogPost[]
+  hostelSearchForm HostelSearchForm[]
   @@index([email])
 }
 
@@ -103,7 +113,7 @@ model Hostel {
 
   owner            User?             @relation(fields: [ownerId], references: [id])
 
-  social        Social?
+  social         Social?
   address        Address?
   contact        ContactDetail?
   hostelSettings        HostelSetting?
@@ -314,6 +324,7 @@ model Social {
   // Define a relation to Hostel
 }
 
+// This could be designed not only for hostel but also for other places.
 model Address {
   id Int      @id @unique @default(autoincrement())
   country   String
@@ -323,11 +334,17 @@ model Address {
   latitude    Float?
   longitude   Float?
 
-  hostelId  Int @unique
+  hostelId  Int? @unique // for now one hostel can have one address
+  hostel    Hostel?  @relation(fields: [hostelId], references: [id])
+
+  hostelSearchFormId  Int? @unique // for 
+  hostelSearchForm    HostelSearchForm?  @relation(fields: [hostelSearchFormId], references: [id])
+
   createdAt   DateTime @default(now())
   updatedAt DateTime @updatedAt
-  hostel    Hostel  @relation(fields: [hostelId], references: [id])
 }
+
+
 
 model SearchQuery {
   //get created when user enters his hostel address/create/update. if already present don't create else create
@@ -465,6 +482,34 @@ model ServiceOption {
   name String 
   iconUrl String? 
   description String?
+}
+
+
+model HostelSearchForm {
+  id                Int      @id @unique @default(autoincrement())
+  userId          Int      // Required relation to Hostel
+  user            User?             @relation(fields: [userId], references: [id])
+  // Basic Information
+  fullName          String
+  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
+  phoneNumber       String?
+  occupation        String?
+  hostelType        HostelType?
+  hostelGenderType  HostelGenderType?
+  // Visit history
+  checkinDate     DateTime?
+  checkoutDate    DateTime?
+
+  address Address?
+  // Additional notes
+  notes             String?
+  isActive Boolean @default(true)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([email])
+  @@index([phoneNumber])
 }
 
 enum HostelAmenityType {
@@ -639,6 +684,7 @@ enum BlogTags {
   CITY
   HOSTEL 
   TOP_TEN_PLACES
+  PLACES
   OTHER
 }
 //!for advertisement 

@@ -25,6 +25,7 @@ export class CreateBlogPostInput {
 
   @Field({ nullable: true })
   metaKeywords?: string;
+
   @Field(() => BlogStatus)
   status: BlogStatus;
 

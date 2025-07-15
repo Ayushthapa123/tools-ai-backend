@@ -7,7 +7,7 @@ import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 const BREVO_API_KEY =
   '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';
 const SENDER = {
-  name: 'Hostel',
+  name: 'Hosteladmin',
   email: 'sagarregmi0710@gmail.com',
 };
 
