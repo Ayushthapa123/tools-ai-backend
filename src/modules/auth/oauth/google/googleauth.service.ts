@@ -20,7 +20,9 @@ export class GoogleAuthService {
   async signUpWithGoogle(code: string, res: Response, userDomain: string) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = `${process.env.WEB_URL}/oauth/google`;
+    const redirectUri = userDomain
+      ? `${userDomain}oauth/google`
+      : `${process.env.WEB_URL}/oauth/google`;
 
     const client = new OAuth2Client(clientId, clientSecret, redirectUri);
 
@@ -76,11 +78,13 @@ export class GoogleAuthService {
     return { ...user, token: authTokens };
   }
 
-  async getGoogleAuthUrl(): Promise<GoogleOauthUrl> {
+  async getGoogleAuthUrl(userDomain: string): Promise<GoogleOauthUrl> {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.WEB_URL}/oauth/google`,
+      userDomain
+        ? `${userDomain}oauth/google`
+        : `${process.env.WEB_URL}/oauth/google`,
     );
 
     //what about name??
