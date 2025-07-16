@@ -27,7 +27,10 @@ export class GoogleAuthResolver {
   }
 
   @Query(() => GoogleOauthUrl)
-  async getGoogleAuthUrl(): Promise<GoogleOauthUrl> {
-    return this.authService.getGoogleAuthUrl();
+  async getGoogleAuthUrl(
+    @Context() context: { req: Request },
+  ): Promise<GoogleOauthUrl> {
+    const userDomain = context.req.headers.referer;
+    return this.authService.getGoogleAuthUrl(userDomain);
   }
 }

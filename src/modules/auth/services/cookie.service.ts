@@ -11,8 +11,6 @@ export class CookieService {
     maxAge: 0,
   };
 
-  private readonly domain = this.getCookieDomain(process.env.WEB_URL || '');
-
   private getCookieDomain(webUrl: string): string {
     try {
       const url = new URL(webUrl);
