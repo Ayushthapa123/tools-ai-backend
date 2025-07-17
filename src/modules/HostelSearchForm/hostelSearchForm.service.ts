@@ -15,6 +15,9 @@ export class HostelSearchFormService {
     const hostelSearchForms = await this.prisma.hostelSearchForm.findMany({
       skip,
       take,
+      include: {
+        address: true,
+      },
     });
 
     return {

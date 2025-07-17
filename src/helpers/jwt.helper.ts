@@ -9,7 +9,7 @@ export const generateJwtTokens = (
     { sub: userId, userType, hostelId },
     process.env.JWT_SECRET,
     {
-      expiresIn: '50m',
+      expiresIn: '3d',
     },
   );
   const refreshToken = jwt.sign(

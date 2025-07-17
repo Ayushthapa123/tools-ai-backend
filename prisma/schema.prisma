@@ -8,6 +8,7 @@
 // In many to many relation, foreign key should be present in the join table.  
 
  // Currently most of the relation are options for flexibility. may be in future we have to make it more rigid.
+ // Unique fields are already indexed.
 
 generator client {
   provider      = "prisma-client-js"
@@ -46,7 +47,6 @@ model User {
   hostel     Hostel?
   blogPosts  BlogPost[]
   hostelSearchForm HostelSearchForm[]
-  @@index([email])
 }
 
 model HostelGuest {
@@ -212,7 +212,6 @@ model RoomImage {
   updatedAt DateTime @updatedAt
   room      Room     @relation(fields: [roomId], references: [id],onDelete: Cascade)
 
-  @@index([id])
 }
 
 // Not being used now
@@ -255,7 +254,6 @@ model Price {
   isDiscountActive Boolean       @default(false)
   room             Room          @relation(fields: [roomId], references: [id],onDelete:Cascade)
 
-  @@index([roomId])
   @@index([isDynamicPricing])
   @@index([isDiscountActive])
 }
@@ -495,6 +493,7 @@ model HostelSearchForm {
   phoneNumber       String?
   occupation        String?
   hostelType        HostelType?
+  roomCapacity      RoomCapacity?
   hostelGenderType  HostelGenderType?
   // Visit history
   checkinDate     DateTime?
