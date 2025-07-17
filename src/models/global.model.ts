@@ -1015,6 +1015,9 @@ export class HostelSearchFormData {
   @Field(() => HostelGenderType)
   hostelGenderType: HostelGenderType;
 
+  @Field(() => RoomCapacity, { nullable: true })
+  roomCapacity?: RoomCapacity;
+
   @Field(() => String, { nullable: true })
   checkinDate?: string;
 

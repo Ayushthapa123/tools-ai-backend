@@ -298,6 +298,7 @@ input CreateHostelSearchFormInput {
   occupation: String!
   password: String
   phoneNumber: String
+  roomCapacity: String
 }
 
 input CreateHostelSettingsInput {
@@ -643,6 +644,7 @@ type HostelSearchFormData {
   notes: String
   occupation: String!
   phoneNumber: String
+  roomCapacity: RoomCapacity
   updatedAt: DateTime!
 }
 
@@ -1193,6 +1195,7 @@ input UpdateHostelSearchFormInput {
   occupation: String
   password: String
   phoneNumber: String
+  roomCapacity: String
 }
 
 input UpdateHostelSettingsInput {
