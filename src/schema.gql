@@ -843,6 +843,7 @@ type Query {
   getHostelBySlug(checkInDate: DateTime, checkOutDate: DateTime, slug: String!): Hostel
   getHostelByToken: Hostel
   getHostelSearchFormById(id: Float!): HostelSearchForm
+  getHostelSearchFormsByUserId(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getHostelSearchSuggestions(query: String!): [SearchQuery!]
   getHostelsBySearch(input: SearchHostelInput!): HostelList!
   getOnboardingData: Hostel!

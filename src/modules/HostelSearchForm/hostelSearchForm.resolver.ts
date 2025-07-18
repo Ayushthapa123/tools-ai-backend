@@ -20,14 +20,36 @@ export class HostelSearchFormResolver {
   ) {}
 
   @Query(() => HostelSearchFormList)
+  @UseGuards(AuthGuard)
   async getAllHostelSearchForms(
     @Args('pageSize', { type: () => Int, defaultValue: 50 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })
     pageNumber: number,
+    @Context() ctx: CtxType,
   ) {
+    if (ctx.user.userType !== UserType.SUPERADMIN) {
+      throw new ForbiddenException(
+        'You are not allowed to access hostel search forms',
+      );
+    }
     return this.hostelSearchFormService.getAllHostelSearchForms(
       pageSize,
       pageNumber,
+    ); // Issue is caused by the async return type. which is not required
+  }
+
+  @Query(() => HostelSearchFormList)
+  @UseGuards(AuthGuard)
+  async getHostelSearchFormsByUserId(
+    @Args('pageSize', { type: () => Int, defaultValue: 50 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Context() ctx: CtxType,
+  ) {
+    return this.hostelSearchFormService.getHostelSearchFormByUserId(
+      pageSize,
+      pageNumber,
+      ctx.user.sub,
     ); // Issue is caused by the async return type. which is not required
   }
 
@@ -50,6 +72,7 @@ export class HostelSearchFormResolver {
   async updateHostelSearchForm(
     @Args('data') data: UpdateHostelSearchFormInput,
   ) {
+    // it should be updateable by superadmin and the owner of this form
     return this.hostelSearchFormService.updateHostelSearchForm(data);
   }
 
