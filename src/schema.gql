@@ -325,6 +325,8 @@ input CreateHostelSellFormInput {
   notes: String
   phoneNumber: String
   sellingPrice: Int!
+}
+
 input CreateHostelServiceDto {
   budget: Float
   completionDate: DateTime
@@ -689,6 +691,36 @@ type HostelSearchFormList {
   error: GraphQLError
 }
 
+type HostelSellForm {
+  data: HostelSellFormData
+  error: GraphQLError
+}
+
+type HostelSellFormData {
+  address: AddressData
+  createdAt: DateTime!
+  email: String!
+  fullName: String!
+  hostelCapacity: Int!
+  hostelDescription: String!
+  hostelGenderType: HostelGenderType!
+  hostelId: Int
+  hostelImageUrl: String
+  hostelName: String!
+  hostelType: HostelType!
+  id: ID!
+  isActive: Boolean
+  notes: String
+  phoneNumber: String
+  sellingPrice: Int!
+  updatedAt: DateTime!
+}
+
+type HostelSellFormList {
+  data: [HostelSellFormData!]
+  error: GraphQLError
+}
+
 type HostelService {
   data: HostelServiceData
   error: GraphQLError
@@ -785,6 +817,7 @@ type Mutation {
   createHostel(data: CreateHostelInput!): Hostel!
   createHostelGuest(allowEdit: Boolean!, createHostelGuestInput: CreateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   createHostelSearchForm(data: CreateHostelSearchFormInput!): HostelSearchForm!
+  createHostelSellForm(data: CreateHostelSellFormInput!): HostelSellForm!
   createHostelService(input: CreateHostelServiceDto!): HostelService!
   createOnboardingHostel(data: CreateOnboardingHostelInput!): Hostel!
   createPrice(createPriceInput: CreatePriceInput!): Price!
@@ -804,6 +837,7 @@ type Mutation {
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
   deleteHostelSearchForm(id: Float!): HostelSearchForm!
+  deleteHostelSellForm(id: Float!): HostelSellForm!
   deleteHostelService(id: Float!): HostelService!
   deleteRoomAmenityOption(roomAmenityOptionId: Int!): RoomAmenityOption!
   deleteRoomImage(roomImageId: Int!): RoomImage!
@@ -840,6 +874,7 @@ type Mutation {
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
   updateHostelGuest(allowEdit: Boolean!, updateHostelGuestInput: UpdateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   updateHostelSearchForm(data: UpdateHostelSearchFormInput!): HostelSearchForm!
+  updateHostelSellForm(data: UpdateHostelSellFormInput!): HostelSellForm!
   updateHostelService(input: UpdateHostelServiceDto!): HostelService!
   updatePrice(updatePriceInput: UpdatePriceInput!): Price!
   updatePriceRule(updatePriceInput: UpdateDynamicPriceRuleInput!): DynamicPricingRule!
@@ -913,6 +948,7 @@ type Query {
   getAddressByHostelId(hostelId: Float!): Address
   getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
   getAllHostelSearchForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
+  getAllHostelSellForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSellFormList!
   getAllHostelServices: HostelServiceList!
   getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
@@ -928,6 +964,7 @@ type Query {
   getHostelSearchFormById(id: Float!): HostelSearchForm
   getHostelSearchFormsByUserId(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getHostelSearchSuggestions(query: String!): [SearchQuery!]
+  getHostelSellFormById(id: Float!): HostelSellForm
   getHostelServiceById(id: Float!): HostelService!
   getHostelServicesByHostelId(hostelId: Float!): HostelServiceList!
   getHostelsBySearch(input: SearchHostelInput!): HostelList!
@@ -1289,6 +1326,24 @@ input UpdateHostelSearchFormInput {
   password: String
   phoneNumber: String
   roomCapacity: String
+}
+
+input UpdateHostelSellFormInput {
+  address: CreateGenericAddressInput
+  email: String
+  fullName: String
+  hostelCapacity: Int
+  hostelDescription: String
+  hostelGenderType: String
+  hostelId: Int
+  hostelImageUrl: String
+  hostelName: String
+  hostelType: String
+  id: Int!
+  isActive: Boolean
+  notes: String
+  phoneNumber: String
+  sellingPrice: Int
 }
 
 input UpdateHostelServiceDto {

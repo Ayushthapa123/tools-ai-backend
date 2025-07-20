@@ -3,11 +3,11 @@ import { PrismaService } from '@src/prisma/prisma.service';
 import { CreateHostelServiceDto } from './dto/createHostelService.dto';
 import { UpdateHostelServiceDto } from './dto/updateHostelService.dto';
 import { HostelServiceType, Status, Priority } from '@src/models/global.enum';
-import { HostelService, HostelServiceData } from '@src/models/global.model';
+import { HostelServiceData } from '@src/models/global.model';
 
 @Injectable()
 export class HostelServicesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
     try {
@@ -29,7 +29,7 @@ export class HostelServicesService {
         error: {
           message: `Hostel Service not found`,
         },
-      }
+      };
     }
   }
 
@@ -63,8 +63,10 @@ export class HostelServicesService {
       };
     }
   }
-  
-  async findByHostelId(hostelId: number):Promise<{data:HostelServiceData[],error:any}> {
+
+  async findByHostelId(
+    hostelId: number,
+  ): Promise<{ data: HostelServiceData[]; error: any }> {
     try {
       const result = await this.prisma.hostelService.findMany({
         where: {
@@ -85,14 +87,14 @@ export class HostelServicesService {
         error: null,
       };
     } catch (error) {
-      return {  
+      return {
         data: null,
         error: {
           message: `Error finding hostel service with hostel id ${hostelId}`,
         },
       };
     }
-  } 
+  }
 
   async create(input: CreateHostelServiceDto) {
     try {
@@ -130,7 +132,7 @@ export class HostelServicesService {
         return {
           data: null,
           error: {
-            message: "Hostel service not found",
+            message: 'Hostel service not found',
           },
         };
       }
@@ -138,7 +140,7 @@ export class HostelServicesService {
         where: {
           id: Number(id),
         },
-        data:{
+        data: {
           ...data,
           budget: Number(data.budget),
         },

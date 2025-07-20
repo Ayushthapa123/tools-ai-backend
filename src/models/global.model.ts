@@ -1206,7 +1206,7 @@ export class RoomAmenityOptionList extends BaseResponse {
 }
 
 @ObjectType()
-export class HostelServiceData  {
+export class HostelServiceData {
   @Field(() => ID)
   id: number;
 
@@ -1227,13 +1227,13 @@ export class HostelServiceData  {
 
   @Field(() => Status)
   status: Status;
-  
+
   @Field(() => Boolean)
   isDeleted: boolean;
-  
+
   @Field(() => Date, { nullable: true })
   completionDate?: Date;
-  
+
   @Field(() => Date, { nullable: true })
   dueDate?: Date;
 
@@ -1242,7 +1242,7 @@ export class HostelServiceData  {
 
   @Field(() => Date)
   updatedAt: Date;
-  
+
   @Field(() => HostelData, { nullable: true })
   hostel?: HostelData;
 }
@@ -1258,10 +1258,6 @@ export class HostelServiceList extends BaseResponse {
   @Field(() => [HostelServiceData], { nullable: true })
   data?: HostelServiceData[];
 }
-
-
-
-
 
 @ObjectType()
 export class Ctx {

@@ -1,5 +1,5 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
-import { HostelServiceType, Priority, Status } from "@src/models/global.enum";
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { HostelServiceType, Priority, Status } from '@src/models/global.enum';
 
 @InputType()
 export class CreateHostelServiceDto {
@@ -26,7 +26,7 @@ export class CreateHostelServiceDto {
 
   @Field(() => Status)
   status: Status;
-  
+
   @Field(() => Int)
   hostelId: number;
 }

@@ -11,12 +11,12 @@ export class HostelServicesResolver {
   async getAllHostelServices() {
     return this.hostelServicesService.findAll();
   }
-  
+
   @Query(() => HostelService)
   async getHostelServiceById(@Args('id') id: number) {
     return this.hostelServicesService.findById(id);
   }
-  
+
   @Query(() => HostelServiceList)
   async getHostelServicesByHostelId(@Args('hostelId') hostelId: number) {
     const results = await this.hostelServicesService.findByHostelId(hostelId);
@@ -38,7 +38,7 @@ export class HostelServicesResolver {
   async deleteHostelService(@Args('id') id: number) {
     return this.hostelServicesService.delete(id);
   }
-  
+
   @Mutation(() => HostelService)
   async cancelHostelService(@Args('id') id: number) {
     return this.hostelServicesService.cancel(id);
@@ -48,5 +48,4 @@ export class HostelServicesResolver {
   async completeHostelService(@Args('id') id: number) {
     return this.hostelServicesService.complete(id);
   }
-  
 }
