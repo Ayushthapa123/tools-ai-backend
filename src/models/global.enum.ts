@@ -189,3 +189,37 @@ export enum HostelAmenityType {
 registerEnumType(HostelAmenityType, {
   name: 'HostelAmenityType',
 });
+
+export enum HostelServiceType {
+  FACEBOOK_MARKETING = 'FACEBOOK_MARKETING',
+  GOOGLE_MARKETING = 'GOOGLE_MARKETING',
+  EMPLOYEE = 'EMPLOYEE',
+  REAL_ESTATE = 'REAL_ESTATE',
+  FURNITURE = 'FURNITURE',
+  OTHER = 'OTHER',
+}
+
+registerEnumType(HostelServiceType, {
+  name: 'HostelServiceType',
+});
+
+export enum Priority {
+  HIGH = 'HIGH',
+  MID = 'MID',
+  LOW = 'LOW',
+}
+
+registerEnumType(Priority, {
+  name: 'Priority',
+});
+
+export enum Status {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+registerEnumType(Status, {
+  name: 'Status',
+});

@@ -28,6 +28,9 @@ import {
   DiscountType,
   Badges,
   HostelAmenityType,
+  HostelServiceType,
+  Priority,
+  Status,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -1135,6 +1138,64 @@ export class RoomAmenityOptionList extends BaseResponse {
   @Field(() => [RoomAmenityOptionData], { nullable: true })
   data?: RoomAmenityOptionData[];
 }
+
+@ObjectType()
+export class HostelServiceData  {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => HostelServiceType)
+  hostelServiceType: HostelServiceType;
+
+  @Field()
+  title: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field({ nullable: true })
+  budget?: number;
+
+  @Field(() => Priority)
+  priority: Priority;
+
+  @Field(() => Status)
+  status: Status;
+  
+  @Field(() => Boolean)
+  isDeleted: boolean;
+  
+  @Field(() => Date, { nullable: true })
+  completionDate?: Date;
+  
+  @Field(() => Date, { nullable: true })
+  dueDate?: Date;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+  
+  @Field(() => HostelData, { nullable: true })
+  hostel?: HostelData;
+}
+
+@ObjectType()
+export class HostelService extends BaseResponse {
+  @Field(() => HostelServiceData, { nullable: true })
+  data?: HostelServiceData;
+}
+
+@ObjectType()
+export class HostelServiceList extends BaseResponse {
+  @Field(() => [HostelServiceData], { nullable: true })
+  data?: HostelServiceData[];
+}
+
+
+
+
 
 @ObjectType()
 export class Ctx {
