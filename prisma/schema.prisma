@@ -132,6 +132,7 @@ model Hostel {
 
   foodMenu FoodMenu[]
   hostelGuests HostelGuest[]  // Added relation to HostelGuest
+  hostelServices HostelService[]
 
   // Single field to track onboarding completion
   hasOnboardingComplete Boolean @default(false)
@@ -794,3 +795,44 @@ enum BlogTags {
 //   @@unique([hostelId, supplierId])
 // }
 
+enum HostelServiceType {
+  FACEBOOK_MARKETING
+  GOOGLE_MARKETING
+  EMPLOYEE
+  REAL_ESTATE
+  FURNITURE
+  OTHER
+}
+
+enum Priority {
+  HIGH
+  MID
+  LOW
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+model HostelService{
+  id Int @id @unique @default(autoincrement())
+  hostelServiceType HostelServiceType
+  title String
+  description String? 
+  budget Int?
+  priority Priority @default(HIGH)
+  status Status? @default(PENDING)
+
+  dueDate DateTime?
+  completionDate DateTime?
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hostelId Int
+  hostel Hostel @relation(fields: [hostelId], references: [id])
+}
