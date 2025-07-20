@@ -334,12 +334,34 @@ model Address {
 
   hostelId  Int? @unique // for now one hostel can have one address
   hostel    Hostel?  @relation(fields: [hostelId], references: [id])
-
+// instead of pointing to each form use instead of referenceId and AddressType.
   hostelSearchFormId  Int? @unique // for 
   hostelSearchForm    HostelSearchForm?  @relation(fields: [hostelSearchFormId], references: [id])
 
+
   createdAt   DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum AddressType {
+  HOSTEL_SELL_FORM
+  HOSTEL_SEARCH_FORM
+}
+// create a new model for GenericAddress
+model GenericAddress {
+  id Int @id @unique @default(autoincrement())
+  country   String
+  city      String
+  subCity      String?
+  street    String? 
+  latitude    Float?
+  longitude   Float?
+  addressType AddressType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  HostelSellForm HostelSellForm?
 }
 
 
@@ -509,6 +531,37 @@ model HostelSearchForm {
   
   @@index([email])
   @@index([phoneNumber])
+} 
+
+
+model HostelSellForm {
+  id                Int      @id @unique @default(autoincrement())
+  // Basic user Information
+  fullName          String
+  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
+  phoneNumber       String?
+
+  // Hostel Details
+  hostelName        String
+  hostelDescription String?
+  hostelType        HostelType
+  hostelGenderType  HostelGenderType
+  hostelCapacity    Int? 
+  hostelImageUrl String?  
+  sellingPrice Int?
+  addressId Int? @unique
+
+  address GenericAddress? @relation(fields: [addressId], references: [id])
+  // Additional notes
+  hostelId Int?
+  notes             String?
+  isActive Boolean @default(true)
+  // hostel Details
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+
 }
 
 enum HostelAmenityType {
@@ -536,7 +589,7 @@ enum GenderType {
   GIRLS
   OTHERS
 }
-
+// this can be merged with GenderType
 enum HostelGenderType {
   BOYS
   GIRLS
