@@ -40,6 +40,25 @@ export class HostelApplicationFormResolver {
 
   @Query(() => HostelApplicationFormList)
   @UseGuards(AuthGuard)
+  async getAllHostelApplicationFormsByHostelId(
+    @Args('pageSize', { type: () => Int, defaultValue: 50 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Context() ctx: CtxType,
+  ) {
+    if (ctx.user.userType !== UserType.HOSTEL_OWNER) {
+      throw new ForbiddenException(
+        'You are not allowed to access hostel application forms',
+      );
+    }
+    return this.hostelApplicationFormService.getAllHostelApplicationFormsByHostelId(
+      pageSize,
+      pageNumber,
+      ctx.user.hostelId,
+    );
+  }
+  @Query(() => HostelApplicationFormList)
+  @UseGuards(AuthGuard)
   async getHostelApplicationFormsByUserId(
     @Args('pageSize', { type: () => Int, defaultValue: 50 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })

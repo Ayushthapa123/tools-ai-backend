@@ -821,7 +821,9 @@ enum Priority {
 
 enum Status {
   PENDING
-  IN_PROGRESS
+  IN_PROGRESS 
+  APPROVED
+  REJECTED
   COMPLETED
   CANCELLED
 

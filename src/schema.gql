@@ -598,24 +598,24 @@ type HostelApplicationForm {
 
 type HostelApplicationFormData {
   askForDiscount: Boolean!
-  checkinDate: String!
-  checkoutDate: String!
+  checkinDate: DateTime
+  checkoutDate: DateTime
   createdAt: DateTime!
-  discountPercentage: Float!
+  discountPercentage: Float
   email: String!
   fullName: String!
   hostel: HostelData
-  hostelId: Float!
+  hostelId: Int!
   id: ID!
   institutionName: String!
-  notes: String!
+  notes: String
   permanentAddress: String!
   phoneNumber: String!
-  roomCapacity: String!
+  roomCapacity: String
   status: String!
   updatedAt: DateTime!
   user: UserData
-  userId: Float!
+  userId: Int!
 }
 
 type HostelApplicationFormList {
@@ -1002,6 +1002,7 @@ type Query {
   getAddressByHostelId(hostelId: Float!): Address
   getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 100): BlogPostList!
   getAllHostelApplicationForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelApplicationFormList!
+  getAllHostelApplicationFormsByHostelId(pageNumber: Int! = 1, pageSize: Int! = 50): HostelApplicationFormList!
   getAllHostelSearchForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getAllHostelSellForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSellFormList!
   getAllHostelServices: HostelServiceList!
@@ -1249,10 +1250,12 @@ type SocialData {
 }
 
 enum Status {
+  APPROVED
   CANCELLED
   COMPLETED
   IN_PROGRESS
   PENDING
+  REJECTED
 }
 
 type Token {

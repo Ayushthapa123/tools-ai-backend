@@ -23,7 +23,28 @@ export class HostelApplicationFormService {
       error: null,
     };
   }
+  async getAllHostelApplicationFormsByHostelId(
+    pageSize: number,
+    pageNumber: number,
+    hostelId: number,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const hostelApplicationForms =
+      await this.prisma.hostelApplicationForm.findMany({
+        where: {
+          hostelId,
+        },
+        skip,
+        take,
+      });
 
+    return {
+      data: hostelApplicationForms,
+      error: null,
+    };
+  }
   async getHostelApplicationFormByUserId(
     pageSize: number,
     pageNumber: number,
@@ -36,6 +57,9 @@ export class HostelApplicationFormService {
       await this.prisma.hostelApplicationForm.findMany({
         where: {
           userId,
+        },
+        include: {
+          hostel: true,
         },
         skip,
         take,

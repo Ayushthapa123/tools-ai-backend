@@ -1,5 +1,7 @@
 // src/models/hostel.model.ts
 
+// Defining type inside the Field() matters. Even it automatically converts type to default type if not defined.
+
 import {
   BlogStatus,
   BlogTags, // UserType,
@@ -949,28 +951,28 @@ export class HostelApplicationFormData {
   @Field()
   askForDiscount: boolean;
 
-  @Field()
-  discountPercentage: number;
+  @Field({ nullable: true })
+  discountPercentage?: number;
 
-  @Field()
-  notes: string;
+  @Field({ nullable: true })
+  notes?: string;
 
   @Field()
   status: Status;
 
-  @Field()
+  @Field(() => Int)
   hostelId: number;
 
-  @Field()
+  @Field(() => Int)
   userId: number;
-  @Field()
-  checkinDate: string;
+  @Field(() => Date, { nullable: true })
+  checkinDate?: Date;
 
-  @Field()
-  checkoutDate: string;
+  @Field(() => Date, { nullable: true })
+  checkoutDate?: Date;
 
-  @Field()
-  roomCapacity: RoomCapacity;
+  @Field({ nullable: true })
+  roomCapacity?: RoomCapacity;
 
   @Field(() => UserData, { nullable: true })
   user?: UserData;
