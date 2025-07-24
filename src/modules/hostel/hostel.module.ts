@@ -15,6 +15,7 @@ import { SettingsModule } from './settings/settings.module';
 import { HostelGuestModule } from './hostelGuest/hostel-guest.module';
 import { MailersendService } from '../mailersend/mailersend.service';
 import { HostelServicesModule } from './hostel-services/hostel-services.module';
+import { HostelApplicationFormModule } from '../HostelApplicationForm/hostelApplicationForm.module';
 @Module({
   imports: [
     ContactModule,
@@ -28,6 +29,7 @@ import { HostelServicesModule } from './hostel-services/hostel-services.module';
     SettingsModule,
     HostelGuestModule,
     HostelServicesModule,
+    HostelApplicationFormModule,
   ],
   providers: [HostelResolver, HostelService, JwtService, MailersendService],
 })

@@ -47,6 +47,7 @@ model User {
   hostel     Hostel?
   blogPosts  BlogPost[]
   hostelSearchForm HostelSearchForm[]
+  hostelApplicationForm HostelApplicationForm[]
 }
 
 model HostelGuest {
@@ -89,6 +90,40 @@ model HostelGuest {
   @@index([phoneNumber])
 }
 
+model HostelApplicationForm { // User don't need to login to apply for hostel.
+  id                Int      @id @unique @default(autoincrement())
+  // Basic Information
+  fullName          String
+  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
+  phoneNumber       String
+  occupation        String 
+  permanentAddress String
+  institutionName   String
+  askForDiscount    Boolean @default(false) 
+  discountPercentage Int? 
+  status Status @default(PENDING)
+
+  roomCapacity      RoomCapacity?
+
+  // Visit history
+  checkinDate     DateTime?
+  checkoutDate    DateTime?
+
+  // Additional notes
+  notes             String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  userId          Int      // Required relation to Hostel           @relation(fields: [userId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+
+  hostelId Int
+  hostel Hostel @relation(fields: [hostelId], references: [id])
+  
+  @@index([email])
+} 
+
 // There Will Be Instititions similar to Hostel. 
 // They Will Have Admins/Staffs & Recommended Guest List. 
 // Instituions will have associated Hostels.  
@@ -106,7 +141,7 @@ model Hostel {
   ownerId     Int @unique
 
   whatsappId  String?
-  telegramId  String?
+  // telegramId  String?
 
   verifiedBySuperAdmin    Boolean @default(false) 
   verifiedByCommunityOwner    Boolean @default(false)
@@ -133,7 +168,7 @@ model Hostel {
   foodMenu FoodMenu[]
   hostelGuests HostelGuest[]  // Added relation to HostelGuest
   hostelServices HostelService[]
-
+  hostelApplicationForm HostelApplicationForm[]
   // Single field to track onboarding completion
   hasOnboardingComplete Boolean @default(false)
   isCreatedFromDashboard Boolean @default(false)
@@ -150,6 +185,8 @@ model Hostel {
   @@index([createdAt])
   @@index([hasOnboardingComplete])
 }
+
+
 
 model BlogPost {
   id         Int     @id @unique @default(autoincrement())
@@ -565,6 +602,28 @@ model HostelSellForm {
 
 }
 
+model HostelService{
+  id Int @id @unique @default(autoincrement())
+  hostelServiceType HostelServiceType
+  title String
+  description String? 
+  budget Int?
+  priority Priority @default(HIGH)
+  status Status? @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  dueDate DateTime?
+  completionDate DateTime?
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hostelId Int
+  hostel Hostel @relation(fields: [hostelId], references: [id])
+}
+
 enum HostelAmenityType {
   PROPERTY_ESSENTIALS
   ROOM_ESSENTIALS 
@@ -740,113 +799,10 @@ enum BlogTags {
   PLACES
   OTHER
 }
-//!for advertisement 
-
-// model Advertisement {
-//   adId           Int       @id @unique @default(autoincrement())
-//   adPlanId       Int       @unique
-//   startDate      DateTime
-//   endDate        DateTime?
-//   createdAt      DateTime  @default(now())
-//   budgetedAmount Float
-//   paymentStatus  Boolean
-
-//   // Define a relation to AdPlan
-//   adPlan AdPlan? @relation(fields: [adPlanId], references: [adPlanId])
-// }
-
-// model AdPlan {
-//   adPlanId      Int            @id @unique @default(autoincrement())
-//   name          String
-//   cost          Float
-//   description   String?
-//   features      String[]
-//   createdAt     DateTime       @default(now())
-//   updatedAt     DateTime       @updatedAt
-//   advertisement Advertisement? // One-to-one relationship 
-//   payments      Payments[]
-// }
-
-// model Payments {
-//   paymentId Int      @id @unique @default(autoincrement())
-//   adPlanId  Int
-//   hostelId  Int
-//   createdAt DateTime @default(now())
-
-//   // Define relations to other models
-//   adPlan AdPlan @relation(fields: [adPlanId], references: [adPlanId])
-//   hostel Hostel @relation(fields: [hostelId], references: [hostelId])
-// }
 
 
-//!for ecommerce  
 
-// model Orders {
-//   orderId         Int      @id @unique @default(autoincrement())
-//   productId       Int
-//   hostelId        Int
-//   orderNumber     Int
-//   quantity        Int
-//   discountPercent Int?
-//   totalPrice      Float
-//   createdAt       DateTime @default(now())
-//   shippingDate    DateTime
-//   notes           String?
 
-//   // Define a relation to Hostel
-//   hostel Hostel @relation(fields: [hostelId], references: [hostelId])
-// }
-
-// model Product {
-//   productId   Int      @id @unique @default(autoincrement())
-//   name        String
-//   photo       String?
-//   description String?
-//   categoryId  Int
-//   supplierId  Int
-//   stockSize   Int?
-//   size        String?
-//   color       String?
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-
-//   // Define a relation to Suppliers
-//   supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
-// }
-
-// model Category {
-//   categoryId  Int     @id @unique @default(autoincrement())
-//   name        String
-//   photo       String?
-//   description String?
-// }
-
-// model Suppliers {
-//   supplierId  Int      @id @unique @default(autoincrement())
-//   name        String
-//   companyName String
-//   fullAddress   String
-//   phone        String 
-//   altPhone     String?
-//   email        String
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-
-//   // Define a relation to Products
-//   products Product[]
-//   hostel   HostelSuppliers[]
-// }
-
-// model HostelSuppliers {
-//   supplierId         Int      @id @default(autoincrement())
-//   hostelId   Int
-//   createdAt  DateTime @default(now())
-
-//   hostel   Hostel    @relation(fields: [hostelId], references: [hostelId])
-//   supplier Suppliers @relation(fields: [supplierId], references: [supplierId])
-
-//   @@unique([hostelId, supplierId])
-// }
 
 enum HostelServiceType {
   FACEBOOK_MARKETING
@@ -868,24 +824,16 @@ enum Status {
   IN_PROGRESS
   COMPLETED
   CANCELLED
+
 }
-model HostelService{
-  id Int @id @unique @default(autoincrement())
-  hostelServiceType HostelServiceType
-  title String
-  description String? 
-  budget Int?
-  priority Priority @default(HIGH)
-  status Status? @default(PENDING)
 
-  dueDate DateTime?
-  completionDate DateTime?
-
-  isDeleted Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  hostelId Int
-  hostel Hostel @relation(fields: [hostelId], references: [id])
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED 
+  REFUNDED 
+  PARTIALLY_PAID 
+  PARTIALLY_REFUNDED 
+  FAILED 
+  REFUND_REQUESTED
 }

@@ -928,6 +928,76 @@ export class HostelList extends BaseResponse {
 }
 
 @ObjectType()
+export class HostelApplicationFormData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  fullName: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  phoneNumber: string;
+
+  @Field()
+  institutionName: string;
+
+  @Field()
+  permanentAddress: string;
+  @Field()
+  askForDiscount: boolean;
+
+  @Field()
+  discountPercentage: number;
+
+  @Field()
+  notes: string;
+
+  @Field()
+  status: Status;
+
+  @Field()
+  hostelId: number;
+
+  @Field()
+  userId: number;
+  @Field()
+  checkinDate: string;
+
+  @Field()
+  checkoutDate: string;
+
+  @Field()
+  roomCapacity: RoomCapacity;
+
+  @Field(() => UserData, { nullable: true })
+  user?: UserData;
+
+  @Field(() => HostelData, { nullable: true })
+  hostel?: HostelData;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class HostelApplicationForm extends BaseResponse {
+  @Field(() => HostelApplicationFormData, { nullable: true })
+  data?: HostelApplicationFormData;
+}
+
+@ObjectType()
+export class HostelApplicationFormList extends BaseResponse {
+  @Field(() => [HostelApplicationFormData], { nullable: true })
+  data?: HostelApplicationFormData[];
+}
+
+@ObjectType()
 export class BlogPostData {
   @Field(() => ID)
   id: number;

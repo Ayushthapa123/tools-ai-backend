@@ -267,6 +267,25 @@ input CreateGenericAddressInput {
   subCity: String
 }
 
+input CreateHostelApplicationFormInput {
+  askForDiscount: Boolean! = false
+  checkinDate: String
+  checkoutDate: String
+  discountPercentage: Int
+  email: String!
+  fullName: String!
+  hostelId: Int!
+  institutionName: String!
+  notes: String
+  occupation: String!
+  password: String
+  permanentAddress: String!
+  phoneNumber: String
+  roomCapacity: RoomCapacity
+  status: String
+  userId: Int
+}
+
 input CreateHostelGuestInput {
   checkinDate: String
   checkoutDate: String
@@ -572,6 +591,38 @@ enum HostelAmenityType {
   SAFETY_AND_HYGENE_ESSENTIALS
 }
 
+type HostelApplicationForm {
+  data: HostelApplicationFormData
+  error: GraphQLError
+}
+
+type HostelApplicationFormData {
+  askForDiscount: Boolean!
+  checkinDate: String!
+  checkoutDate: String!
+  createdAt: DateTime!
+  discountPercentage: Float!
+  email: String!
+  fullName: String!
+  hostel: HostelData
+  hostelId: Float!
+  id: ID!
+  institutionName: String!
+  notes: String!
+  permanentAddress: String!
+  phoneNumber: String!
+  roomCapacity: String!
+  status: String!
+  updatedAt: DateTime!
+  user: UserData
+  userId: Float!
+}
+
+type HostelApplicationFormList {
+  data: [HostelApplicationFormData!]
+  error: GraphQLError
+}
+
 type HostelArrayResponse {
   data: [HostelData!]!
   error: GraphQLError
@@ -815,6 +866,7 @@ type Mutation {
   createContact(data: CreateContactInput!): ContactDetail!
   createGallery(data: CreateGalleryInput!): Gallery!
   createHostel(data: CreateHostelInput!): Hostel!
+  createHostelApplicationForm(data: CreateHostelApplicationFormInput!): HostelApplicationForm!
   createHostelGuest(allowEdit: Boolean!, createHostelGuestInput: CreateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   createHostelSearchForm(data: CreateHostelSearchFormInput!): HostelSearchForm!
   createHostelSellForm(data: CreateHostelSellFormInput!): HostelSellForm!
@@ -836,6 +888,7 @@ type Mutation {
   deleteBlogPost(id: Float!): BlogPost!
   deleteGallery(galleryId: Int!): Gallery!
   deleteHostel(hostelId: Float!): Hostel!
+  deleteHostelApplicationForm(id: Float!): HostelApplicationForm!
   deleteHostelSearchForm(id: Float!): HostelSearchForm!
   deleteHostelSellForm(id: Float!): HostelSellForm!
   deleteHostelService(id: Float!): HostelService!
@@ -872,6 +925,7 @@ type Mutation {
   updateContact(contactId: Float!, data: UpdateContactInput!): ContactDetail!
   updateGallery(data: UpdateGalleryInput!, galleryId: Int!): Gallery!
   updateHostel(data: UpdateHostelInput!, hostelId: Float!): Hostel!
+  updateHostelApplicationForm(data: UpdateHostelApplicationFormInput!): HostelApplicationForm!
   updateHostelGuest(allowEdit: Boolean!, updateHostelGuestInput: UpdateHostelGuestInput!, withWelcomeEmail: Boolean!): HostelGuest!
   updateHostelSearchForm(data: UpdateHostelSearchFormInput!): HostelSearchForm!
   updateHostelSellForm(data: UpdateHostelSellFormInput!): HostelSellForm!
@@ -946,7 +1000,8 @@ type Query {
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
   getAddressByHostelId(hostelId: Float!): Address
-  getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 50): BlogPostList!
+  getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 100): BlogPostList!
+  getAllHostelApplicationForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelApplicationFormList!
   getAllHostelSearchForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getAllHostelSellForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSellFormList!
   getAllHostelServices: HostelServiceList!
@@ -958,6 +1013,8 @@ type Query {
   getContactByHostelId(hostelId: Float!): ContactDetail
   getGalleryByHostelId(hostelId: Int!): GalleryList
   getGoogleAuthUrl: GoogleOauthUrl!
+  getHostelApplicationFormById(id: Float!): HostelApplicationForm
+  getHostelApplicationFormsByUserId(pageNumber: Int! = 1, pageSize: Int! = 50): HostelApplicationFormList!
   getHostelById(hostelId: Float!): Hostel
   getHostelBySlug(checkInDate: DateTime, checkOutDate: DateTime, slug: String!): Hostel
   getHostelByToken: Hostel
@@ -1279,6 +1336,26 @@ input UpdateGalleryInput {
   hostelId: Float
   id: Float!
   url: String
+}
+
+input UpdateHostelApplicationFormInput {
+  askForDiscount: Boolean = false
+  checkinDate: String
+  checkoutDate: String
+  discountPercentage: Int
+  email: String
+  fullName: String
+  hostelId: Int
+  id: Int!
+  institutionName: String
+  notes: String
+  occupation: String
+  password: String
+  permanentAddress: String
+  phoneNumber: String
+  roomCapacity: RoomCapacity
+  status: String
+  userId: Int
 }
 
 input UpdateHostelGuestInput {
