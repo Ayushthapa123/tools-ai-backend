@@ -4,9 +4,13 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateHostelSearchFormInput } from './dtos/hostel-search-form.input';
 import * as bcrypt from 'bcrypt';
 import { UserType } from '@prisma/client';
+import { MailersendService } from '../mailersend/mailersend.service';
 @Injectable()
 export class HostelSearchFormService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailersendService: MailersendService,
+  ) {}
 
   async getAllHostelSearchForms(pageSize: number, pageNumber: number) {
     const skip = (pageNumber - 1) * pageSize;
@@ -102,6 +106,12 @@ export class HostelSearchFormService {
         },
       },
     });
+    // we can use the queue
+    this.mailersendService
+      .sendHostelSearchFormSubmittedEmail(data)
+      .catch((err) => {
+        console.log('Failed to send email*************:', err);
+      });
     return {
       data: hostelSearchForm,
       error: null,

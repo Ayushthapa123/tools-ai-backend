@@ -2,6 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { BookingConfirmationEmailDto } from './dtos/bookingDetails.dto';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
+import { hostelSearchFormTemplate } from './html-templates/hostelSearchForm';
+import { CreateHostelSearchFormInput } from '@src/modules/HostelSearchForm/dtos/hostel-search-form.input';
+import { CreateHostelApplicationFormInput } from '../HostelApplicationForm/dtos/hostel-application-form.input';
+import {
+  hostelApplicationFormTemplateForHostel,
+  hostelApplicationFormTemplateForStudent,
+} from './html-templates/hostelApplicationForm';
+import { HostelData } from '@src/models/global.model';
 
 // Constants
 const BREVO_API_KEY =
@@ -371,5 +379,58 @@ export class MailersendService {
       this.logger.error('Error sending email:', error);
       return false;
     }
+  }
+
+  async sendHostelSearchFormSubmittedEmail(
+    hostelSearchFormData: CreateHostelSearchFormInput,
+  ): Promise<void> {
+    const sendSmtpEmail = this.createBaseEmail({
+      email: hostelSearchFormData.email,
+      name: hostelSearchFormData.fullName,
+    });
+    sendSmtpEmail.subject = `Hostel Search Form Submitted`;
+    sendSmtpEmail.htmlContent = hostelSearchFormTemplate(hostelSearchFormData);
+
+    await this.sendEmail(sendSmtpEmail);
+  }
+
+  async sendHostelApplicationFormSubmittedEmail(
+    hostelApplicationFormData: CreateHostelApplicationFormInput,
+  ): Promise<void> {
+    const hostelData = await this.prismaService.hostel.findUnique({
+      where: { id: hostelApplicationFormData.hostelId },
+      include: {
+        address: true,
+        contact: true,
+      },
+    });
+    // send email to student
+    const sendSmtpEmailToStudent = this.createBaseEmail({
+      email: hostelApplicationFormData.email,
+      name: hostelApplicationFormData.fullName,
+    });
+    sendSmtpEmailToStudent.subject = `Hostel Application Form Submitted`;
+    sendSmtpEmailToStudent.htmlContent =
+      hostelApplicationFormTemplateForStudent(
+        hostelApplicationFormData,
+        hostelData as unknown as HostelData,
+      );
+
+    await this.sendEmail(sendSmtpEmailToStudent);
+    console.log('hosteldata', hostelData);
+
+    // send email to hostel
+    const sendSmtpEmailToHostel = this.createBaseEmail({
+      email: hostelData.contact.email,
+      name: hostelData.name,
+    });
+    sendSmtpEmailToHostel.subject = `Hostel Application Form`;
+    sendSmtpEmailToHostel.htmlContent = hostelApplicationFormTemplateForHostel(
+      hostelApplicationFormData,
+      hostelData as unknown as HostelData,
+    );
+
+    await this.sendEmail(sendSmtpEmailToHostel);
+    console.log('Email sent to hostel');
   }
 }

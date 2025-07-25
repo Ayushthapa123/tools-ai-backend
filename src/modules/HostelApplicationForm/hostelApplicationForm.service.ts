@@ -4,9 +4,14 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateHostelApplicationFormInput } from './dtos/hostel-application-form.input';
 import * as bcrypt from 'bcrypt';
 import { UserType } from '@prisma/client';
+import { MailersendService } from '../mailersend/mailersend.service';
+
 @Injectable()
 export class HostelApplicationFormService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailerService: MailersendService,
+  ) {}
 
   async getAllHostelApplicationForms(pageSize: number, pageNumber: number) {
     const skip = (pageNumber - 1) * pageSize;
@@ -126,6 +131,9 @@ export class HostelApplicationFormService {
           phoneNumber: data.phoneNumber,
         },
       });
+
+    this.mailerService.sendHostelApplicationFormSubmittedEmail(data);
+
     return {
       data: hostelApplicationForm,
       error: null,
