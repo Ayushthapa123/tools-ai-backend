@@ -14,7 +14,7 @@ export class BlogPostResolver {
 
   @Query(() => BlogPostList)
   async getAllBlogPosts(
-    @Args('pageSize', { type: () => Int, defaultValue: 100 }) pageSize: number,
+    @Args('pageSize', { type: () => Int, defaultValue: 150 }) pageSize: number,
     @Args('pageNumber', { type: () => Int, defaultValue: 1 })
     pageNumber: number,
     @Args('blogTags', {

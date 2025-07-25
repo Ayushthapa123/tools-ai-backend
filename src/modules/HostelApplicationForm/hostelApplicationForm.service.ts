@@ -59,7 +59,7 @@ export class HostelApplicationFormService {
           userId,
         },
         include: {
-          hostel: true,
+          hostel: { include: { contact: true, address: true } },
         },
         skip,
         take,
