@@ -9,6 +9,12 @@ export class UpdateHostelInput {
   description?: string;
 
   @Field({ nullable: true })
+  admissionFee?: number;
+
+  @Field({ nullable: true })
+  depositAmount?: number;
+
+  @Field({ nullable: true })
   moderatedByCommunityOwner?: boolean;
 
   @Field({ nullable: true })

@@ -135,13 +135,14 @@ model Hostel {
   description String?
   slug        String  @unique
   ranking     Int? @default(0)
+  admissionFee Int? 
+  depositAmount Int? 
   genderType  HostelGenderType @default(BOTH)
   hostelType  HostelType @default(STAY) 
 
   ownerId     Int @unique
 
   whatsappId  String?
-  // telegramId  String?
 
   verifiedBySuperAdmin    Boolean @default(false) 
   verifiedByCommunityOwner    Boolean @default(false)
@@ -158,12 +159,10 @@ model Hostel {
   service       Service?
   hostelRules    HostelRules?
 
-  // orders    Orders[]
-  // payments  Payments[]
+
   gallery   Gallery[]
   rooms     Room[]
   nearbyPlaces    NearbyPlace[]
-  // suppliers HostelSuppliers[]
 
   foodMenu FoodMenu[]
   hostelGuests HostelGuest[]  // Added relation to HostelGuest

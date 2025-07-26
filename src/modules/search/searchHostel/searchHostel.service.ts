@@ -14,10 +14,15 @@ export class SearchHostelService {
 
     const userLat = input.latitude;
     const userLng = input.longitude;
+    const genderType = input?.genderType;
+    const hostelType = input?.hostelType;
+    // const roomCapacity = input.roomCapacity;
+    // const pricePerMonth = input.pricePerMonth;
+    // const pricePerDay = input.pricePerDay;
     const city = input.city || '';
     const subCity = input.subCity || '';
-    const checkInDate = input.checkInDate || new Date('1970-01-01');
-    const checkOutDate = input.checkOutDate || new Date('1970-01-01');
+    // const checkInDate = input.checkInDate || new Date('1970-01-01');
+    // const checkOutDate = input.checkOutDate || new Date('1970-01-01');
 
     const initialRadius = 5; // Initial search radius in KM
     const radiusStep = 5; // Increase by 5km each time
@@ -34,6 +39,12 @@ export class SearchHostelService {
       },
       verifiedBySuperAdmin: true,
     };
+    if (genderType) {
+      whereCondition.genderType = genderType;
+    }
+    if (hostelType) {
+      whereCondition.hostelType = hostelType;
+    }
 
     // If lat/lng provided, search by distance
     if (userLat && userLng) {
@@ -162,6 +173,8 @@ export class SearchHostelService {
               )
             ) <= $5
             AND h."verifiedBySuperAdmin" = true
+            AND ($8::text IS NULL OR h."genderType" = $8::"HostelGenderType")
+            AND ($9::text IS NULL OR h."hostelType" = $9::"HostelType")
           GROUP BY h.id, a.id
           ORDER BY distance ASC
           OFFSET $6
@@ -174,6 +187,8 @@ export class SearchHostelService {
           radiusInKm,
           skip,
           take,
+          genderType || null,
+          hostelType || null,
         );
 
         if (hostels.length > 0) {

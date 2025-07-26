@@ -847,6 +847,12 @@ export class HostelData {
   @Field(() => Int, { nullable: true })
   ranking?: number;
 
+  @Field(() => Int, { nullable: true })
+  admissionFee?: number;
+
+  @Field(() => Int, { nullable: true })
+  depositAmount?: number;
+
   @Field(() => HostelGenderType)
   genderType: HostelGenderType;
 

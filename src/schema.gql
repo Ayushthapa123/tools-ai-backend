@@ -307,6 +307,8 @@ input CreateHostelGuestInput {
 }
 
 input CreateHostelInput {
+  admissionFee: Float
+  depositAmount: Float
   description: String
   genderType: String
   hostelType: String
@@ -373,8 +375,10 @@ input CreateHostelSettingsInput {
 
 input CreateOnboardingHostelInput {
   address: CreateAddressInput
+  admissionFee: Float
   amenity: String
   contact: CreateContactInput
+  depositAmount: Float
   description: String
   gallery: CreateGalleryInput
   genderType: String
@@ -630,10 +634,12 @@ type HostelArrayResponse {
 
 type HostelData {
   address: AddressData
+  admissionFee: Int
   amenities: AmenitiesData
   contact: ContactDetailData
   createdAt: DateTime!
   deletedAt: DateTime
+  depositAmount: Int
   description: String
   foodMenu: [FoodMenuData!]!
   gallery: [GalleryData!]!
@@ -1006,7 +1012,7 @@ type Query {
   getAllHostelSearchForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSearchFormList!
   getAllHostelSellForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelSellFormList!
   getAllHostelServices: HostelServiceList!
-  getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 50): HostelArrayResponse!
+  getAllHostels(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): HostelArrayResponse!
   getAllSearchQueries: [SearchQuery!]!
   getBlogPostById(id: Float!): BlogPost
   getBlogPostBySlug(slug: String!): BlogPost
@@ -1169,11 +1175,16 @@ input SearchHostelInput {
   checkInDate: DateTime
   checkOutDate: DateTime
   city: String
+  genderType: String
+  hostelType: String
   latitude: Float
   longitude: Float
   maxPrice: Float
   minRating: Float
   pageNumber: Float!
+  pricePerDay: Float
+  pricePerMonth: Float
+  roomCapacity: String
   subCity: String
 }
 
@@ -1383,6 +1394,8 @@ input UpdateHostelGuestInput {
 }
 
 input UpdateHostelInput {
+  admissionFee: Float
+  depositAmount: Float
   description: String
   moderatedByCommunityOwner: Boolean
   moderatedBySuperAdmin: Boolean

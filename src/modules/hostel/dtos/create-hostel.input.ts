@@ -16,6 +16,12 @@ export class CreateHostelInput {
 
   @Field({ nullable: true })
   genderType?: HostelGenderType;
+
+  @Field({ nullable: true })
+  admissionFee?: number;
+
+  @Field({ nullable: true })
+  depositAmount?: number;
 }
 
 @InputType()
@@ -31,6 +37,12 @@ export class CreateOnboardingHostelInput {
 
   @Field({ nullable: true })
   genderType?: HostelGenderType;
+
+  @Field({ nullable: true })
+  admissionFee?: number;
+
+  @Field({ nullable: true })
+  depositAmount?: number;
 
   @Field({ nullable: true })
   isCreatedFromDashboard?: boolean;
