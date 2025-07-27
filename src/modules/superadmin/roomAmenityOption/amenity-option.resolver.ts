@@ -24,13 +24,7 @@ export class RoomAmenityOptionResolver {
   }
 
   @Query(() => RoomAmenityOptionList, { name: 'roomAmenityOptions' })
-  async roomAmenityOptions(@Context() ctx: CtxType) {
-    const userType = ctx.user.userType;
-    if (userType !== UserType.SUPERADMIN) {
-      throw new ForbiddenException(
-        'You are not authorized to access this resource',
-      );
-    }
+  async roomAmenityOptions() {
     return this.roomAmenityOptionService.getAll();
   }
 
