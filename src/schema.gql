@@ -5,6 +5,7 @@
 type Address {
   data: AddressData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type AddressData {
@@ -24,6 +25,7 @@ type AddressData {
 type Amenities {
   data: AmenitiesData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type AmenitiesData {
@@ -35,6 +37,7 @@ type AmenitiesData {
 type AmenityOption {
   data: AmenityOptionData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type AmenityOptionData {
@@ -48,6 +51,7 @@ type AmenityOptionData {
 type AmenityOptionList {
   data: [AmenityOptionData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum Badges {
@@ -63,6 +67,7 @@ enum Badges {
 type BlogPost {
   data: BlogPostData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type BlogPostData {
@@ -89,6 +94,7 @@ type BlogPostData {
 type BlogPostList {
   data: [BlogPostData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum BlogStatus {
@@ -109,6 +115,7 @@ enum BlogTags {
 type Booking {
   data: BookingData
   error: GraphQLError
+  pagination: Pagination
 }
 
 input BookingConfirmationEmailDto {
@@ -143,6 +150,7 @@ type BookingData {
 type BookingList {
   data: [BookingData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum BookingStatus {
@@ -170,6 +178,7 @@ type ConfirmBooking {
 type ContactDetail {
   data: ContactDetailData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type ContactDetailData {
@@ -490,6 +499,7 @@ enum DiscountType {
 type DynamicPricingRule {
   data: DynamicPricingRuleData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type DynamicPricingRuleData {
@@ -510,6 +520,7 @@ type DynamicPricingRuleData {
 type DynamicPricingRuleList {
   data: [DynamicPricingRuleData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type FoodMenuData {
@@ -533,6 +544,7 @@ type ForgotPasswordResponse {
 type Gallery {
   data: GalleryData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type GalleryData {
@@ -549,6 +561,7 @@ type GalleryData {
 type GalleryList {
   data: [GalleryData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum GalleryType {
@@ -584,6 +597,7 @@ type GraphQLError {
 type Hostel {
   data: HostelData
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum HostelAmenityType {
@@ -598,6 +612,7 @@ enum HostelAmenityType {
 type HostelApplicationForm {
   data: HostelApplicationFormData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelApplicationFormData {
@@ -625,6 +640,7 @@ type HostelApplicationFormData {
 type HostelApplicationFormList {
   data: [HostelApplicationFormData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelArrayResponse {
@@ -674,6 +690,7 @@ enum HostelGenderType {
 type HostelGuest {
   data: HostelGuestData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelGuestData {
@@ -702,16 +719,19 @@ type HostelGuestData {
 type HostelGuestList {
   data: [HostelGuestData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelList {
   data: [HostelData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelRules {
   data: HostelRulesData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelRulesData {
@@ -723,6 +743,7 @@ type HostelRulesData {
 type HostelSearchForm {
   data: HostelSearchFormData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelSearchFormData {
@@ -746,11 +767,13 @@ type HostelSearchFormData {
 type HostelSearchFormList {
   data: [HostelSearchFormData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelSellForm {
   data: HostelSellFormData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelSellFormData {
@@ -776,11 +799,13 @@ type HostelSellFormData {
 type HostelSellFormList {
   data: [HostelSellFormData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelService {
   data: HostelServiceData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelServiceData {
@@ -802,6 +827,7 @@ type HostelServiceData {
 type HostelServiceList {
   data: [HostelServiceData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum HostelServiceType {
@@ -816,6 +842,7 @@ enum HostelServiceType {
 type HostelSetting {
   data: HostelSettingData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type HostelSettingData {
@@ -959,6 +986,15 @@ type NearbyPlaceData {
   name: String!
 }
 
+type Pagination {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
 enum PaymentPlatformName {
   ESEWA
   KHALTI
@@ -968,6 +1004,7 @@ enum PaymentPlatformName {
 type Price {
   data: PriceData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type PriceData {
@@ -1072,11 +1109,13 @@ input ResetPasswordInput {
 type Room {
   data: RoomData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type RoomAmenity {
   data: RoomAmenityData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type RoomAmenityData {
@@ -1090,6 +1129,7 @@ type RoomAmenityData {
 type RoomAmenityOption {
   data: RoomAmenityOptionData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type RoomAmenityOptionData {
@@ -1102,6 +1142,7 @@ type RoomAmenityOptionData {
 type RoomAmenityOptionList {
   data: [RoomAmenityOptionData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum RoomCapacity {
@@ -1138,6 +1179,7 @@ type RoomData {
 type RoomImage {
   data: RoomImageData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type RoomImageData {
@@ -1157,11 +1199,13 @@ input RoomImageInput {
 type RoomImageList {
   data: [RoomImageData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type RoomList {
   data: [RoomData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 enum RoomStatus {
@@ -1191,6 +1235,7 @@ input SearchHostelInput {
 type SearchQuery {
   data: [SearchQueryData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 type SearchQueryData {
@@ -1205,6 +1250,7 @@ type SearchQueryData {
 type Service {
   data: ServiceData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type ServiceData {
@@ -1216,6 +1262,7 @@ type ServiceData {
 type ServiceOption {
   data: ServiceOptionData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type ServiceOptionData {
@@ -1228,6 +1275,7 @@ type ServiceOptionData {
 type ServiceOptionList {
   data: [ServiceOptionData!]
   error: GraphQLError
+  pagination: Pagination
 }
 
 input SignupInput {
@@ -1550,6 +1598,7 @@ input UpdateUserInput {
 type User {
   data: UserData
   error: GraphQLError
+  pagination: Pagination
 }
 
 type UserData {

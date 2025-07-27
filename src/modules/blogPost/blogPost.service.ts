@@ -5,7 +5,7 @@ import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBlogPostInput } from './dtos/create-blog.input';
 import { BlogStatus, BlogTags } from '@prisma/client';
-import { BlogPost } from '@src/models/global.model';
+import { BlogPost, BlogPostList } from '@src/models/global.model';
 @Injectable()
 export class BlogPostService {
   constructor(private readonly prisma: PrismaService) {}
@@ -15,24 +15,38 @@ export class BlogPostService {
     pageNumber: number,
     blogTags: BlogTags[],
     blogStatus?: BlogStatus,
-  ) {
-    const skip = (pageNumber - 1) * pageSize;
-    const take = pageSize;
+  ): Promise<BlogPostList> {
     // superadmin should get all verified/non verified hostels but other should get only verified
-    const blogPosts = await this.prisma.blogPost.findMany({
-      // also it should be published only
-      where: {
-        // add status if it is not null
-        ...(blogStatus && { status: blogStatus }),
-        ...(blogTags.length > 0 && { tags: { hasSome: blogTags } }),
-      },
-      skip,
-      take,
-    });
+    const [blogPosts, total] = await this.prisma.$transaction([
+      this.prisma.blogPost.findMany({
+        where: {
+          ...(blogStatus && { status: blogStatus }),
+          ...(blogTags.length > 0 && { tags: { hasSome: blogTags } }),
+        },
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
+        orderBy: { createdAt: 'desc' },
+      }),
+
+      this.prisma.blogPost.count({
+        where: {
+          ...(blogStatus && { status: blogStatus }),
+          ...(blogTags.length > 0 && { tags: { hasSome: blogTags } }),
+        },
+      }),
+    ]);
 
     return {
       data: blogPosts,
       error: null,
+      pagination: {
+        total: total,
+        page: pageNumber,
+        limit: pageSize,
+        hasNextPage: pageNumber < Math.ceil(total / pageSize),
+        hasPreviousPage: pageNumber > 1,
+        totalPages: Math.ceil(total / pageSize),
+      },
     };
   }
 

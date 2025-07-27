@@ -48,11 +48,35 @@ export class GraphQLError {
   path?: string;
 }
 
+@ObjectType()
+export class Pagination {
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  limit: number;
+
+  @Field(() => Boolean)
+  hasNextPage: boolean;
+
+  @Field(() => Boolean)
+  hasPreviousPage: boolean;
+
+  @Field(() => Int)
+  totalPages: number;
+}
+
 // Base response type for all models
 @ObjectType()
 export class BaseResponse {
   @Field(() => GraphQLError, { nullable: true })
   error?: GraphQLError;
+
+  @Field(() => Pagination, { nullable: true })
+  pagination?: Pagination;
 }
 
 // User related types
