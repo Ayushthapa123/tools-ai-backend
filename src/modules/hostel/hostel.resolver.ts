@@ -82,6 +82,13 @@ export class HostelResolver {
     const res = await this.hostelService.getHostelById(hostelId);
     return res;
   }
+  @Query(() => Hostel, { nullable: true })
+  @UseGuards(AuthGuard)
+  async getActiveHostel(@Context() ctx: CtxType) {
+    const hostelId = Number(ctx.user.hostelId);
+    const res = await this.hostelService.getHostelById(hostelId);
+    return res;
+  }
 
   @Query(() => Hostel, { nullable: true })
   @UseGuards(AuthGuard)

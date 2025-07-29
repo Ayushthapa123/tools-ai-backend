@@ -384,10 +384,10 @@ input CreateHostelSettingsInput {
 
 input CreateOnboardingHostelInput {
   address: CreateAddressInput
-  admissionFee: Float
+  admissionFee: Int
   amenity: String
   contact: CreateContactInput
-  depositAmount: Float
+  depositAmount: Int
   description: String
   gallery: CreateGalleryInput
   genderType: String
@@ -1043,6 +1043,7 @@ type Query {
   findHostelGuestsByHostelRoomId(hostelRoomId: Int!): BookingConfirmationMailData!
   findRoomsByRoomIds(roomIds: [Int!]!): BookingConfirmationMailData!
   findServiceByHostelId(hostelId: Float!): Service!
+  getActiveHostel: Hostel
   getAddressByHostelId(hostelId: Float!): Address
   getAllBlogPosts(blogStatus: BlogStatus = null, blogTags: [BlogTags!] = [CITY], pageNumber: Int! = 1, pageSize: Int! = 150): BlogPostList!
   getAllHostelApplicationForms(pageNumber: Int! = 1, pageSize: Int! = 50): HostelApplicationFormList!
