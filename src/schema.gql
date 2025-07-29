@@ -887,6 +887,7 @@ type LogoutResponse {
 
 type Mutation {
   cancelHostelService(id: Float!): HostelService!
+  changeCurrentHostel(hostelId: Int!): User!
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
   completeHostelService(id: Float!): HostelService!
   completeOnboarding: Hostel!
@@ -1069,6 +1070,7 @@ type Query {
   getHostelServiceById(id: Float!): HostelService!
   getHostelServicesByHostelId(hostelId: Float!): HostelServiceList!
   getHostelsBySearch(input: SearchHostelInput!): HostelList!
+  getHostelsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): HostelArrayResponse!
   getOnboardingData: Hostel!
   getRoomImagesByRoomId(roomId: Int!): RoomImageList
   getRulesByHostel: HostelRules!

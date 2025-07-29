@@ -9,12 +9,16 @@ import {
 } from './dtos/create-hostel.input';
 import { UserType } from '@src/models/global.enum';
 import { MailersendService } from '../mailersend/mailersend.service';
+import { generateJwtTokens } from '@src/helpers/jwt.helper';
+import { CookieService } from '../auth/services/cookie.service';
+import { Response, Request } from 'express';
 
 @Injectable()
 export class HostelService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mailersendService: MailersendService,
+    private readonly cookieService: CookieService,
   ) {}
 
   async getAllHostels(
@@ -59,6 +63,40 @@ export class HostelService {
 
     return {
       data: convertedHostels,
+      error: null,
+    };
+  }
+
+  async getHostelsByUserId(
+    pageSize: number,
+    pageNumber: number,
+    userId: number,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const hostels = await this.prisma.hostel.findMany({
+      where: {
+        ownerId: userId,
+      },
+      skip,
+      take,
+      include: {
+        address: true,
+        contact: true,
+        gallery: true,
+        owner: true,
+        rooms: {
+          include: {
+            image: true,
+            price: true,
+          },
+        },
+      },
+    });
+
+    return {
+      data: hostels,
       error: null,
     };
   }
@@ -138,10 +176,10 @@ export class HostelService {
     };
   }
 
-  async getHostelBytoken(userId: number) {
+  async getHostelBytoken(hostelId: number) {
     try {
       const hostel = await this.prisma.hostel.findFirst({
-        where: { ownerId: Number(userId) },
+        where: { id: hostelId },
       });
       return {
         data: hostel,
@@ -195,6 +233,7 @@ export class HostelService {
   async createOnboardingHostel(
     userId: number,
     data: CreateOnboardingHostelInput,
+    context: { res: Response; req: Request },
   ) {
     const slug = generateSlug(data.name);
 
@@ -263,6 +302,19 @@ export class HostelService {
         });
         console.log('updated user', createHostel);
       }
+      // before returning set the cookie
+      const { accessToken, refreshToken } = generateJwtTokens(
+        userId,
+        UserType.HOSTEL_OWNER,
+        createHostel.id,
+      );
+
+      await this.cookieService.setAuthCookies(
+        context.res,
+        accessToken,
+        refreshToken,
+        context.req.headers.referer,
+      );
       return {
         data: createHostel,
         error: null,
@@ -423,6 +475,28 @@ export class HostelService {
     const res = await this.prisma.hostel.update({
       where: { id: hostelId },
       data: { hasOnboardingComplete: true },
+    });
+    return {
+      data: res,
+      error: null,
+    };
+  }
+
+  async changeCurrentHostel(userId: number, hostelId: number) {
+    const hostel = await this.prisma.hostel.findUnique({
+      where: { id: hostelId, ownerId: userId },
+    });
+    if (!hostel) {
+      return {
+        data: null,
+        error: {
+          message: 'not allowed',
+        },
+      };
+    }
+    const res = await this.prisma.user.update({
+      where: { id: userId },
+      data: { hostelId: hostelId },
     });
     return {
       data: res,

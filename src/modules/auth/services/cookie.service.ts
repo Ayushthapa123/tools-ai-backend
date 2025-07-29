@@ -44,6 +44,7 @@ export class CookieService {
       ...this.baseCookieOptions,
       domain: this.getCookieDomain(userDomain),
     };
+    console.log('setting auth cookies', cookieOptionsWithDomain);
 
     res.cookie('accessToken', accessToken, {
       ...cookieOptionsWithDomain,

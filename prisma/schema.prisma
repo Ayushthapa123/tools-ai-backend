@@ -44,7 +44,7 @@ model User {
   updatedAt          DateTime @updatedAt 
   deletedAt DateTime?
 
-  hostel     Hostel?
+  hostel     Hostel[]
   blogPosts  BlogPost[]
   hostelSearchForm HostelSearchForm[]
   hostelApplicationForm HostelApplicationForm[]
@@ -140,7 +140,7 @@ model Hostel {
   genderType  HostelGenderType @default(BOTH)
   hostelType  HostelType @default(STAY) 
 
-  ownerId     Int @unique
+  ownerId     Int 
 
   whatsappId  String?
 

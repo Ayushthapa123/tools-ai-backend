@@ -16,6 +16,7 @@ import { HostelGuestModule } from './hostelGuest/hostel-guest.module';
 import { MailersendService } from '../mailersend/mailersend.service';
 import { HostelServicesModule } from './hostel-services/hostel-services.module';
 import { HostelApplicationFormModule } from '../HostelApplicationForm/hostelApplicationForm.module';
+import { CookieService } from '../auth/services/cookie.service';
 @Module({
   imports: [
     ContactModule,
@@ -31,6 +32,12 @@ import { HostelApplicationFormModule } from '../HostelApplicationForm/hostelAppl
     HostelServicesModule,
     HostelApplicationFormModule,
   ],
-  providers: [HostelResolver, HostelService, JwtService, MailersendService],
+  providers: [
+    HostelResolver,
+    HostelService,
+    JwtService,
+    MailersendService,
+    CookieService,
+  ],
 })
 export class HostelModule {}
