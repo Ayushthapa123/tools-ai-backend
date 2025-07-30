@@ -44,14 +44,9 @@ export class RoomAmenityResolver {
   @Mutation(() => RoomAmenity)
   updateRoomAmenity(
     @Args('updateAmenityInput') updateAmenityInput: UpdateRoomAmenityInput,
-    @Context() ctx: CtxType,
   ) {
     // prevent update by other users then superadmin
-    if (ctx.user.userType !== UserType.SUPERADMIN) {
-      throw new ForbiddenException(
-        'You are not authorized to access this resource',
-      );
-    }
+
     return this.roomAmenityService.update(updateAmenityInput);
   }
 

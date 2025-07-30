@@ -121,33 +121,34 @@ export class HostelService {
         gallery: true,
         contact: true,
         service: true,
+        hostelRules: true,
         rooms: {
           include: {
             image: true,
             roomAmenity: true,
             price: true,
           },
-          where: {
-            booking: {
-              none: {
-                AND: [
-                  {
-                    status: 'CONFIRMED', // Ensure the booking is confirmed
-                  },
-                  {
-                    startDate: {
-                      lt: userCheckOutDate, // Booking start date is before the user's end date
-                    },
-                  },
-                  {
-                    endDate: {
-                      gt: userCheckInDate, // Booking end after the user's start date
-                    },
-                  },
-                ],
-              },
-            },
-          },
+          // where: {
+          //   booking: {
+          //     none: {
+          //       AND: [
+          //         {
+          //           status: 'CONFIRMED', // Ensure the booking is confirmed
+          //         },
+          //         {
+          //           startDate: {
+          //             lt: userCheckOutDate, // Booking start date is before the user's end date
+          //           },
+          //         },
+          //         {
+          //           endDate: {
+          //             gt: userCheckInDate, // Booking end after the user's start date
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   },
+          // },
         },
       },
     });
