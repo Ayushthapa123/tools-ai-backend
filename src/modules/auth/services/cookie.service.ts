@@ -26,6 +26,10 @@ export class CookieService {
         console.log('starts with dev', hostname);
         hostname = hostname.slice(4); // remove first 4 characters
       }
+      if (hostname.startsWith('api.')) {
+        console.log('starts with api', hostname);
+        hostname = hostname.slice(4); // remove first 4 characters
+      }
 
       return hostname;
     } catch (error) {
@@ -66,6 +70,7 @@ export class CookieService {
       ...this.baseCookieOptions,
       domain: this.getCookieDomain(userDomain),
     };
+    console.log('clearing auth cookies', cookieOptionsWithDomain);
 
     res.clearCookie('accessToken', cookieOptionsWithDomain);
     res.clearCookie('refreshToken', cookieOptionsWithDomain);
