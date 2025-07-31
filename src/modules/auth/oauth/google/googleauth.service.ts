@@ -10,6 +10,7 @@ import { UserType } from '@prisma/client';
 import { Response } from 'express';
 import { CookieService } from '../../services/cookie.service';
 
+
 @Injectable()
 export class GoogleAuthService {
   constructor(
