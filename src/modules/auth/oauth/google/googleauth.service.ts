@@ -21,15 +21,19 @@ export class GoogleAuthService {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const redirectUri = userDomain
-      ? `${userDomain}oauth/google`
-      : `${process.env.WEB_URL}/oauth/google`;
+      ? `${userDomain}oauth/google/callback`
+      : `${process.env.WEB_URL}/oauth/google/callback`;
+    console.log('rrrr', redirectUri);
 
     const client = new OAuth2Client(clientId, clientSecret, redirectUri);
+    console.log('client', client);
 
     // Exchange authorization code for access token
     const { tokens: googleTokens } = await client.getToken(code);
+    console.log('googleTokens', googleTokens);
     // Make a request to Google's tokeninfo endpoint to retrieve the ID token
     await client.setCredentials(googleTokens);
+    console.log('after token set');
 
     const tokenId = client.credentials.id_token;
     const ticket = await client.verifyIdToken({
@@ -82,9 +86,31 @@ export class GoogleAuthService {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      userDomain
-        ? `${userDomain}oauth/google`
-        : `${process.env.WEB_URL}/oauth/google`,
+      `${process.env.API_URL}/oauth/google/callback`,
+    );
+
+    //what about name??
+    const scopes = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ];
+
+    const authUrl = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      prompt: 'consent',
+      scope: scopes,
+    });
+
+    return { url: authUrl };
+  }
+  async getGoogleAuthUrlWithApiRedirect(
+    userDomain: string,
+  ): Promise<GoogleOauthUrl> {
+    console.log('userDomain', userDomain);
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${process.env.API_URL}/oauth/google/callback`,
     );
 
     //what about name??

@@ -5,9 +5,13 @@ import { AuthResolver } from './auth.controller';
 // import { EmailModule } from '@src/modules/email/email.module';
 import { GoogleAuthService } from './oauth/google/googleauth.service';
 // import { MailerService } from '@src/modules/email/mailer/mailer.service';
-import { GoogleAuthResolver } from './oauth/google/googleauth.controller';
+import {
+  // GoogleAuthController,
+  GoogleAuthResolver,
+} from './oauth/google/googleauth.resolver';
 import { MailersendService } from '../mailersend/mailersend.service';
 import { CookieService } from './services/cookie.service';
+import { GoogleAuthController } from './oauth/google/googleauth.controller';
 
 @Module({
   imports: [], // Include EmailModule if needed
@@ -21,5 +25,6 @@ import { CookieService } from './services/cookie.service';
     CookieService,
     // MailerService,
   ],
+  controllers: [GoogleAuthController],
 })
 export class AuthModule {}
