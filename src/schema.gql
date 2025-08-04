@@ -933,6 +933,7 @@ type Mutation {
   deleteServiceOption(serviceOptionId: Int!): ServiceOption!
   deleteSettings(hostelSettingId: Float!): HostelSetting!
   forgotPassword(email: String!): ForgotPasswordResponse!
+  getTravelBudget(input: TravelBudgetCalculatorInput!): TBCList!
   loginUser(input: LoginInput!): UsersAndToken!
   logout: LogoutResponse!
   refreshTokens: UsersHostelIdAndToken!
@@ -1320,9 +1321,36 @@ enum Status {
   REJECTED
 }
 
+type TBCList {
+  data: [TbcData!]
+  error: GraphQLError
+  pagination: Pagination
+  personalizedTravelGuide: String
+}
+
+type TbcData {
+  category: String!
+  cost: Int!
+  currency: String!
+  per: String!
+  shortGuide: String!
+}
+
 type Token {
   accessToken: ID!
   refreshToken: String!
+}
+
+input TravelBudgetCalculatorInput {
+  accomodationType: String!
+  date: DateTime!
+  numberOfDays: Float!
+  purpose: String!
+  startCity: String!
+  startCountry: String!
+  travelCity: String!
+  travelCountry: String!
+  travelStyle: String!
 }
 
 input UpdateAddressInput {

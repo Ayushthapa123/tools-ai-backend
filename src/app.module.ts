@@ -21,6 +21,7 @@ import { SuperadminModule } from './modules/superadmin/superadmin.module';
 import { BlogPostModule } from './modules/blogPost/blogPost.module';
 import { HostelSearchFormModule } from './modules/HostelSearchForm/hostelSearchForm.module';
 import { HostelSellFormModule } from './modules/HostelSellForm/hostelSellForm.module';
+import { ToolsModule } from './modules/tools/tools.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -47,6 +48,7 @@ import { HostelSellFormModule } from './modules/HostelSellForm/hostelSellForm.mo
     BlogPostModule,
     HostelSearchFormModule,
     HostelSellFormModule,
+    ToolsModule,
   ],
 
   controllers: [AppController], //we don't need it now
