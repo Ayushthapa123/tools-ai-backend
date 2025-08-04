@@ -2,8 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
-const { GoogleGenAI } = require('@google/genai');
-
+import { GoogleGenAI } from '@google/genai';
 
 import { TravelBudgetCalculatorInput } from './dto/tbc.input';
 import { TBCList } from './models/tbc.model';
