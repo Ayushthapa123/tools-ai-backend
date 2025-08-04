@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20-bullseye AS builder
 
 WORKDIR /usr/src/app
 
@@ -19,7 +19,7 @@ RUN npx prisma generate
 RUN yarn build
 
 # Stage 2: Production
-FROM node:20-alpine
+FROM node:20-bullseye
 
 WORKDIR /usr/src/app
 
