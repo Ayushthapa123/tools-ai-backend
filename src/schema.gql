@@ -166,6 +166,18 @@ type BookingSummary {
   totalPriceOfRoom: Float
 }
 
+type CAGData {
+  category: String!
+  items: [String!]!
+}
+
+type CAGList {
+  data: [CAGData!]
+  error: GraphQLError
+  pagination: Pagination
+  personalizedCustomerAvatar: String
+}
+
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
@@ -484,6 +496,11 @@ type Ctx {
 enum Currency {
   NPR
   USD
+}
+
+input CustomerAvatarGeneratorInput {
+  businessDescription: String!
+  businessName: String!
 }
 
 """
@@ -933,6 +950,7 @@ type Mutation {
   deleteServiceOption(serviceOptionId: Int!): ServiceOption!
   deleteSettings(hostelSettingId: Float!): HostelSetting!
   forgotPassword(email: String!): ForgotPasswordResponse!
+  getCustomerAvatar(input: CustomerAvatarGeneratorInput!): CAGList!
   getTravelBudget(input: TravelBudgetCalculatorInput!): TBCList!
   getTravelChecklist(input: TravelChecklistGeneratorInput!): TCGList!
   getTravelDestination(input: TravelDestinationFinderInput!): TDFList!

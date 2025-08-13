@@ -74,7 +74,7 @@ Output format:
     }
     // ... other categories
   ],
-  "personalizedTravelGuide": "A detailed guide covering local customs, weather, transportation, attractions, cuisine, safety, culture, and language essentials..."
+  "personalizedTravelGuide": "A short but comprehensive guide covering local customs, weather, transportation, attractions, cuisine, safety, culture, and language essentials..."
 }
 
 Consider the travel type, duration, and companion type when generating both the checklist and travel guide. Make sure recommendations are specific and relevant to the destination and activities planned. Format the travel guide as a well-structured text with clear sections and bullet points.`;
