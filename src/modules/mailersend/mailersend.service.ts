@@ -3,8 +3,7 @@ import { PrismaService } from '@src/prisma/prisma.service';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 
 // Constants
-const BREVO_API_KEY =
-  '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';
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const SENDER = {
   name: 'Hosteladmin',
   email: 'sagarregmi0710@gmail.com',
