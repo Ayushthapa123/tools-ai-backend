@@ -10,7 +10,6 @@ import { UserType } from '@prisma/client';
 import { Response } from 'express';
 import { CookieService } from '../../services/cookie.service';
 
-
 @Injectable()
 export class GoogleAuthService {
   constructor(
@@ -58,18 +57,14 @@ export class GoogleAuthService {
         data: {
           email,
           fullName: name,
-          userType: UserType.HOSTEL_OWNER,
+          userType: UserType.USER,
           isVerified: true,
         },
       });
     }
 
     // Generate JWT tokens
-    const authTokens = generateJwtTokens(
-      user.id,
-      UserType.HOSTEL_OWNER,
-      user.hostelId,
-    );
+    const authTokens = generateJwtTokens(user.id, UserType.USER, user.id);
 
     // Set cookies using the shared cookie service
     this.cookieService.setAuthCookies(

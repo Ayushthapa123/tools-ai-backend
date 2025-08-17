@@ -38,7 +38,7 @@ export class SuperAdminGuard implements CanActivate {
         throw new UnauthorizedException('Invalid token payload');
       }
       // Add additional security checks if needed
-      if (payload.userType !== UserType.SUPERADMIN) {
+      if (payload.userType !== UserType.ADMIN) {
         throw new UnauthorizedException('Invalid token payload');
       }
 

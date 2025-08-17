@@ -1,77 +1,57 @@
 // user.enum.ts
 // enums have been generated in schemas
 import { registerEnumType } from '@nestjs/graphql';
-import {
-  RoomCapacity as RoomCapacityy,
-  RoomStatus as RoomStatuss,
-  UserType as UserTypee,
-  BlogStatus as BlogStatuss,
-  BlogTags as BlogTags,
-} from '@prisma/client';
 
-// If enum is not generated in frontend that's because you have not included the enum anywhere in the Model
+// Enums from schema.prisma
+export enum UserType {
+  CREATOR = 'CREATOR',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
 
-export {
-  RoomCapacityy as RoomCapacity,
-  RoomStatuss as RoomStatus,
-  UserTypee as UserType,
-  BlogStatuss as BlogStatus,
-  BlogTags as BlogTags,
-};
+export enum GenderType {
+  BOYS = 'BOYS',
+  GIRLS = 'GIRLS',
+  OTHERS = 'OTHERS',
+}
 
-registerEnumType(UserTypee, {
+export enum ToolType {
+  IO = 'IO',
+  CURD = 'CURD',
+}
+
+export enum ToolStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+}
+
+export enum VisibilityType {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+}
+
+// Register GraphQL enum types
+registerEnumType(UserType, {
   name: 'UserType',
 });
 
-registerEnumType(RoomStatuss, {
-  name: 'RoomStatus',
+registerEnumType(GenderType, {
+  name: 'GenderType',
 });
 
-registerEnumType(BlogStatuss, {
-  name: 'BlogStatus',
+registerEnumType(ToolType, {
+  name: 'ToolType',
 });
 
-registerEnumType(BlogTags, {
-  name: 'BlogTags',
+registerEnumType(ToolStatus, {
+  name: 'ToolStatus',
 });
 
-export enum BookingStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CANCELLED = 'CANCELLED',
-}
-
-registerEnumType(BookingStatus, {
-  name: 'BookingStatus',
+registerEnumType(VisibilityType, {
+  name: 'VisibilityType',
 });
 
-export enum Currency {
-  NPR = 'NPR',
-  USD = 'USD',
-}
-
-registerEnumType(Currency, {
-  name: 'Currency',
-});
-
-export enum WeekDays {
-  SUNDAY = 'SUNDAY',
-  MONDAY = 'MONDAY',
-  TUESDAY = 'TUESDAY',
-  WEDNESDAY = 'WEDNESDAY',
-  THURSDAY = 'THURSDAY',
-  FRIDAY = 'FRIDAY',
-  SATURDAY = 'SATURDAY',
-}
-
-registerEnumType(WeekDays, {
-  name: 'WeekDays',
-});
-
-registerEnumType(RoomCapacityy, {
-  name: 'RoomCapacity',
-});
-
+// Legacy enums for backward compatibility
 export enum Gender {
   BOYS = 'BOYS',
   GIRLS = 'GIRLS',
@@ -121,16 +101,6 @@ export enum HostelType {
 
 registerEnumType(HostelType, {
   name: 'HostelType',
-});
-
-export enum VisibilityType {
-  ALL = 'ALL',
-  STUDENTS_ONLY = 'STUDENTS_ONLY',
-  ONLY_ME = 'ONLY_ME',
-}
-
-registerEnumType(VisibilityType, {
-  name: 'VisibilityType',
 });
 
 export enum GalleryType {

@@ -76,7 +76,7 @@ export class AuthService {
       const { accessToken, refreshToken } = generateJwtTokens(
         user.id,
         user.userType,
-        user?.hostelId ?? null,
+        user?.id ?? null, //## TODO: change this to hostelId
       );
       console.log('accessToken', accessToken);
 
@@ -86,7 +86,11 @@ export class AuthService {
         data: { hashedRefreshToken: refreshToken }, // Update refreshToken field
       });
 
-      return { ...user, token: { accessToken, refreshToken } };
+      return {
+        ...user,
+        token: { accessToken, refreshToken },
+        userType: user.userType as UserType,
+      };
     } catch (error) {
       console.log(error);
       // Handle any database-related errors
@@ -143,7 +147,7 @@ export class AuthService {
     const { accessToken, refreshToken } = generateJwtTokens(
       user.id,
       user.userType as UserType,
-      user?.hostelId ?? null,
+      user?.id ?? null,
     );
     // Save refreshToken in the database
     await this.prisma.user.update({
@@ -178,7 +182,7 @@ export class AuthService {
       const { accessToken, refreshToken } = generateJwtTokens(
         user.id,
         user.userType as UserType,
-        user?.hostelId ?? null,
+        user?.id ?? null,
       );
 
       // Save refreshToken in the database
@@ -241,7 +245,7 @@ export class AuthService {
       // Update the user's verification status in the database
       const userId = decoded.sub;
 
-      const userType = UserType.HOSTEL_OWNER; // TODO get userType from the decoded token
+      const userType = UserType.USER; // TODO get userType from the decoded token
       // Hash the password before saving it
       const passwordHash = await bcrypt.hash(input.password, 10);
       const { accessToken, refreshToken } = generateJwtTokens(
@@ -255,7 +259,11 @@ export class AuthService {
         data: { passwordHash: passwordHash, hashedRefreshToken: refreshToken },
       });
 
-      return { ...user, token: { accessToken, refreshToken } };
+      return {
+        ...user,
+        token: { accessToken, refreshToken },
+        userType: user.userType as UserType,
+      };
     } catch (error) {
       // Token verification failed
       throw new NotFoundException('token not valid');
@@ -293,7 +301,7 @@ export class AuthService {
         const { accessToken, refreshToken } = generateJwtTokens(
           user.id,
           user.userType as UserType,
-          user?.hostelId ?? null,
+          user?.id ?? null, //## TODO: change this to hostelId
         );
 
         // Return the new access token

@@ -12,16 +12,11 @@ import { UsersModule } from './modules/users/users.module';
 
 import { JwtService } from '@nestjs/jwt'; //remove this
 import { SearchModule } from './modules/search/search.module';
-import { SearchSuggestionsModule } from './modules/search/searchSuggestions/searchSuggestions.module';
 import { ImageModule } from './modules/image/image.module';
 import { MailersendModule } from './modules/mailersend/mailersend.module';
-import { HostelModule } from './modules/hostel/hostel.module';
-import { SearchQueriesModule } from './modules/hostel/searchQueries/search-queries.module';
-import { SuperadminModule } from './modules/superadmin/superadmin.module';
-import { BlogPostModule } from './modules/blogPost/blogPost.module';
-import { HostelSearchFormModule } from './modules/HostelSearchForm/hostelSearchForm.module';
-import { HostelSellFormModule } from './modules/HostelSellForm/hostelSellForm.module';
+
 import { ToolsModule } from './modules/tools/tools.module';
+import { ToolModule } from './modules/tool/tool.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,17 +33,12 @@ import { ToolsModule } from './modules/tools/tools.module';
     PrismaModule,
     AuthModule,
     UsersModule,
-    HostelModule,
-    SearchQueriesModule,
     SearchModule,
-    SearchSuggestionsModule,
     ImageModule,
     MailersendModule,
-    SuperadminModule,
-    BlogPostModule,
-    HostelSearchFormModule,
-    HostelSellFormModule,
+
     ToolsModule,
+    ToolModule,
   ],
 
   controllers: [AppController], //we don't need it now

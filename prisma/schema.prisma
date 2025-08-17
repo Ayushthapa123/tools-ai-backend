@@ -1,15 +1,3 @@
-//! Starting a entity name with capital letter caused unknown bug. when i put MonthlyPricing inside hostel
-//! it was giving null while there was a data. but changing name to monthlyPricing solved this
-
-// In one to one relation, foreign key may present in the parent table or in child table whichever is more logical. For example. You first create hostel then address
-// So while creating Address, you need to have hostelId and you save it in Address table. 
-
-// In one to many relation, foreign key should be present in the child table. 
-// In many to many relation, foreign key should be present in the join table.  
-
- // Currently most of the relation are options for flexibility. may be in future we have to make it more rigid.
- // Unique fields are already indexed.
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
@@ -22,8 +10,6 @@ datasource db {
 
 model User {
   id             Int      @id @unique @default(autoincrement())
-  // id of an active hostel
-  hostelId      Int?      //this needs to be included when creatng token,checking onboarding,etc. // this may need frequent update to track multiple hostels. which hostel is currently active.
 
   email              String   @unique
   passwordHash       String?
@@ -32,145 +18,39 @@ model User {
   phoneNumber        String?
   altPhoneNumber     String?
   hashedRefreshToken String?     
-  city               String? 
   dateOfBirth        DateTime?
   gender             GenderType?
-  userType   UserType @default(HOSTEL_OWNER)
-  booking    Booking[]
+  userType   UserType @default(USER)
 
   isVerified Boolean  @default(false)
 
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt 
-  deletedAt DateTime?
 
-  hostel     Hostel[]
-  blogPosts  BlogPost[]
-  hostelSearchForm HostelSearchForm[]
-  hostelApplicationForm HostelApplicationForm[]
+  tool     Tool[]
 }
 
-model HostelGuest {
-  id                Int      @id @unique @default(autoincrement())
-
-  hostelId          Int      // Required relation to Hostel
-  hostel            Hostel   @relation(fields: [hostelId], references: [id]) 
-
-  roomId            Int?     // Optional relation to Room
-  room              Room?    @relation(fields: [roomId], references: [id])
-  
-  // Basic Information
-  fullName          String
-  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
-  phoneNumber       String?
-  emergencyContact  String?
-  gender            GenderType?
-  dateOfBirth       DateTime?
-  
-  // Guest specific information
-  nationality       String? 
-  permanentAddress  String? 
-  religion          String?
-  occupation        String?
-
-  isEditable Boolean @default(true)
-  // Visit history
-  checkinDate     DateTime?
-  checkoutDate    DateTime?
-  
-  // Additional notes
-  notes             String?
-  profilePicture    String?
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@index([hostelId])
-  @@index([email])
-  @@index([phoneNumber])
-}
-
-model HostelApplicationForm { // User don't need to login to apply for hostel.
-  id                Int      @id @unique @default(autoincrement())
-  // Basic Information
-  fullName          String
-  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
-  phoneNumber       String
-  occupation        String 
-  permanentAddress String
-  institutionName   String
-  askForDiscount    Boolean @default(false) 
-  discountPercentage Int? 
-  status Status @default(PENDING)
-
-  roomCapacity      RoomCapacity?
-
-  // Visit history
-  checkinDate     DateTime?
-  checkoutDate    DateTime?
-
-  // Additional notes
-  notes             String?
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  userId          Int      // Required relation to Hostel           @relation(fields: [userId], references: [id])
-  user            User             @relation(fields: [userId], references: [id])
-
-  hostelId Int
-  hostel Hostel @relation(fields: [hostelId], references: [id])
-  
-  @@index([email])
-} 
-
-// There Will Be Instititions similar to Hostel. 
-// They Will Have Admins/Staffs & Recommended Guest List. 
-// Instituions will have associated Hostels.  
-
-
-model Hostel {
+model Tool {
   id         Int     @id @unique @default(autoincrement())
   name        String
   description String?
-  slug        String  @unique
+  shortDescription String?
+  slug        String  @unique 
+  handle      String  @unique 
+  thumbnailUrl String?
   ranking     Int? @default(0)
-  admissionFee Int? 
-  depositAmount Int? 
-  genderType  HostelGenderType @default(BOTH)
-  hostelType  HostelType @default(STAY) 
-
+  toolType  ToolType @default(IO) 
+  visibility VisibilityType @default(PRIVATE)
   ownerId     Int 
 
-  whatsappId  String?
 
   verifiedBySuperAdmin    Boolean @default(false) 
-  verifiedByCommunityOwner    Boolean @default(false)
 
-  owner            User?             @relation(fields: [ownerId], references: [id])
+  owner            User             @relation(fields: [ownerId], references: [id])
+  inputSchema         InputSchema?
+  outputSchema        OutputSchema?
+  toolMetadata      ToolMetadata?
 
-  social         Social?
-  address        Address?
-  contact        ContactDetail?
-  hostelSettings        HostelSetting?
-
-  // monthlyPricing MonthlyPricing?
-  amenities      Amenities?
-  service       Service?
-  hostelRules    HostelRules?
-
-
-  gallery   Gallery[]
-  rooms     Room[]
-  nearbyPlaces    NearbyPlace[]
-
-  foodMenu FoodMenu[]
-  hostelGuests HostelGuest[]  // Added relation to HostelGuest
-  hostelServices HostelService[]
-  hostelApplicationForm HostelApplicationForm[]
-  // Single field to track onboarding completion
-  hasOnboardingComplete Boolean @default(false)
-  isCreatedFromDashboard Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
@@ -178,469 +58,70 @@ model Hostel {
   @@index([id,slug])
   
   @@index([name])
-  @@index([genderType])
-  @@index([hostelType])
+
   @@index([verifiedBySuperAdmin])
   @@index([createdAt])
-  @@index([hasOnboardingComplete])
 }
 
 
 
-model BlogPost {
-  id         Int     @id @unique @default(autoincrement())
-  title           String
-  slug            String       @unique
-  excerpt         String?      @db.Text
-  content         String       @db.Text
-  coverImageUrl   String?
-  metaTitle       String?
-  metaDescription String?
-  metaKeywords    String?
-  status          BlogStatus   @default(DRAFT)
-  views           Int          @default(0)
-  publishedAt     DateTime?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt 
+// fo input schema/output/metadata
 
-  videoUrl         String?
-  oneLiner         String?
-
-  // relations
-  author   User?        @relation(fields: [authorId], references: [id])
-  authorId Int
-  tags     BlogTags[]
-  // places   Address[]  // through the join table
-
-}
-model Room {
-  id             Int          @id @unique @default(autoincrement())
-  status         RoomStatus
-  capacity       RoomCapacity
-  attachBathroom Boolean?
-  hostelId     Int
-
-  caption        String
-  description    String?
-  roomNumber     String?
-  maxOccupancy   String?
-  booking        Booking[]
-  price          Price?
-  dynamicPricingRule DynamicPricingRule[]
-  roomAmenityId Int?
-  roomAmenity RoomAmenity?
-  hostel       Hostel     @relation(fields: [hostelId], references: [id])
-  image          RoomImage[]
-
-  hostelGuest HostelGuest[]
-
-  @@index([hostelId])
-  @@index([status])
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-}
-
-model RoomImage {
-  id        Int      @id @unique @default(autoincrement())
-  caption   String?
-  url       String
-  roomId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  room      Room     @relation(fields: [roomId], references: [id],onDelete: Cascade)
-
-}
-
-// Not being used now
-model Booking {
-  id          Int           @id @unique @default(autoincrement())
-  roomId      Int
-  guestId     Int
-  startDate   DateTime
-  endDate     DateTime
-  status      BookingStatus
-  paymentPlatformName PaymentPlatformName @default(STRIPE)
- 
-  bookingKey  String        // This is common for booking done at the same time
-  guest       User          @relation(fields: [guestId], references: [id])
-  room        Room          @relation(fields: [roomId], references: [id],onDelete: Cascade) 
-  // transaction Transaction[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  @@index([id, bookingKey])
-  @@index([startDate, endDate])
-  @@index([status])
-  @@index([guestId])
-  @@index([roomId])
-  @@index([createdAt])
-}
-
-model Price {
-  id               Int           @id @unique @default(autoincrement())
-  baseAmountPerDay       Int?     
-  baseAmountPerMonth     Int     
-  currency         Currency 
-  isDynamicPricing Boolean @default(false) 
-
-  roomId           Int           @unique
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  discountAmount   Int?
-  discountType     DiscountType?
-  isDiscountActive Boolean       @default(false)
-  room             Room          @relation(fields: [roomId], references: [id],onDelete:Cascade)
-
-  @@index([isDynamicPricing])
-  @@index([isDiscountActive])
-}
-
-// Only for daily based pricing in Travel Hostel
-model DynamicPricingRule {
-  id Int @id @unique @default(autoincrement())
-  name String
-  description String?
-  roomId Int   
-  startDate DateTime
-  endDate DateTime
-  amount Int  
-  isWeekend Boolean @default(false)  // apply this rule on weekend
-  isActive Boolean @default(true)
-  priority Int @default(0)
-  room Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([roomId, startDate, endDate])
-}
-model RoomAmenity {
-  id       Int @id @unique @default(autoincrement())
-  amenity  Json
-  roomId   Int @unique
-  room Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-
-
-model Gallery {
+model InputSchema {
   id        Int     @id @unique @default(autoincrement())
-  hostelId  Int     
-
-  type      GalleryType @default(ROOM)
-  caption   String?// Like Room no1, Room No2, 
-  url       String
-  isSelected Boolean @default(false)
-
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Define a relation to Hostel
-  hostel Hostel @relation(fields: [hostelId], references: [id])
-
-  @@index([hostelId])
-}
-
-model Social {
-  id        Int     @id @unique @default(autoincrement())
-  instaGram String?
-  facebook  String?
-  tiktok    String?
-  map       String?
-  youTube   String?
-  hostelId  Int     @unique
+  schema Json
+  toolId  Int     @unique
 
   createdAt   DateTime @default(now())
   updatedAt          DateTime @updatedAt
-  hostel    Hostel @relation(fields: [hostelId], references: [id])
-
-  // Define a relation to Hostel
+  tool    Tool @relation(fields: [toolId], references: [id])
 }
 
-// This could be designed not only for hostel but also for other places.
-model Address {
-  id Int      @id @unique @default(autoincrement())
-  country   String
-  city      String
-  subCity      String?
-  street    String? 
-  latitude    Float?
-  longitude   Float?
-
-  hostelId  Int? @unique // for now one hostel can have one address
-  hostel    Hostel?  @relation(fields: [hostelId], references: [id])
-// instead of pointing to each form use instead of referenceId and AddressType.
-  hostelSearchFormId  Int? @unique // for 
-  hostelSearchForm    HostelSearchForm?  @relation(fields: [hostelSearchFormId], references: [id])
-
+// no need for now
+model OutputSchema {
+  id        Int     @id @unique @default(autoincrement())
+  schema Json
+  toolId  Int     @unique
 
   createdAt   DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt          DateTime @updatedAt
+  tool    Tool @relation(fields: [toolId], references: [id])
+
 }
-
-enum AddressType {
-  HOSTEL_SELL_FORM
-  HOSTEL_SEARCH_FORM
-}
-// create a new model for GenericAddress
-model GenericAddress {
-  id Int @id @unique @default(autoincrement())
-  country   String
-  city      String
-  subCity      String?
-  street    String? 
-  latitude    Float?
-  longitude   Float?
-  addressType AddressType
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  HostelSellForm HostelSellForm?
-}
-
-
-
-model SearchQuery {
-  //get created when user enters his hostel address/create/update. if already present don't create else create
-//create two searchQueries for each hostel with tole and without tole. 
-  //if queryType is tole it will have city and country as well
-  //when searching back hostel. if tole present search on tole else search on city
-  id Int      @id @unique @default(autoincrement())
-  country   String
-  city      String
-  subCity      String?  
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([city, country])
-}
-
-
-model ContactDetail {
-  id        Int      @id @unique @default(autoincrement())
-  phone     String
-  altPhone  String?
-  email     String
-
-  hostelId  Int @unique
+model ToolMetadata {
+  id        Int     @id @unique @default(autoincrement())
+  title String
+  description String 
+  keywords String? 
+  ogTitle String?
+  ogDescription String?
+  ogImageUrl String?
+  toolId  Int     @unique
 
   createdAt   DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt          DateTime @updatedAt
+  tool    Tool @relation(fields: [toolId], references: [id])
 
-  // Define a relation to Hostel
-  hostel Hostel  @relation(fields: [hostelId], references: [id])
-}
-
-model HostelSetting {
-  id Int @id @unique @default(autoincrement())
-  currency     String?
-  fontSize     Int @default(14)
-  active       Boolean  @default(true) // make false if no activity in past 30 days
-  deActivate       Boolean  @default(false) // make false if no activity in past 30 days
-
-  visibility   VisibilityType @default(ALL) // Who Can See your hostel info? ALL, STUDENTS, ONLY_ME
-  allowBooking Boolean @default(false) 
-  allowComments Boolean @default(false)
-  allowPrivateFeedbacks Boolean @default(false)
-  allowMessages Boolean @default(false)
-
-
-  allowRating Boolean @default(false)
-  badges       Badges[] @default([]) //different badges for hostels 
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  hostelId  Int @unique
-  // Define a relation to Hostel
-  hostel Hostel  @relation(fields: [hostelId], references: [id])
-
-
-}
-
-model NearbyPlace {
-  id   Int             @id @unique @default(autoincrement())
-  name            String
-  description     String
-  hostelId        Int
-  hostel          Hostel          @relation(fields: [hostelId], references: [id])
-}
-
-
-model Amenities {
-  id    Int             @id @unique @default(autoincrement())
-  hostelId       Int             @unique 
-  amenities      Json     
-
-  hostel Hostel?  @relation(fields: [hostelId], references: [id])
-
-}
-
-model Service {
-  id    Int             @id @unique @default(autoincrement())
-  hostelId       Int             @unique 
-  services      Json     
-
-  hostel Hostel  @relation(fields: [hostelId], references: [id])
-
-}
-
-model HostelRules {
-  id             Int             @id @unique @default(autoincrement())
-  hostelId       Int             @unique 
-  rules          Json
-
-  hostel Hostel  @relation(fields: [hostelId], references: [id])
-}
-
-model FoodMenu{
-  id Int    @id @unique @default(autoincrement())
-  day        WeekDays 
-  lunch      String?
-  dinner     String?
-  snacks     String?
-  lunchTime  String?
-  snacksTime String?
-  dinnerTime String?
-
-  hostelId Int
-
-  // Define a relation to Hostel
-  hostel Hostel @relation(fields: [hostelId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-
-  @@index([hostelId, day])
-}
-
-
-model AmenityOption {
-  id Int @id @unique @default(autoincrement()) 
-  name String 
-  iconUrl String? 
-  description String?
-  hostelAmenityType HostelAmenityType
-}
-
-model RoomAmenityOption {
-  id Int @id @unique @default(autoincrement()) 
-  name String 
-  iconUrl String? 
-  description String?
-}
-
-model ServiceOption {
-  id Int @id @unique @default(autoincrement()) 
-  name String 
-  iconUrl String? 
-  description String?
-}
-
-
-model HostelSearchForm {
-  id                Int      @id @unique @default(autoincrement())
-  userId          Int      // Required relation to Hostel
-  user            User?             @relation(fields: [userId], references: [id])
-  // Basic Information
-  fullName          String
-  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
-  phoneNumber       String?
-  occupation        String?
-  hostelType        HostelType?
-  roomCapacity      RoomCapacity?
-  hostelGenderType  HostelGenderType?
-  // Visit history
-  checkinDate     DateTime?
-  checkoutDate    DateTime?
-
-  address Address?
-  // Additional notes
-  notes             String?
-  isActive Boolean @default(true)
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@index([email])
-  @@index([phoneNumber])
 } 
 
 
-model HostelSellForm {
-  id                Int      @id @unique @default(autoincrement())
-  // Basic user Information
-  fullName          String
-  email             String // This will be used for validatin as well as for getting Past Checkin/Checkout History
-  phoneNumber       String?
 
-  // Hostel Details
-  hostelName        String
-  hostelDescription String?
-  hostelType        HostelType
-  hostelGenderType  HostelGenderType
-  hostelCapacity    Int? 
-  hostelImageUrl String?  
-  sellingPrice Int?
-  addressId Int? @unique
 
-  address GenericAddress? @relation(fields: [addressId], references: [id])
-  // Additional notes
-  hostelId Int?
-  notes             String?
-  isActive Boolean @default(true)
-  // hostel Details
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
 
-}
+// model ToolSetting {
 
-model HostelService{
-  id Int @id @unique @default(autoincrement())
-  hostelServiceType HostelServiceType
-  title String
-  description String? 
-  budget Int?
-  priority Priority @default(HIGH)
-  status Status? @default(PENDING)
-  paymentStatus PaymentStatus @default(PENDING)
+// }
+// model ToolComent {
 
-  dueDate DateTime?
-  completionDate DateTime?
+// }
 
-  isDeleted Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  hostelId Int
-  hostel Hostel @relation(fields: [hostelId], references: [id])
-}
-
-enum HostelAmenityType {
-  PROPERTY_ESSENTIALS
-  ROOM_ESSENTIALS 
-  BATHROOM_ESSENTIALS
-  KITCHEN_ESSENTIALS
-  SAFETY_AND_HYGENE_ESSENTIALS
-  OTHER
-}
 
 //Enums 
 enum UserType {
-  STUDENT
-  HOSTEL_OWNER
-  SUPPLIERS 
-  SUPERADMIN
-  COMMUNITY_OWNER
-  WRITER
-  OTHERS
+  CREATOR
+  ADMIN
+  USER
 }
 
 enum GenderType {
@@ -648,193 +129,23 @@ enum GenderType {
   GIRLS
   OTHERS
 }
-// this can be merged with GenderType
-enum HostelGenderType {
-  BOYS
-  GIRLS
-  BOTH
-}
 
-enum HostelType {
-  STAY
-  TRAVELS 
-  PG
-  BOTH
-}
-enum StayHostelCategories {
-  COLLEGE_HOSTEL 
-  SCHOOL_HOSTEL 
-  PRIVATE_HOSTEL 
-  PROFESSIONAL_HOSTEL 
-  TRAINING_HOSTEL 
-  BOARDING_HOSTEL
-  KIDS_HOSTEL 
-  ADULTS_ONLY_HOSTEL 
-  BUDGET_FRIENDLY 
-  PREMIUM
 
-}
-
-enum TravelHostelCategories {
-  BUDGET_FRIENDLY 
-  PREMIUM 
-  PARTY 
-  YOUTH 
-  ECO_FRIENDLY 
-  UNIQUELY_THEMED 
-  TOURIST_ONLY 
-  COMMUNITY_BASED
+enum ToolType {
+  IO  
+  CURD
 
 }
 // Hostel categories. NO need to create schema. just create array of object in frontend.
 enum VisibilityType {
-  ALL 
-  STUDENTS_ONLY 
-  ONLY_ME
-}
+  PUBLIC
+  PRIVATE 
 
-enum GalleryType {
-  PROFILE//no need
-  COVER
-  ROOM 
-  BATHROOM 
-  BUILDING 
-  KITCHEN 
-  CELEBRATIONS
-  REVIEW
-  FOOD
-  OTHER 
-  LOGO
 }
 
 
-enum SubscriptionPlans {
-  FREE
-  PRO
-  PREMIUM
-}
-
-enum DataSources {
-  OWNER
-  GOOGLE
-  FACEBOOK 
-  SCRAPPED
-  OTHERS
-}
-enum Badges {
-  NEW
-  PEOPLES_CHOICE 
-  FAMOUS 
-  GOOD_FOOD 
-  GOOD_LOCATION
-  SOCIAL_BUTTERFLY 
-  TECH_SAVVY
-}
-
-enum WeekDays {
-  SUNDAY
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-}
-
-enum RoomStatus {
-  IDLE
-  AVAILABLE
-  BOOKED
-  INACTIVE
-}
-
-
-enum RoomCapacity {
-  ONE_BED
-  TWO_BED
-  THREE_BED
-  FOUR_BED
-  FIVE_BED
-  SIX_BED
-  SEVEN_BED
-  EIGHT_BED
-  MULTI_BED
-} 
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-}
-
-enum Currency {
-  NPR
-  USD
-}
-
-enum PaymentPlatformName {
-  STRIPE
-  ESEWA
-  KHALTI
-}
-
-enum DiscountType {
-  PERCENTAGE 
-  FIXED
-  
-}
-
-enum BlogStatus {
+enum ToolStatus {
   DRAFT
   PUBLISHED
-  ARCHIVED
 }   
 
-enum BlogTags {
-  TRAVEL
-  CITY
-  HOSTEL 
-  TOP_TEN_PLACES
-  PLACES
-  OTHER
-}
-
-
-
-
-
-enum HostelServiceType {
-  FACEBOOK_MARKETING
-  GOOGLE_MARKETING
-  EMPLOYEE
-  REAL_ESTATE
-  FURNITURE
-  OTHER
-}
-
-enum Priority {
-  HIGH
-  MID
-  LOW
-}
-
-enum Status {
-  PENDING
-  IN_PROGRESS 
-  APPROVED
-  REJECTED
-  COMPLETED
-  CANCELLED
-
-}
-
-enum PaymentStatus {
-  PENDING
-  PAID
-  CANCELLED 
-  REFUNDED 
-  PARTIALLY_PAID 
-  PARTIALLY_REFUNDED 
-  FAILED 
-  REFUND_REQUESTED
-}

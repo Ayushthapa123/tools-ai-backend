@@ -1,40 +1,7 @@
-// src/models/hostel.model.ts
+// src/models/global.model.ts
 
-// Defining type inside the Field() matters. Even it automatically converts type to default type if not defined.
-
-import {
-  BlogStatus,
-  BlogTags, // UserType,
-  // HostelType,
-  // VisibilityType,
-  // GalleryType,
-  // WeekDays,
-  // RoomStatus,
-  // RoomCapacity,
-  // Currency,
-} from '@prisma/client';
-import { ObjectType, Field, ID, Int, Float } from '@nestjs/graphql';
-import {
-  UserType,
-  HostelType,
-  VisibilityType,
-  GalleryType,
-  WeekDays,
-  Gender,
-  RoomCapacity,
-  Currency,
-  HostelGenderType,
-  RoomStatus,
-  BookingStatus,
-  PaymentPlatformName,
-  DiscountType,
-  Badges,
-  HostelAmenityType,
-  HostelServiceType,
-  Priority,
-  Status,
-} from './global.enum';
-import GraphQLJSON from 'graphql-type-json';
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
+import { UserType, GenderType, ToolType, VisibilityType } from './global.enum';
 
 @ObjectType()
 export class GraphQLError {
@@ -85,9 +52,6 @@ export class UserData {
   @Field(() => ID)
   id: number;
 
-  @Field(() => Int, { nullable: true })
-  hostelId?: number;
-
   @Field()
   email: string;
 
@@ -110,13 +74,10 @@ export class UserData {
   hashedRefreshToken?: string;
 
   @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
   dateOfBirth?: Date;
 
-  @Field(() => Gender, { nullable: true })
-  gender?: Gender;
+  @Field(() => GenderType, { nullable: true })
+  gender?: GenderType;
 
   @Field(() => UserType)
   userType: UserType;
@@ -130,14 +91,8 @@ export class UserData {
   @Field(() => Date)
   updatedAt: Date;
 
-  @Field(() => Date, { nullable: true })
-  deletedAt?: Date;
-
-  // @Field(() => Hostel, { nullable: true })
-  // hostel?: Hostel;
-
-  // @Field(() => [Booking], { nullable: true })
-  // booking?: Booking[];
+  @Field(() => [ToolData], { nullable: true })
+  tools?: ToolData[];
 }
 
 @ObjectType()
@@ -147,60 +102,47 @@ export class User extends BaseResponse {
 }
 
 @ObjectType()
-export class HostelGuestData {
+export class UserList extends BaseResponse {
+  @Field(() => [UserData], { nullable: true })
+  data?: UserData[];
+}
+
+// InputSchema related types
+@ObjectType()
+export class InputSchemaData {
   @Field(() => ID)
   id: number;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => Int, { nullable: true })
-  roomId?: number;
 
   @Field(() => String)
-  fullName: string;
+  schema: string;
+
+  @Field(() => Int)
+  toolId: number;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class InputSchema extends BaseResponse {
+  @Field(() => InputSchemaData, { nullable: true })
+  data?: InputSchemaData;
+}
+
+// OutputSchema related types
+@ObjectType()
+export class OutputSchemaData {
+  @Field(() => ID)
+  id: number;
 
   @Field(() => String)
-  email: string;
+  schema: string;
 
-  @Field(() => String, { nullable: true })
-  phoneNumber?: string;
-
-  @Field(() => String, { nullable: true })
-  emergencyContact?: string;
-
-  @Field(() => Gender, { nullable: true })
-  gender?: Gender;
-
-  @Field(() => Date, { nullable: true })
-  dateOfBirth?: Date;
-
-  @Field(() => String, { nullable: true })
-  nationality?: string;
-
-  @Field(() => String, { nullable: true })
-  permanentAddress?: string;
-
-  @Field(() => String, { nullable: true })
-  religion?: string;
-
-  @Field(() => String, { nullable: true })
-  occupation?: string;
-
-  @Field(() => String, { nullable: true })
-  profilePicture?: string;
-
-  @Field(() => Date, { nullable: true })
-  checkinDate?: Date;
-
-  @Field(() => Date, { nullable: true })
-  checkoutDate?: Date;
-
-  @Field(() => String, { nullable: true })
-  notes?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  isEditable?: boolean;
+  @Field(() => Int)
+  toolId: number;
 
   @Field(() => Date)
   createdAt: Date;
@@ -210,635 +152,37 @@ export class HostelGuestData {
 }
 
 @ObjectType()
-export class HostelGuest extends BaseResponse {
-  @Field(() => HostelGuestData, { nullable: true })
-  data?: HostelGuestData;
+export class OutputSchema extends BaseResponse {
+  @Field(() => OutputSchemaData, { nullable: true })
+  data?: OutputSchemaData;
 }
 
+// ToolMetadata related types
 @ObjectType()
-export class HostelGuestList extends BaseResponse {
-  @Field(() => [HostelGuestData], { nullable: true })
-  data?: HostelGuestData[];
-}
-
-@ObjectType()
-export class RoomImageData {
-  @Field(() => ID)
-  id: number;
-
-  @Field({ nullable: true })
-  caption?: string;
-
-  @Field()
-  url: string;
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  // @Field(() => RoomData)
-  // room: RoomData;
-}
-
-@ObjectType()
-export class RoomImage extends BaseResponse {
-  @Field(() => RoomImageData, { nullable: true })
-  data?: RoomImageData;
-}
-
-@ObjectType()
-export class RoomImageList extends BaseResponse {
-  @Field(() => [RoomImageData], { nullable: true })
-  data?: RoomImageData[];
-}
-
-// Price related types
-@ObjectType()
-export class PriceData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int, { nullable: true })
-  baseAmountPerDay?: number;
-
-  @Field(() => Int)
-  baseAmountPerMonth: number;
-
-  @Field(() => Currency)
-  currency: Currency;
-
-  @Field()
-  isDynamicPricing: boolean;
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field(() => Int, { nullable: true })
-  discountAmount?: number;
-
-  @Field(() => DiscountType, { nullable: true })
-  discountType?: DiscountType;
-
-  @Field()
-  isDiscountActive: boolean;
-}
-
-@ObjectType()
-export class Price extends BaseResponse {
-  @Field(() => PriceData, { nullable: true })
-  data?: PriceData;
-}
-
-// DynamicPricingRule related types
-@ObjectType()
-export class DynamicPricingRuleData {
+export class ToolMetadataData {
   @Field(() => ID)
   id: number;
 
   @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Date)
-  startDate: Date;
-
-  @Field(() => Date)
-  endDate: Date;
-
-  @Field(() => Int)
-  amount: number;
-
-  @Field()
-  isWeekend: boolean;
-
-  @Field()
-  isActive: boolean;
-
-  @Field(() => Int)
-  priority: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class DynamicPricingRule extends BaseResponse {
-  @Field(() => DynamicPricingRuleData, { nullable: true })
-  data?: DynamicPricingRuleData;
-}
-
-@ObjectType()
-export class DynamicPricingRuleList extends BaseResponse {
-  @Field(() => [DynamicPricingRuleData], { nullable: true })
-  data?: DynamicPricingRuleData[];
-}
-
-// RoomAmenity related types
-@ObjectType()
-export class RoomAmenityData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => GraphQLJSON)
-  amenity: any; // JSON type
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class RoomAmenity extends BaseResponse {
-  @Field(() => RoomAmenityData, { nullable: true })
-  data?: RoomAmenityData;
-}
-
-// Room related types
-@ObjectType()
-export class RoomData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => RoomStatus)
-  status: RoomStatus;
-
-  @Field(() => RoomCapacity)
-  capacity: RoomCapacity;
-
-  @Field({ nullable: true })
-  attachBathroom?: boolean;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field()
-  caption: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field({ nullable: true })
-  roomNumber?: string;
-
-  @Field({ nullable: true })
-  maxOccupancy?: string;
-
-  // @Field(() => [BookingData], { nullable: true })
-  // booking?: BookingData[];
-
-  @Field(() => PriceData, { nullable: true })
-  price?: PriceData;
-
-  @Field(() => [DynamicPricingRuleData], { nullable: true })
-  dynamicPricingRule?: DynamicPricingRuleData[];
-
-  @Field(() => Int, { nullable: true })
-  roomAmenityId?: number;
-
-  @Field(() => RoomAmenityData, { nullable: true })
-  roomAmenity?: RoomAmenityData;
-
-  @Field(() => [RoomImageData])
-  image: RoomImageData[];
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Room extends BaseResponse {
-  @Field(() => RoomData, { nullable: true })
-  data?: RoomData;
-}
-
-@ObjectType()
-export class RoomList extends BaseResponse {
-  @Field(() => [RoomData], { nullable: true })
-  data?: RoomData[];
-}
-
-// Booking related types
-@ObjectType()
-export class BookingData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int)
-  roomId: number;
-
-  @Field(() => Int)
-  guestId: number;
-
-  @Field(() => Date)
-  startDate: Date;
-
-  @Field(() => Date)
-  endDate: Date;
-
-  @Field(() => BookingStatus)
-  status: BookingStatus;
-
-  @Field(() => PaymentPlatformName)
-  paymentPlatformName: PaymentPlatformName;
-
-  @Field()
-  bookingKey: string;
-
-  @Field(() => UserData)
-  guest: UserData;
-
-  @Field(() => RoomData)
-  room: RoomData;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Booking extends BaseResponse {
-  @Field(() => BookingData, { nullable: true })
-  data?: BookingData;
-}
-
-@ObjectType()
-export class BookingList extends BaseResponse {
-  @Field(() => [BookingData], { nullable: true })
-  data?: BookingData[];
-}
-
-// RoomImage related types
-
-// Gallery related types
-@ObjectType()
-export class GalleryData {
-  @Field(() => ID)
-  id: number;
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => GalleryType)
-  type: GalleryType;
-
-  @Field({ nullable: true })
-  caption?: string;
-
-  @Field({ nullable: true })
-  isSelected?: boolean;
-
-  @Field()
-  url: string;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Gallery extends BaseResponse {
-  @Field(() => GalleryData, { nullable: true })
-  data?: GalleryData;
-}
-
-@ObjectType()
-export class GalleryList extends BaseResponse {
-  @Field(() => [GalleryData], { nullable: true })
-  data?: GalleryData[];
-}
-
-// Social related types
-@ObjectType()
-export class SocialData {
-  @Field(() => ID)
-  id: number;
-
-  @Field({ nullable: true })
-  instaGram?: string;
-
-  @Field({ nullable: true })
-  facebook?: string;
-
-  @Field({ nullable: true })
-  tiktok?: string;
-
-  @Field({ nullable: true })
-  map?: string;
-
-  @Field({ nullable: true })
-  youTube?: string;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Social extends BaseResponse {
-  @Field(() => SocialData, { nullable: true })
-  data?: SocialData;
-}
-
-// Address related types
-@ObjectType()
-export class AddressData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  country: string;
-
-  @Field()
-  city: string;
-
-  @Field({ nullable: true })
-  subCity?: string;
-
-  @Field({ nullable: true })
-  street?: string;
-
-  @Field(() => Float, { nullable: true })
-  latitude?: number;
-
-  @Field(() => Float, { nullable: true })
-  longitude?: number;
-
-  @Field(() => Int, { nullable: true })
-  hostelId?: number;
-
-  @Field(() => Int, { nullable: true })
-  hostelSearchFormId?: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class Address extends BaseResponse {
-  @Field(() => AddressData, { nullable: true })
-  data?: AddressData;
-}
-
-// SearchQuery related types
-@ObjectType()
-export class SearchQueryData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  country: string;
-
-  @Field()
-  city: string;
-
-  @Field({ nullable: true })
-  subCity?: string;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class SearchQuery extends BaseResponse {
-  @Field(() => [SearchQueryData], { nullable: true })
-  data?: SearchQueryData[];
-}
-
-// ContactDetail related types
-@ObjectType()
-export class ContactDetailData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  phone: string;
-
-  @Field({ nullable: true })
-  altPhone?: string;
-
-  @Field()
-  email: string;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class ContactDetail extends BaseResponse {
-  @Field(() => ContactDetailData, { nullable: true })
-  data?: ContactDetailData;
-}
-
-// HostelSetting related types
-@ObjectType()
-export class HostelSettingData {
-  @Field(() => ID)
-  id: number;
-
-  @Field({ nullable: true })
-  currency?: string;
-
-  @Field(() => Int)
-  fontSize: number;
-
-  @Field()
-  active: boolean;
-
-  @Field()
-  deActivate: boolean;
-
-  @Field(() => VisibilityType)
-  visibility: VisibilityType;
-
-  @Field()
-  allowBooking: boolean;
-
-  @Field()
-  allowComments: boolean;
-
-  @Field()
-  allowPrivateFeedbacks: boolean;
-
-  @Field()
-  allowMessages: boolean;
-
-  @Field()
-  allowRating: boolean;
-
-  @Field(() => [Badges])
-  badges: Badges[];
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field(() => Int)
-  hostelId: number;
-}
-
-@ObjectType()
-export class HostelSetting extends BaseResponse {
-  @Field(() => HostelSettingData, { nullable: true })
-  data?: HostelSettingData;
-}
-
-// NearbyPlace related types
-@ObjectType()
-export class NearbyPlaceData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  name: string;
+  title: string;
 
   @Field()
   description: string;
 
-  @Field(() => Int)
-  hostelId: number;
-}
+  @Field({ nullable: true })
+  keywords?: string;
 
-@ObjectType()
-export class NearbyPlace extends BaseResponse {
-  @Field(() => NearbyPlaceData, { nullable: true })
-  data?: NearbyPlaceData;
-}
+  @Field({ nullable: true })
+  ogTitle?: string;
 
-// Amenities related types
-@ObjectType()
-export class AmenitiesData {
-  @Field(() => ID)
-  id: number;
+  @Field({ nullable: true })
+  ogDescription?: string;
+
+  @Field({ nullable: true })
+  ogImageUrl?: string;
 
   @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => GraphQLJSON)
-  amenities: any; // JSON type
-}
-
-@ObjectType()
-export class Amenities extends BaseResponse {
-  @Field(() => AmenitiesData, { nullable: true })
-  data?: AmenitiesData;
-}
-
-// Service related types
-@ObjectType()
-export class ServiceData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => GraphQLJSON)
-  services: any; // JSON type
-}
-
-@ObjectType()
-export class Service extends BaseResponse {
-  @Field(() => ServiceData, { nullable: true })
-  data?: ServiceData;
-}
-
-// HostelRules related types
-@ObjectType()
-export class HostelRulesData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => GraphQLJSON)
-  rules: any; // JSON type
-}
-
-@ObjectType()
-export class HostelRules extends BaseResponse {
-  @Field(() => HostelRulesData, { nullable: true })
-  data?: HostelRulesData;
-}
-
-// FoodMenu related types
-@ObjectType()
-export class FoodMenuData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => WeekDays)
-  day: WeekDays;
-
-  @Field({ nullable: true })
-  lunch?: string;
-
-  @Field({ nullable: true })
-  dinner?: string;
-
-  @Field({ nullable: true })
-  snacks?: string;
-
-  @Field({ nullable: true })
-  lunchTime?: string;
-
-  @Field({ nullable: true })
-  snacksTime?: string;
-
-  @Field({ nullable: true })
-  dinnerTime?: string;
-
-  @Field(() => Int)
-  hostelId: number;
+  toolId: number;
 
   @Field(() => Date)
   createdAt: Date;
@@ -847,15 +191,9 @@ export class FoodMenuData {
   updatedAt: Date;
 }
 
+// Tool related types
 @ObjectType()
-export class FoodMenu extends BaseResponse {
-  @Field(() => FoodMenuData, { nullable: true })
-  data?: FoodMenuData;
-}
-
-// Hostel related types
-@ObjectType()
-export class HostelData {
+export class ToolData {
   @Field(() => ID)
   id: number;
 
@@ -865,77 +203,44 @@ export class HostelData {
   @Field({ nullable: true })
   description?: string;
 
+  @Field({ nullable: true })
+  shortDescription?: string;
+
   @Field()
   slug: string;
+
+  @Field()
+  handle: string;
+
+  @Field({ nullable: true })
+  thumbnailUrl?: string;
 
   @Field(() => Int, { nullable: true })
   ranking?: number;
 
-  @Field(() => Int, { nullable: true })
-  admissionFee?: number;
+  @Field(() => ToolType)
+  toolType: ToolType;
 
-  @Field(() => Int, { nullable: true })
-  depositAmount?: number;
-
-  @Field(() => HostelGenderType)
-  genderType: HostelGenderType;
-
-  @Field(() => HostelType)
-  hostelType: HostelType;
+  @Field(() => VisibilityType)
+  visibility: VisibilityType;
 
   @Field(() => Int)
   ownerId: number;
 
-  @Field({ nullable: true })
-  whatsappId?: string;
-
-  @Field({ nullable: true })
-  telegramId?: string;
-
   @Field()
   verifiedBySuperAdmin: boolean;
-
-  @Field()
-  verifiedByCommunityOwner: boolean;
-
-  @Field()
-  hasOnboardingComplete: boolean;
 
   @Field(() => UserData, { nullable: true })
   owner?: UserData;
 
-  @Field(() => SocialData, { nullable: true })
-  social?: SocialData;
+  @Field(() => InputSchemaData, { nullable: true })
+  inputSchema?: InputSchemaData;
 
-  @Field(() => AddressData, { nullable: true })
-  address?: AddressData;
+  @Field(() => OutputSchemaData, { nullable: true })
+  outputSchema?: OutputSchemaData;
 
-  @Field(() => ContactDetailData, { nullable: true })
-  contact?: ContactDetailData;
-
-  @Field(() => HostelSettingData, { nullable: true })
-  hostelSettings?: HostelSettingData;
-
-  @Field(() => AmenitiesData, { nullable: true })
-  amenities?: AmenitiesData;
-
-  @Field(() => ServiceData, { nullable: true })
-  service?: ServiceData;
-
-  @Field(() => HostelRulesData, { nullable: true })
-  hostelRules?: HostelRulesData;
-
-  @Field(() => [GalleryData])
-  gallery: GalleryData[];
-
-  @Field(() => [RoomData], { nullable: true })
-  rooms?: RoomData[];
-
-  @Field(() => [NearbyPlaceData])
-  nearbyPlaces: NearbyPlaceData[];
-
-  @Field(() => [FoodMenuData])
-  foodMenu: FoodMenuData[];
+  @Field(() => ToolMetadataData, { nullable: true })
+  toolMetadata?: ToolMetadataData;
 
   @Field(() => Date)
   createdAt: Date;
@@ -948,419 +253,24 @@ export class HostelData {
 }
 
 @ObjectType()
-export class Hostel extends BaseResponse {
-  @Field(() => HostelData, { nullable: true })
-  data?: HostelData;
+export class Tool extends BaseResponse {
+  @Field(() => ToolData, { nullable: true })
+  data?: ToolData;
 }
 
 @ObjectType()
-export class HostelList extends BaseResponse {
-  @Field(() => [HostelData], { nullable: true })
-  data?: HostelData[];
+export class ToolList extends BaseResponse {
+  @Field(() => [ToolData], { nullable: true })
+  data?: ToolData[];
 }
 
 @ObjectType()
-export class HostelApplicationFormData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  fullName: string;
-
-  @Field()
-  email: string;
-
-  @Field()
-  phoneNumber: string;
-
-  @Field()
-  institutionName: string;
-
-  @Field()
-  permanentAddress: string;
-  @Field()
-  askForDiscount: boolean;
-
-  @Field({ nullable: true })
-  discountPercentage?: number;
-
-  @Field({ nullable: true })
-  notes?: string;
-
-  @Field()
-  status: Status;
-
-  @Field(() => Int)
-  hostelId: number;
-
-  @Field(() => Int)
-  userId: number;
-  @Field(() => Date, { nullable: true })
-  checkinDate?: Date;
-
-  @Field(() => Date, { nullable: true })
-  checkoutDate?: Date;
-
-  @Field({ nullable: true })
-  roomCapacity?: RoomCapacity;
-
-  @Field(() => UserData, { nullable: true })
-  user?: UserData;
-
-  @Field(() => HostelData, { nullable: true })
-  hostel?: HostelData;
-
-  @Field()
-  createdAt: Date;
-
-  @Field()
-  updatedAt: Date;
+export class ToolMetadata extends BaseResponse {
+  @Field(() => ToolMetadataData, { nullable: true })
+  data?: ToolMetadataData;
 }
 
-@ObjectType()
-export class HostelApplicationForm extends BaseResponse {
-  @Field(() => HostelApplicationFormData, { nullable: true })
-  data?: HostelApplicationFormData;
-}
-
-@ObjectType()
-export class HostelApplicationFormList extends BaseResponse {
-  @Field(() => [HostelApplicationFormData], { nullable: true })
-  data?: HostelApplicationFormData[];
-}
-
-@ObjectType()
-export class BlogPostData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  title: string;
-
-  @Field()
-  slug: string; // unique
-  @Field()
-  content: string;
-
-  @Field({ nullable: true })
-  excerpt?: string;
-
-  @Field({ nullable: true })
-  coverImageUrl?: string;
-
-  @Field({ nullable: true })
-  metaTitle?: string;
-
-  @Field({ nullable: true })
-  metaDescription?: string;
-
-  @Field({ nullable: true })
-  metaKeywords?: string;
-
-  @Field()
-  authorId: number;
-
-  @Field(() => [BlogTags])
-  tags: BlogTags[];
-
-  @Field({ nullable: true })
-  videoUrl?: string;
-
-  @Field({ nullable: true })
-  oneLiner?: string;
-
-  @Field({ nullable: true })
-  views?: number;
-
-  @Field(() => BlogStatus)
-  status: BlogStatus;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field(() => Date, { nullable: true })
-  publishedAt?: Date;
-}
-
-@ObjectType()
-export class BlogPost extends BaseResponse {
-  @Field(() => BlogPostData, { nullable: true })
-  data?: BlogPostData;
-}
-
-@ObjectType()
-export class BlogPostList extends BaseResponse {
-  @Field(() => [BlogPostData], { nullable: true })
-  data?: BlogPostData[];
-}
-
-@ObjectType()
-export class HostelSearchFormData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  fullName: string;
-
-  @Field(() => String)
-  email: string;
-
-  @Field(() => String, { nullable: true })
-  phoneNumber?: string;
-
-  @Field(() => String)
-  occupation: string;
-
-  @Field(() => HostelType)
-  hostelType: HostelType;
-
-  @Field(() => HostelGenderType)
-  hostelGenderType: HostelGenderType;
-
-  @Field(() => RoomCapacity, { nullable: true })
-  roomCapacity?: RoomCapacity;
-
-  @Field(() => String, { nullable: true })
-  checkinDate?: string;
-
-  @Field(() => String, { nullable: true })
-  checkoutDate?: string;
-
-  @Field(() => String, { nullable: true })
-  notes?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  isActive?: boolean;
-
-  @Field(() => AddressData, { nullable: true })
-  address?: AddressData;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class HostelSearchForm extends BaseResponse {
-  @Field(() => HostelSearchFormData, { nullable: true })
-  data?: HostelSearchFormData;
-}
-
-@ObjectType()
-export class HostelSearchFormList extends BaseResponse {
-  @Field(() => [HostelSearchFormData], { nullable: true })
-  data?: HostelSearchFormData[];
-}
-
-@ObjectType()
-export class HostelSellFormData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => String)
-  fullName: string;
-
-  @Field(() => String)
-  email: string;
-
-  @Field(() => String, { nullable: true })
-  phoneNumber?: string;
-
-  @Field(() => String)
-  hostelName: string;
-
-  @Field(() => String)
-  hostelDescription: string;
-
-  @Field(() => HostelType)
-  hostelType: HostelType;
-
-  @Field(() => HostelGenderType)
-  hostelGenderType: HostelGenderType;
-
-  @Field(() => Int)
-  hostelCapacity: number;
-
-  @Field(() => String, { nullable: true })
-  hostelImageUrl?: string;
-
-  @Field(() => Int)
-  sellingPrice: number;
-
-  @Field(() => Int, { nullable: true })
-  hostelId?: number;
-
-  @Field(() => String, { nullable: true })
-  notes?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  isActive?: boolean;
-
-  @Field(() => AddressData, { nullable: true })
-  address?: AddressData;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class HostelSellForm extends BaseResponse {
-  @Field(() => HostelSellFormData, { nullable: true })
-  data?: HostelSellFormData;
-}
-
-@ObjectType()
-export class HostelSellFormList extends BaseResponse {
-  @Field(() => [HostelSellFormData], { nullable: true })
-  data?: HostelSellFormData[];
-}
-
-@ObjectType()
-export class AmenityOptionData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  iconUrl?: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field(() => HostelAmenityType)
-  hostelAmenityType: HostelAmenityType;
-}
-
-@ObjectType()
-export class AmenityOption extends BaseResponse {
-  @Field(() => AmenityOptionData, { nullable: true })
-  data?: AmenityOptionData;
-}
-
-@ObjectType()
-export class AmenityOptionList extends BaseResponse {
-  @Field(() => [AmenityOptionData], { nullable: true })
-  data?: AmenityOptionData[];
-}
-
-@ObjectType()
-export class ServiceOptionData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  iconUrl?: string;
-
-  @Field({ nullable: true })
-  description?: string;
-}
-
-@ObjectType()
-export class ServiceOption extends BaseResponse {
-  @Field(() => ServiceOptionData, { nullable: true })
-  data?: ServiceOptionData;
-}
-
-@ObjectType()
-export class ServiceOptionList extends BaseResponse {
-  @Field(() => [ServiceOptionData], { nullable: true })
-  data?: ServiceOptionData[];
-}
-
-@ObjectType()
-export class RoomAmenityOptionData {
-  @Field(() => ID)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  iconUrl?: string;
-
-  @Field({ nullable: true })
-  description?: string;
-}
-
-@ObjectType()
-export class RoomAmenityOption extends BaseResponse {
-  @Field(() => RoomAmenityOptionData, { nullable: true })
-  data?: RoomAmenityOptionData;
-}
-
-@ObjectType()
-export class RoomAmenityOptionList extends BaseResponse {
-  @Field(() => [RoomAmenityOptionData], { nullable: true })
-  data?: RoomAmenityOptionData[];
-}
-
-@ObjectType()
-export class HostelServiceData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => HostelServiceType)
-  hostelServiceType: HostelServiceType;
-
-  @Field()
-  title: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field({ nullable: true })
-  budget?: number;
-
-  @Field(() => Priority)
-  priority: Priority;
-
-  @Field(() => Status)
-  status: Status;
-
-  @Field(() => Boolean)
-  isDeleted: boolean;
-
-  @Field(() => Date, { nullable: true })
-  completionDate?: Date;
-
-  @Field(() => Date, { nullable: true })
-  dueDate?: Date;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field(() => HostelData, { nullable: true })
-  hostel?: HostelData;
-}
-
-@ObjectType()
-export class HostelService extends BaseResponse {
-  @Field(() => HostelServiceData, { nullable: true })
-  data?: HostelServiceData;
-}
-
-@ObjectType()
-export class HostelServiceList extends BaseResponse {
-  @Field(() => [HostelServiceData], { nullable: true })
-  data?: HostelServiceData[];
-}
-
+// Context type for authentication
 @ObjectType()
 export class Ctx {
   @Field()
@@ -1368,22 +278,10 @@ export class Ctx {
 
   @Field(() => UserType)
   userType: UserType;
-
-  @Field({ nullable: true })
-  hostelId?: number;
 }
 
 @ObjectType()
 export class CtxType {
   @Field(() => Ctx)
   user: Ctx;
-}
-
-@ObjectType()
-export class BookingConfirmationMailData {
-  @Field(() => [Int])
-  roomNumbers: string[];
-
-  @Field()
-  name: string;
 }

@@ -43,7 +43,7 @@ export class UsersAndToken {
   @Field()
   email: string;
 
-  @Field(() => UserType)
+  @Field()
   userType: UserType;
 
   @Field()

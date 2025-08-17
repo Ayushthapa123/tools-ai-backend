@@ -1,7 +1,7 @@
 // create-user.dto.ts
 import { Field, InputType } from '@nestjs/graphql';
-import { Gender, UserType } from '@src/models/global.enum';
-// import { UserType } from '@src/models/global.enum';
+import { GenderType, UserType } from '@src/models/global.enum';
+
 @InputType()
 export class CreateUserInput {
   @Field()
@@ -10,7 +10,7 @@ export class CreateUserInput {
   @Field()
   fullName: string;
 
-  @Field(() => UserType, { defaultValue: UserType.HOSTEL_OWNER })
+  @Field(() => UserType, { defaultValue: UserType.USER })
   userType: UserType;
 
   @Field({ nullable: true })
@@ -23,14 +23,8 @@ export class CreateUserInput {
   altPhoneNumber?: string;
 
   @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
   dateOfBirth?: Date;
 
-  @Field(() => Gender, { nullable: true })
-  gender?: Gender;
-
-  @Field({ nullable: true })
-  hostelId?: number;
+  @Field(() => GenderType, { nullable: true })
+  gender?: GenderType;
 }
