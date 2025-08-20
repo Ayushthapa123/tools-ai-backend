@@ -6,8 +6,9 @@ import { ToolResolver } from './tool.resolver';
 
 import { CookieService } from '../auth/services/cookie.service';
 import { InputSchemaModule } from './inputSchema/input-schema.module';
+import { ToolMetaDataModule } from './toolMetaData/tool-metadata.module';
 @Module({
-  imports: [InputSchemaModule],
+  imports: [InputSchemaModule, ToolMetaDataModule],
   providers: [ToolResolver, ToolService, JwtService, CookieService],
 })
 export class ToolModule {}

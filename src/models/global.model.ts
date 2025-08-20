@@ -2,6 +2,7 @@
 
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { UserType, GenderType, ToolType, VisibilityType } from './global.enum';
+import GraphQLJSON from 'graphql-type-json';
 
 @ObjectType()
 export class GraphQLError {
@@ -113,8 +114,8 @@ export class InputSchemaData {
   @Field(() => ID)
   id: number;
 
-  @Field(() => String)
-  schema: string;
+  @Field(() => GraphQLJSON)
+  schema: any;
 
   @Field(() => Int)
   toolId: number;

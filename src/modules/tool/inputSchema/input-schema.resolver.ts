@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InputSchemaService } from './input-schema.service';
-import { CreateInputSchemaDto } from './dto/create-input-schema.dto';
-import { UpdateInputSchemaDto } from './dto/update-input-schema.dto';
+import { CreateInputSchema } from './dto/create-input-schema.dto';
+import { UpdateInputSchema } from './dto/update-input-schema.dto';
 import { InputSchema } from '@src/models/global.model';
 
 @Resolver('InputSchema')
@@ -10,9 +10,9 @@ export class InputSchemaResolver {
 
   @Mutation(() => InputSchema)
   async createInputSchema(
-    @Args('createInputSchemaInput') createInputSchemaDto: CreateInputSchemaDto,
+    @Args('createInputSchemaInput') createInputSchema: CreateInputSchema,
   ) {
-    return this.inputSchemaService.createInputSchema(createInputSchemaDto);
+    return this.inputSchemaService.createInputSchema(createInputSchema);
   }
 
   @Query(() => InputSchema)
@@ -22,9 +22,9 @@ export class InputSchemaResolver {
 
   @Mutation(() => InputSchema)
   async updateInputSchema(
-    @Args('updateInputSchemaInput') updateInputSchemaDto: UpdateInputSchemaDto,
+    @Args('updateInputSchemaInput') updateInputSchema: UpdateInputSchema,
   ) {
-    return this.inputSchemaService.updateInputSchema(updateInputSchemaDto);
+    return this.inputSchemaService.updateInputSchema(updateInputSchema);
   }
 
   @Mutation(() => InputSchema)

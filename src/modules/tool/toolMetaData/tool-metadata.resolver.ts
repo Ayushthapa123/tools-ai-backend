@@ -17,7 +17,7 @@ export class ToolMetaDataResolver {
   }
 
   @Query(() => ToolMetadata)
-  async findToolMetaDataByToolId(@Args('toolId') toolId: number) {
+  async getToolMetaDataByToolId(@Args('toolId') toolId: number) {
     return this.toolMetaDataService.findToolMetaDataByToolId(toolId);
   }
 

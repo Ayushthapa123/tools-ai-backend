@@ -123,13 +123,9 @@ export class ToolService {
         data: {
           ...data,
           slug: slug,
+          handle: data.handle ?? slug,
           ownerId: userId,
           visibility: data.visibility,
-        },
-        include: {
-          inputSchema: true,
-          outputSchema: true,
-          toolMetadata: true,
         },
       });
       return {

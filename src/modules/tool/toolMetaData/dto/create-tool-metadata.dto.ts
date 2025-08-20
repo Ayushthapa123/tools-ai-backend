@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateToolMetaDataDto {
-  @Field()
+  @Field(() => String)
   title: string;
 
   @Field()

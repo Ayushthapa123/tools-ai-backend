@@ -10,8 +10,8 @@ export class CreateToolInput {
   description: string;
 
   // handle should be unique
-  @Field()
-  handle: string;
+  @Field({ nullable: true })
+  handle?: string;
 
   @Field(() => String, { nullable: true })
   slug?: string;
@@ -19,21 +19,21 @@ export class CreateToolInput {
   @Field()
   shortDescription: string;
 
-  @Field()
-  thumbnailUrl: string;
+  @Field({ nullable: true })
+  thumbnailUrl?: string;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: VisibilityType.PUBLIC }) // set default to public
   visibility: VisibilityType;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: ToolType.IO }) // set default to generic
   toolType: ToolType;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true, defaultValue: 0 }) // set default to 0
   ranking: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   ownerId: number;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true, defaultValue: false }) // set default to false
   verifiedBySuperAdmin: boolean;
 }

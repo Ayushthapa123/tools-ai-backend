@@ -1,5 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { PartialType } from '@nestjs/mapped-types';
+import { InputType, Field, PartialType } from '@nestjs/graphql';
 import { CreateToolMetaDataDto } from './create-tool-metadata.dto';
 
 @InputType()

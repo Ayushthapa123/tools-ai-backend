@@ -19,23 +19,33 @@ input ChangePasswordInput {
   newPassword: String!
 }
 
-input CreateInputSchemaDto {
-  schema: JSON!
+input CreateInputSchema {
+  schema: String!
   toolId: Float!
 }
 
 input CreateToolInput {
   description: String!
-  handle: String!
+  handle: String
   name: String!
-  ownerId: Int!
-  ranking: Int!
+  ownerId: Int
+  ranking: Int = 0
   shortDescription: String!
   slug: String
-  thumbnailUrl: String!
-  toolType: String!
-  verifiedBySuperAdmin: Boolean!
-  visibility: String!
+  thumbnailUrl: String
+  toolType: String = "IO"
+  verifiedBySuperAdmin: Boolean = false
+  visibility: String = "PUBLIC"
+}
+
+input CreateToolMetaDataDto {
+  description: String!
+  keywords: String!
+  ogDescription: String!
+  ogImageUrl: String!
+  ogTitle: String!
+  title: String!
+  toolId: Float!
 }
 
 input CreateUserInput {
@@ -84,6 +94,21 @@ type GraphQLError {
   path: String
 }
 
+type IOGeneric {
+  data: IOGenericData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type IOGenericData {
+  htmlResponse: String!
+}
+
+input IOGenericInput {
+  data: JSON!
+  schema: JSON!
+}
+
 type InputSchema {
   data: InputSchemaData
   error: GraphQLError
@@ -93,7 +118,7 @@ type InputSchema {
 type InputSchemaData {
   createdAt: DateTime!
   id: ID!
-  schema: String!
+  schema: JSON!
   toolId: Int!
   updatedAt: DateTime!
 }
@@ -115,8 +140,9 @@ type LogoutResponse {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
-  createInputSchema(createInputSchemaInput: CreateInputSchemaDto!): InputSchema!
+  createInputSchema(createInputSchemaInput: CreateInputSchema!): InputSchema!
   createTool(data: CreateToolInput!): Tool!
+  createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
   createUser(input: CreateUserInput!): User!
   deleteTool(toolId: Float!): Tool!
   forgotPassword(email: String!): ForgotPasswordResponse!
@@ -126,15 +152,18 @@ type Mutation {
   getTravelDestination(input: TravelDestinationFinderInput!): TDFList!
   loginUser(input: LoginInput!): UsersAndToken!
   logout: LogoutResponse!
+  processGenericIO(input: IOGenericInput!): IOGeneric!
   refreshTokens: UsersHostelIdAndToken!
   removeInputSchema(id: Float!): InputSchema!
+  removeToolMetaData(id: Float!): ToolMetadata!
   resendVerificationMail(id: Float!): Boolean!
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
   sendCustomEmail(email: String!, htmlContent: String!, name: String!, subject: String!): Boolean!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
-  updateInputSchema(updateInputSchemaInput: UpdateInputSchemaDto!): InputSchema!
+  updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
   updateTool(data: UpdateToolInput!, toolId: Float!): Tool!
+  updateToolMetaData(updateToolMetaDataInput: UpdateToolMetaDataDto!): ToolMetadata!
   updateUser(input: UpdateUserInput!): User!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
   verifyTool(status: Boolean!, toolId: Int!): Tool!
@@ -163,6 +192,7 @@ type Query {
   getGoogleAuthUrl: GoogleOauthUrl!
   getToolById(toolId: Float!): Tool
   getToolBySlug(slug: String!): Tool
+  getToolMetaDataByToolId(toolId: Float!): ToolMetadata!
   getToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ToolArrayResponse!
   getUserByAccessToken(accessToken: String!): User
   getUserById(id: Float!): User
@@ -271,6 +301,12 @@ type ToolData {
   visibility: VisibilityType!
 }
 
+type ToolMetadata {
+  data: ToolMetadataData
+  error: GraphQLError
+  pagination: Pagination
+}
+
 type ToolMetadataData {
   createdAt: DateTime!
   description: String!
@@ -326,8 +362,10 @@ input TravelDestinationFinderInput {
   travelType: String!
 }
 
-input UpdateInputSchemaDto {
+input UpdateInputSchema {
   id: Float!
+  schema: String!
+  toolId: Float
 }
 
 input UpdateToolInput {
@@ -336,13 +374,24 @@ input UpdateToolInput {
   id: Int!
   name: String
   ownerId: Int
-  ranking: Int
+  ranking: Int = 0
   shortDescription: String
   slug: String
   thumbnailUrl: String
-  toolType: String
-  verifiedBySuperAdmin: Boolean
-  visibility: String
+  toolType: String = "IO"
+  verifiedBySuperAdmin: Boolean = false
+  visibility: String = "PUBLIC"
+}
+
+input UpdateToolMetaDataDto {
+  description: String
+  id: Float!
+  keywords: String
+  ogDescription: String
+  ogImageUrl: String
+  ogTitle: String
+  title: String
+  toolId: Float
 }
 
 input UpdateUserInput {

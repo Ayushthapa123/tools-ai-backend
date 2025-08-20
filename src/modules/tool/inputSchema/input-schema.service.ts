@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateInputSchemaDto } from './dto/create-input-schema.dto';
-import { UpdateInputSchemaDto } from './dto/update-input-schema.dto';
+import { CreateInputSchema } from './dto/create-input-schema.dto';
+import { UpdateInputSchema } from './dto/update-input-schema.dto';
 
 @Injectable()
 export class InputSchemaService {
   constructor(private prisma: PrismaService) {}
 
-  async createInputSchema(createInputSchemaDto: CreateInputSchemaDto) {
+  async createInputSchema(createInputSchema: CreateInputSchema) {
     const inputSchema = await this.prisma.inputSchema.create({
       data: {
-        ...createInputSchemaDto,
+        ...createInputSchema,
       },
     });
 
@@ -31,8 +31,8 @@ export class InputSchemaService {
     };
   }
 
-  async updateInputSchema(updateInputSchemaDto: UpdateInputSchemaDto) {
-    const { id, ...data } = updateInputSchemaDto;
+  async updateInputSchema(updateInputSchema: UpdateInputSchema) {
+    const { id, ...data } = updateInputSchema;
     const inputSchema = await this.prisma.inputSchema.update({
       where: { id },
       data,

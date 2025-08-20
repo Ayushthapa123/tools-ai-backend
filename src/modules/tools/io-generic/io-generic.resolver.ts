@@ -1,0 +1,17 @@
+// src/auth/auth.resolver.ts
+
+import { Resolver, Args, Mutation } from '@nestjs/graphql';
+
+import { IoGenericService } from './io-generic.service';
+import { IOGenericInput } from './dto/io-generic.input';
+import { IOGeneric } from './models/io-generic.model';
+@Resolver()
+export class IoGenericResolver {
+  constructor(private readonly ioGenericService: IoGenericService) {}
+
+  @Mutation(() => IOGeneric)
+  async processGenericIO(@Args('input') input: IOGenericInput) {
+    console.log('input', input);
+    return this.ioGenericService.processGenericIO(input);
+  }
+}
