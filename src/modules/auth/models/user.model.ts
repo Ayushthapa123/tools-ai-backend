@@ -10,7 +10,10 @@ export class User {
   @Field()
   email: string;
   @Field()
-  fullName: string;
+  fullName: string; 
+
+  @Field()
+  username: string;
 }
 
 @ObjectType()

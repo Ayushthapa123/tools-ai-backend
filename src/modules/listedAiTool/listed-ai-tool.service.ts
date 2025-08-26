@@ -1,20 +1,19 @@
-import { UpdateToolInput } from './dtos/update-tool.input';
+import { UpdateListedAiToolInput } from './dtos/update-listed-ai-tool.input';
 import { Injectable } from '@nestjs/common';
 // import { HostelData } from '@src/models/global.model';
-import { generateSlug } from '@src/helpers/generateSlug';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateToolInput } from './dtos/create-tool.input';
+import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
 import { UserType } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 
 @Injectable()
-export class ToolService {
+export class ListedAiToolService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cookieService: CookieService,
   ) {}
 
-  async getAllTools(
+  async getAllListedAiTools(
     pageSize: number,
     pageNumber: number,
     isSuperAdmin: boolean,
@@ -22,16 +21,9 @@ export class ToolService {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
     // superadmin should get all verified/non verified hostels but other should get only verified
-    const tools = await this.prisma.tool.findMany({
+    const tools = await this.prisma.listedAiTool.findMany({
       skip,
       take,
-      include: {
-        inputSchema: true,
-        outputSchema: true,
-        toolMetadata: true,
-        owner: true,
-        // owner: true,
-      },
     });
 
     return {
@@ -40,22 +32,20 @@ export class ToolService {
     };
   }
 
-  async getToolsByUserId(pageSize: number, pageNumber: number, userId: number) {
+  async getListedAiToolsByUserId(
+    pageSize: number,
+    pageNumber: number,
+    userId: number,
+  ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
     // superadmin should get all verified/non verified hostels but other should get only verified
-    const tools = await this.prisma.tool.findMany({
+    const tools = await this.prisma.listedAiTool.findMany({
       where: {
         ownerId: userId,
       },
       skip,
       take,
-      include: {
-        inputSchema: true,
-        outputSchema: true,
-        toolMetadata: true,
-        // owner: true,
-      },
     });
 
     return {
@@ -64,7 +54,7 @@ export class ToolService {
     };
   }
 
-  async getToolById(toolId: number) {
+  async getListedAiToolById(toolId: number) {
     const tool = await this.prisma.tool.findUnique({
       where: { id: toolId },
     });
@@ -74,26 +64,9 @@ export class ToolService {
     };
   }
 
-  async getToolBySlug(slug: string) {
-    const tool = await this.prisma.tool.findUnique({
-      where: { slug },
-      include: {
-        inputSchema: true,
-        outputSchema: true,
-        toolMetadata: true,
-        // owner: true,
-      },
-    });
-
-    return {
-      data: tool,
-      error: null,
-    };
-  }
-
-  async getToolBytoken(toolId: number) {
+  async getListedAiToolBytoken(toolId: number) {
     try {
-      const tool = await this.prisma.tool.findFirst({
+      const tool = await this.prisma.listedAiTool.findFirst({
         where: { id: toolId },
       });
       return {
@@ -111,17 +84,12 @@ export class ToolService {
     }
   }
 
-  async createTool(userId: number, data: CreateToolInput) {
-    const slug = generateSlug(data.name);
-
+  async createListedAiTool(userId: number, data: CreateListedAiToolInput) {
     try {
-      const res = await this.prisma.tool.create({
+      const res = await this.prisma.listedAiTool.create({
         data: {
           ...data,
-          slug: slug,
-          handle: data.handle ?? slug,
           ownerId: userId,
-          visibility: data.visibility,
         },
       });
       return {
@@ -138,8 +106,8 @@ export class ToolService {
     }
   }
 
-  async updateTool(toolId: number, data: UpdateToolInput) {
-    const res = await this.prisma.tool.update({
+  async updateListedAiTool(toolId: number, data: UpdateListedAiToolInput) {
+    const res = await this.prisma.listedAiTool.update({
       where: { id: toolId },
       data,
     });
@@ -149,8 +117,8 @@ export class ToolService {
     };
   }
 
-  async deleteTool(toolId: number) {
-    const res = await this.prisma.tool.delete({
+  async deleteListedAiTool(toolId: number) {
+    const res = await this.prisma.listedAiTool.delete({
       where: { id: toolId },
     });
     return {
@@ -159,18 +127,18 @@ export class ToolService {
     };
   }
 
-  async verifyTool(toolId: number, userType: string, status: boolean) {
+  async verifyListedAiTool(toolId: number, userType: string, status: boolean) {
     if (userType === UserType.ADMIN) {
-      const res = await this.prisma.tool.update({
+      const res = await this.prisma.listedAiTool.update({
         where: { id: toolId },
         data: {
-          verifiedBySuperAdmin: status,
+          verified: status,
         },
       });
-      console.log('calling verify hostel', res.id, status);
+      console.log('calling verify listed ai tool', res.id, status);
       if (res.id && status) {
         console.log('inside');
-        // send email saying your hostle has been verified
+        // send email saying your listed ai tool has been verified
       }
       return {
         data: res,

@@ -1,7 +1,15 @@
 // src/models/global.model.ts
 
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { UserType, GenderType, ToolType, VisibilityType } from './global.enum';
+import {
+  UserType,
+  GenderType,
+  ToolType,
+  VisibilityType,
+  PricingType,
+  AiType,
+  PlatformType,
+} from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
 @ObjectType()
@@ -61,6 +69,9 @@ export class UserData {
 
   @Field()
   fullName: string;
+
+  @Field()
+  username: string;
 
   @Field({ nullable: true })
   profilePicture?: string;
@@ -263,6 +274,72 @@ export class Tool extends BaseResponse {
 export class ToolList extends BaseResponse {
   @Field(() => [ToolData], { nullable: true })
   data?: ToolData[];
+}
+
+@ObjectType()
+export class ListedAiToolData {
+  @Field(() => ID)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field()
+  shortDescription: string;
+
+  @Field()
+  logoUrl: string;
+
+  @Field()
+  websiteUrl: string;
+
+  @Field(() => PricingType)
+  pricingType: PricingType;
+
+  @Field(() => AiType)
+  aiType: AiType;
+
+  @Field(() => [String])
+  userTypes: string[];
+
+  @Field(() => [String])
+  keywords: string[];
+
+  @Field(() => [PlatformType])
+  platforms: PlatformType[];
+
+  @Field(() => [String])
+  integrationOptions: string[];
+
+  @Field(() => Int)
+  popularityScore: number;
+
+  @Field(() => Boolean)
+  featured: boolean;
+
+  @Field(() => Boolean)
+  verified: boolean;
+
+  @Field(() => [String])
+  useCases: string[];
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class ListedAiTool extends BaseResponse {
+  @Field(() => ListedAiToolData, { nullable: true })
+  data?: ListedAiToolData;
+}
+
+@ObjectType()
+export class ListedAiToolList extends BaseResponse {
+  @Field(() => [ListedAiToolData], { nullable: true })
+  data?: ListedAiToolData[];
 }
 
 @ObjectType()

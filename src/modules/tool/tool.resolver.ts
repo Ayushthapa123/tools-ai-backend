@@ -49,12 +49,8 @@ export class ToolResolver {
       nullable: true,
     }) // make it optional
     isSuperAdmin: boolean,
-  ): Promise<ToolArrayResponse> {
-    return this.toolService.getAllTools(
-      pageSize,
-      pageNumber,
-      isSuperAdmin,
-    ) as unknown as ToolArrayResponse; // Issue is caused by the async return type. which is not required
+  ) {
+    return this.toolService.getAllTools(pageSize, pageNumber, isSuperAdmin); // Issue is caused by the async return type. which is not required
   }
 
   @UseGuards(AuthGuard)

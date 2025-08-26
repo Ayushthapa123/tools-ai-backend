@@ -30,9 +30,49 @@ export enum VisibilityType {
   PRIVATE = 'PRIVATE',
 }
 
+export enum PricingType {
+  FREE = 'FREE',
+  FREEMIUM = 'FREEMIUM',
+  PAID = 'PAID',
+  CUSTOM = 'CUSTOM',
+  TRIAL = 'TRIAL',
+}
+
+export enum AiType {
+  GENERATIVE_AI = 'GENERATIVE_AI',
+  CONVERSATIONAL_AI = 'CONVERSATIONAL_AI',
+  COMPUTER_VISION = 'COMPUTER_VISION',
+  SPEECH_AI = 'SPEECH_AI',
+  RECOMMENDATION_AI = 'RECOMMENDATION_AI',
+  AUTOMATION_AI = 'AUTOMATION_AI',
+  ANALYTICS_AI = 'ANALYTICS_AI',
+  SEARCH_RETRIEVAL_AI = 'SEARCH_RETRIEVAL_AI',
+  CODE_AI = 'CODE_AI',
+  MARKETING_AI = 'MARKETING_AI',
+  SECURITY_AI = 'SECURITY_AI',
+}
+
+export enum PlatformType {
+  WEB = 'WEB',
+  MOBILE = 'MOBILE',
+  DESKTOP = 'DESKTOP',
+}
+
 // Register GraphQL enum types
 registerEnumType(UserType, {
   name: 'UserType',
+});
+
+registerEnumType(PricingType, {
+  name: 'PricingType',
+});
+
+registerEnumType(AiType, {
+  name: 'AiType',
+});
+
+registerEnumType(PlatformType, {
+  name: 'PlatformType',
 });
 
 registerEnumType(GenderType, {

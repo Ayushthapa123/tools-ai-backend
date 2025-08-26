@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum AiType {
+  ANALYTICS_AI
+  AUTOMATION_AI
+  CODE_AI
+  COMPUTER_VISION
+  CONVERSATIONAL_AI
+  GENERATIVE_AI
+  MARKETING_AI
+  RECOMMENDATION_AI
+  SEARCH_RETRIEVAL_AI
+  SECURITY_AI
+  SPEECH_AI
+}
+
 type CAGData {
   category: String!
   items: [String!]!
@@ -22,6 +36,23 @@ input ChangePasswordInput {
 input CreateInputSchema {
   schema: String!
   toolId: Float!
+}
+
+input CreateListedAiToolInput {
+  aiType: AiType!
+  featured: Boolean!
+  integrationOptions: [String!]!
+  keywords: [String!]!
+  logoUrl: String!
+  name: String!
+  platforms: [PlatformType!]!
+  popularityScore: Int!
+  pricingType: PricingType!
+  shortDescription: String!
+  useCases: [String!]!
+  userTypes: [String!]!
+  verified: Boolean!
+  websiteUrl: String!
 }
 
 input CreateToolInput {
@@ -57,6 +88,7 @@ input CreateUserInput {
   phoneNumber: String
   profilePicture: String
   userType: UserType! = USER
+  username: String!
 }
 
 type Ctx {
@@ -128,6 +160,37 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
+type ListedAiTool {
+  data: ListedAiToolData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type ListedAiToolArrayResponse {
+  data: [ListedAiToolData!]!
+  error: GraphQLError
+}
+
+type ListedAiToolData {
+  aiType: AiType!
+  createdAt: DateTime!
+  featured: Boolean!
+  id: ID!
+  integrationOptions: [String!]!
+  keywords: [String!]!
+  logoUrl: String!
+  name: String!
+  platforms: [PlatformType!]!
+  popularityScore: Int!
+  pricingType: PricingType!
+  shortDescription: String!
+  updatedAt: DateTime!
+  useCases: [String!]!
+  userTypes: [String!]!
+  verified: Boolean!
+  websiteUrl: String!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -141,9 +204,11 @@ type LogoutResponse {
 type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
   createInputSchema(createInputSchemaInput: CreateInputSchema!): InputSchema!
+  createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
   createTool(data: CreateToolInput!): Tool!
   createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
   createUser(input: CreateUserInput!): User!
+  deleteListedAiTool(toolId: Float!): ListedAiTool!
   deleteTool(toolId: Float!): Tool!
   forgotPassword(email: String!): ForgotPasswordResponse!
   getCustomerAvatar(input: CustomerAvatarGeneratorInput!): CAGList!
@@ -162,10 +227,12 @@ type Mutation {
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
   updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
+  updateListedAiTool(data: UpdateListedAiToolInput!, toolId: Float!): ListedAiTool!
   updateTool(data: UpdateToolInput!, toolId: Float!): Tool!
   updateToolMetaData(updateToolMetaDataInput: UpdateToolMetaDataDto!): ToolMetadata!
   updateUser(input: UpdateUserInput!): User!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailResponse!
+  verifyListedAiTool(status: Boolean!, toolId: Int!): ListedAiTool!
   verifyTool(status: Boolean!, toolId: Int!): Tool!
 }
 
@@ -186,10 +253,27 @@ type Pagination {
   totalPages: Int!
 }
 
+enum PlatformType {
+  DESKTOP
+  MOBILE
+  WEB
+}
+
+enum PricingType {
+  CUSTOM
+  FREE
+  FREEMIUM
+  PAID
+  TRIAL
+}
+
 type Query {
   findInputSchemaByToolId(toolId: Float!): InputSchema!
+  getAllListedAiTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ListedAiToolArrayResponse!
   getAllTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ToolArrayResponse!
   getGoogleAuthUrl: GoogleOauthUrl!
+  getListedAiToolById(toolId: Float!): ListedAiTool
+  getListedAiToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ListedAiToolArrayResponse!
   getToolById(toolId: Float!): Tool
   getToolBySlug(slug: String!): Tool
   getToolMetaDataByToolId(toolId: Float!): ToolMetadata!
@@ -215,6 +299,7 @@ input SignupInput {
   phoneNumber: String
   profilePicture: String
   userType: UserType = USER
+  username: String
 }
 
 input SignupWithGoogleInput {
@@ -368,6 +453,24 @@ input UpdateInputSchema {
   toolId: Float
 }
 
+input UpdateListedAiToolInput {
+  aiType: AiType
+  featured: Boolean
+  id: Int!
+  integrationOptions: [String!]
+  keywords: [String!]
+  logoUrl: String
+  name: String
+  platforms: [PlatformType!]
+  popularityScore: Int
+  pricingType: PricingType
+  shortDescription: String
+  useCases: [String!]
+  userTypes: [String!]
+  verified: Boolean
+  websiteUrl: String
+}
+
 input UpdateToolInput {
   description: String
   handle: String
@@ -404,6 +507,7 @@ input UpdateUserInput {
   phoneNumber: String
   profilePicture: String
   userType: UserType = USER
+  username: String
 }
 
 type User {
@@ -428,6 +532,7 @@ type UserData {
   tools: [ToolData!]
   updatedAt: DateTime!
   userType: UserType!
+  username: String!
 }
 
 enum UserType {

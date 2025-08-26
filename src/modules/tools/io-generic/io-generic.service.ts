@@ -48,7 +48,7 @@ export class IoGenericService {
         text = text.replace(/^```/, '').replace(/```$/, '').trim();
       }
 
-      // Return the HTML response directly
+      // Return the HTML response directly (AI is instructed not to generate dangerous content)
       return {
         data: {
           htmlResponse: text,
@@ -90,7 +90,17 @@ export class IoGenericService {
     }
 
     // Always instruct to return HTML
-    prompt += `IMPORTANT: Please provide your response in HTML format. ${outputFormatGuide ? 'Follow the output format guide above.' : 'Format the response appropriately for web display.'} Do not include markdown code blocks, just return the HTML directly.`;
+    prompt += `IMPORTANT: Please provide your response in HTML format. ${outputFormatGuide ? 'Follow the output format guide above.' : 'Format the response appropriately for web display.'} Do not include markdown code blocks, just return the HTML directly.
+
+SECURITY REQUIREMENTS:
+- DO NOT include any <script> tags or JavaScript code
+- DO NOT include any event handler attributes (onclick, onload, onerror, etc.)
+- DO NOT include any <iframe>, <object>, <embed> tags
+- DO NOT include any <form>, <input>, <button> elements
+- DO NOT include any javascript: or data: protocols in href/src attributes
+- DO NOT include any HTML comments or hidden content
+- Only generate safe, display-oriented HTML content (div, p, h1-h6, span, ul, ol, li, table, img, a, etc.)
+- Focus on content presentation and styling, not interactivity`;
 
     return prompt;
   }

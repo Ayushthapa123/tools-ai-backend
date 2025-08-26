@@ -49,6 +49,7 @@ export class AuthService {
 
     // Hash the password before saving it
     const passwordHash = await bcrypt.hash(password, 10);
+    const username = email.split('@')[0];
 
     try {
       // Create a new user in the database with isVerified set to false
@@ -57,6 +58,7 @@ export class AuthService {
           email,
           passwordHash,
           fullName,
+          username,
           userType: userType,
           isVerified: false,
         },

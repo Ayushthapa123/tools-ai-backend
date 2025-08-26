@@ -52,11 +52,13 @@ export class GoogleAuthService {
     });
 
     if (!user) {
-      // Create user if not exists
+      // Create user if not exists 
+      const username = email.split('@')[0];
       user = await this.prismaService.user.create({
         data: {
           email,
           fullName: name,
+          username,
           userType: UserType.USER,
           isVerified: true,
         },

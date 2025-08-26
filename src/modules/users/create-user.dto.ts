@@ -8,6 +8,9 @@ export class CreateUserInput {
   email: string;
 
   @Field()
+  username: string;
+
+  @Field()
   fullName: string;
 
   @Field(() => UserType, { defaultValue: UserType.USER })
