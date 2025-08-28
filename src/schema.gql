@@ -2,7 +2,39 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum AiCapability {
+  ANALYTICS_BI
+  ANOMALY_DETECTION
+  CAUSAL_INFERENCE
+  CODE_AI
+  COMPUTER_VISION
+  EDGE_AI
+  FOUNDATION_MODEL
+  GENERATIVE_AUDIO
+  GENERATIVE_IMAGE
+  GENERATIVE_TEXT
+  GENERATIVE_VIDEO
+  KNOWLEDGE_AI
+  MLOPS_OBSERVABILITY
+  MULTIMODAL_UNDERSTANDING
+  NLP_UNDERSTANDING
+  OCR_DOCUMENT_AI
+  OPTIMIZATION_PLANNING
+  OTHER
+  PRIVACY_PRESERVING_ML
+  RECOMMENDATION
+  ROBOTICS_CONTROL
+  SEARCH_RETRIEVAL
+  SECURITY_ML
+  SPEAKER_TECH
+  SPEECH_ASR
+  SPEECH_TTS
+  SYNTHETIC_DATA
+  TIME_SERIES_FORECASTING
+}
+
 enum AiType {
+  AI_AGENT
   ANALYTICS_AI
   AUTOMATION_AI
   CODE_AI
@@ -10,6 +42,7 @@ enum AiType {
   CONVERSATIONAL_AI
   GENERATIVE_AI
   MARKETING_AI
+  OTHER
   RECOMMENDATION_AI
   SEARCH_RETRIEVAL_AI
   SECURITY_AI
@@ -39,18 +72,22 @@ input CreateInputSchema {
 }
 
 input CreateListedAiToolInput {
-  aiType: AiType!
+  aiCapabilities: [AiCapability!]!
+  aiType: [AiType!]!
+  delivery: [Delivery!]!
+  domains: [Domain!]!
   featured: Boolean!
-  integrationOptions: [String!]!
+  integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
   logoUrl: String!
+  modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
   popularityScore: Int!
-  pricingType: PricingType!
+  pricingType: [PricingType!]!
   shortDescription: String!
+  toolUserTypes: [ToolUserType!]!
   useCases: [String!]!
-  userTypes: [String!]!
   verified: Boolean!
   websiteUrl: String!
 }
@@ -106,6 +143,51 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum Delivery {
+  API
+  EDGE_DEVICE
+  MARKETPLACE_PLUGIN
+  MODEL_WEIGHTS
+  ON_PREM
+  OPEN_SOURCE
+  SAAS
+  SDK
+}
+
+enum Domain {
+  AUDIO_MUSIC
+  AUTOMATION
+  BUSINESS
+  CHATBOT
+  CLOUD
+  CONTENT_CREATION
+  CUSTOMER_SUPPORT
+  DATA_ANALYTICS
+  DESIGN
+  DEVELOPMENT
+  ECOMMERCE
+  EDUCATION
+  ENTERTAINMENT
+  FINANCE
+  GAMING
+  HEALTHCARE
+  HUMAN_RESOURCES
+  IMAGE_GENERATION
+  LEGAL
+  MARKETING
+  OPERATIONS
+  OTHER
+  PRODUCTIVITY
+  RESEARCH
+  SALES
+  SECURITY
+  SOCIAL_MEDIA
+  TRANSLATION
+  VIDEO_CREATION
+  VIRTUAL_ASSISTANT
+  WRITING
+}
+
 type ForgotPasswordResponse {
   id: Float!
 }
@@ -155,6 +237,26 @@ type InputSchemaData {
   updatedAt: DateTime!
 }
 
+enum IntegrationOption {
+  API_CONNECTOR
+  CLOUD_DRIVE
+  CRM
+  DATABASE
+  FIGMA
+  GOOGLE_WORKSPACE
+  HUBSPOT
+  IDE_PLUGIN
+  INTEGROMAT
+  MICROSOFT_TEAMS
+  NOTION
+  OTHER
+  SALESFORCE
+  SHOPIFY
+  SLACK
+  WORDPRESS
+  ZAPIER
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -172,21 +274,26 @@ type ListedAiToolArrayResponse {
 }
 
 type ListedAiToolData {
-  aiType: AiType!
+  aiCapabilities: [AiCapability!]!
+  aiType: [AiType!]!
   createdAt: DateTime!
+  delivery: [Delivery!]!
+  domains: [Domain!]!
   featured: Boolean!
   id: ID!
-  integrationOptions: [String!]!
+  integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
   logoUrl: String!
+  modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
   popularityScore: Int!
-  pricingType: PricingType!
+  pricingType: [PricingType!]!
   shortDescription: String!
+  slug: String!
+  toolUserTypes: [ToolUserType!]!
   updatedAt: DateTime!
   useCases: [String!]!
-  userTypes: [String!]!
   verified: Boolean!
   websiteUrl: String!
 }
@@ -201,10 +308,23 @@ type LogoutResponse {
   success: Boolean!
 }
 
+enum Modality {
+  AUDIO
+  GRAPH
+  IMAGE
+  MULTIMODAL
+  TABULAR
+  TEXT
+  THREE_D
+  TIME_SERIES
+  VIDEO
+}
+
 type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
   createInputSchema(createInputSchemaInput: CreateInputSchema!): InputSchema!
   createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
+  createListedAiToolFromArray(userId: Int! = 1): ListedAiTool!
   createTool(data: CreateToolInput!): Tool!
   createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
   createUser(input: CreateUserInput!): User!
@@ -254,9 +374,15 @@ type Pagination {
 }
 
 enum PlatformType {
+  API
   DESKTOP
+  EXTENSION
   MOBILE
+  OTHER
+  PLUGIN
+  SDK
   WEB
+  WEBHOOK
 }
 
 enum PricingType {
@@ -273,6 +399,7 @@ type Query {
   getAllTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ToolArrayResponse!
   getGoogleAuthUrl: GoogleOauthUrl!
   getListedAiToolById(toolId: Float!): ListedAiTool
+  getListedAiToolBySlug(slug: String!): ListedAiTool
   getListedAiToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ListedAiToolArrayResponse!
   getToolById(toolId: Float!): Tool
   getToolBySlug(slug: String!): Tool
@@ -410,6 +537,56 @@ enum ToolType {
   IO
 }
 
+enum ToolUserType {
+  ADVERTISING_SPECIALIST
+  AI_RESEARCHER
+  ANIMATOR
+  BRAND_MANAGER
+  BUSINESS_ANALYST
+  BUSINESS_OWNER
+  CLOUD_ENGINEER
+  CONSULTANT
+  CONTENT_CREATOR
+  COPYWRITER
+  CUSTOMER_SUPPORT_AGENT
+  CYBERSECURITY_SPECIALIST
+  DATA_SCIENTIST
+  DESIGNER
+  DEVELOPER
+  DEVOPS_ENGINEER
+  DIGITAL_MARKETER
+  EDUCATOR
+  ENTREPRENEUR
+  FINANCE_PROFESSIONAL
+  GAMER
+  GRAPHIC_DESIGNER
+  HEALTHCARE_PROFESSIONAL
+  HOBBYIST
+  HR_PROFESSIONAL
+  IT_PROFESSIONAL
+  LEGAL_PROFESSIONAL
+  MACHINE_LEARNING_ENGINEER
+  MARKETER
+  MUSIC_PRODUCER
+  OPERATIONS_MANAGER
+  OTHER
+  PRODUCT_MANAGER
+  PROJECT_MANAGER
+  QA_ENGINEER
+  RESEARCHER
+  SALES_PROFESSIONAL
+  SEO_SPECIALIST
+  SOCIAL_MEDIA_MANAGER
+  SOFTWARE_ENGINEER
+  STRATEGY_PLANNER
+  STUDENT
+  TEACHER
+  TRAINER
+  UX_UI_DESIGNER
+  VIDEO_EDITOR
+  WRITER
+}
+
 input TravelBudgetCalculatorInput {
   accomodationType: String!
   date: DateTime!
@@ -454,19 +631,23 @@ input UpdateInputSchema {
 }
 
 input UpdateListedAiToolInput {
-  aiType: AiType
+  aiCapabilities: [AiCapability!]
+  aiType: [AiType!]
+  delivery: [Delivery!]
+  domains: [Domain!]
   featured: Boolean
   id: Int!
-  integrationOptions: [String!]
+  integrationOptions: [IntegrationOption!]
   keywords: [String!]
   logoUrl: String
+  modalities: [Modality!]
   name: String
   platforms: [PlatformType!]
   popularityScore: Int
-  pricingType: PricingType
+  pricingType: [PricingType!]
   shortDescription: String
+  toolUserTypes: [ToolUserType!]
   useCases: [String!]
-  userTypes: [String!]
   verified: Boolean
   websiteUrl: String
 }

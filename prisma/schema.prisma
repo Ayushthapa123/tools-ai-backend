@@ -1,3 +1,5 @@
+// Prisma cannot add indexes on arrays (only normal B-Tree indexes). So it's better to create a separate table for the array fields.
+
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
@@ -30,7 +32,7 @@ model User {
 
   tool     Tool[]
   listedAiTool ListedAiTool[]
-  // like Like[]
+  like Like[]
 }
 
 model Tool {
@@ -54,7 +56,7 @@ model Tool {
   inputSchema         InputSchema?
   outputSchema        OutputSchema?
   toolMetadata      ToolMetadata?
-  // like Like[]
+  like Like[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
@@ -107,63 +109,75 @@ model ToolMetadata {
 
 } 
 
+
+
+
+model Like {
+  id Int @id @unique @default(autoincrement()) 
+  userId Int  
+  toolId Int?  
+  listedAiToolId Int?
+  
+  // Computed field to determine what type of tool this like is for
+  toolType ToolType @default(IO)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool Tool? @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  listedAiTool ListedAiTool? @relation(fields: [listedAiToolId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([toolId])
+  @@index([listedAiToolId])
+  @@unique([userId, toolId])
+  @@unique([userId, listedAiToolId])
+
+}
+
 model ListedAiTool {
   id               Int    @id @unique @default(autoincrement())
-  name             String
+  name             String 
+  slug             String  @unique 
   shortDescription String
   logoUrl          String?
   websiteUrl       String
 
-  pricingType      PricingType    // "free" | "freemium" | "paid" | "custom" | "trial"
-
-  aiType           AiType
-  
   keywords         String[]  @default([])
-  userTypes        String[]  @default([]) // e.g., ["developer", "writer"]
+  toolUserTypes        ToolUserType[]  @default([]) // e.g., ["developer", "writer"]
 
+  pricingType      PricingType[]    // "free" | "freemium" | "paid" | "custom" | "trial"
+  aiType           AiType[] @default([]) 
+  aiCapabilities   AiCapability[] @default([]) 
+  modalities       Modality[] @default([])  
+  delivery         Delivery[] @default([]) 
+    
   platforms        PlatformType[]  @default([]) // e.g., ["web", "mobile", "desktop"] web by default
-  integrationOptions String[] @default([]) // e.g., ["api", "sdk", "webhook"]
+  integrationOptions IntegrationOption[] @default([]) // e.g., ["api", "sdk", "webhook"]
+
+  domains          Domain[]  @default([]) // e.g., ["marketing", "sales", "finance"]
 
   popularityScore  Int       @default(0)
   featured         Boolean   @default(false)
   verified         Boolean   @default(false)
 
-
   useCases         String[]  @default([]) // e.g., ["content creation", "customer support", "product recommendations"]
 
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id])
-  // like Like[]
-
+  like Like[]
 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+
+  @@index([id,slug])
+  @@index([name]) 
+  @@index([popularityScore])
+  @@index([featured])
+  @@index([createdAt])
+  @@index([updatedAt]) 
 }
-
-
-// model Like {
-//   id Int @id @unique @default(autoincrement()) 
-//   userId Int  
-//   toolId Int?  
-//   listedAiToolId Int?
-  
-//   // Computed field to determine what type of tool this like is for
-//   toolType ToolType @default(IO)
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   tool Tool? @relation(fields: [toolId], references: [id], onDelete: Cascade)
-//   listedAiTool ListedAiTool? @relation(fields: [listedAiToolId], references: [id], onDelete: Cascade)
-
-//   @@index([userId])
-//   @@index([toolId])
-//   @@index([listedAiToolId])
-//   @@unique([userId, toolId])
-//   @@unique([userId, listedAiToolId])
-
-// }
 
 enum PricingType {
   FREE
@@ -172,7 +186,7 @@ enum PricingType {
   CUSTOM
   TRIAL
 }
-
+// high level ai type
 enum AiType {
   GENERATIVE_AI        // Text, image, audio, or video generation
   CONVERSATIONAL_AI    // Chatbots, virtual assistants
@@ -184,14 +198,201 @@ enum AiType {
   SEARCH_RETRIEVAL_AI  // Semantic search, knowledge extraction
   CODE_AI              // Code generation, debugging
   MARKETING_AI         // AI for marketing automation and insights
-  SECURITY_AI          // Threat detection, fraud prevention
+  SECURITY_AI          // Threat detection, fraud prevention 
+  AI_AGENT             // AI agents, multi-agent systems
+
+  OTHER
+}
+// ai cap
+enum AiCapability {
+  FOUNDATION_MODEL
+  GENERATIVE_TEXT
+  GENERATIVE_IMAGE
+  GENERATIVE_AUDIO
+  GENERATIVE_VIDEO
+  MULTIMODAL_UNDERSTANDING
+  NLP_UNDERSTANDING
+  SEARCH_RETRIEVAL
+  KNOWLEDGE_AI
+  COMPUTER_VISION
+  OCR_DOCUMENT_AI
+  SPEECH_ASR
+  SPEECH_TTS
+  SPEAKER_TECH
+  RECOMMENDATION
+  TIME_SERIES_FORECASTING
+  OPTIMIZATION_PLANNING
+  ANOMALY_DETECTION
+  CAUSAL_INFERENCE
+  ANALYTICS_BI
+  CODE_AI
+  SECURITY_ML
+  PRIVACY_PRESERVING_ML
+  MLOPS_OBSERVABILITY
+  SYNTHETIC_DATA
+  ROBOTICS_CONTROL
+  EDGE_AI
+  OTHER
 }
 
+enum Domain {
+  MARKETING
+  DEVELOPMENT
+  BUSINESS
+  DESIGN
+  FINANCE
+  HEALTHCARE
+  EDUCATION
+  PRODUCTIVITY
+  RESEARCH
+  LEGAL
+  ENTERTAINMENT
+  CUSTOMER_SUPPORT
+  SALES
+  DATA_ANALYTICS
+  HUMAN_RESOURCES
+  SECURITY
+  OPERATIONS
+  CONTENT_CREATION
+  ECOMMERCE
+  GAMING
+  SOCIAL_MEDIA
+  VIDEO_CREATION
+  AUDIO_MUSIC
+  WRITING
+  TRANSLATION
+  IMAGE_GENERATION
+  VIRTUAL_ASSISTANT
+  AUTOMATION
+  CHATBOT
+  CLOUD 
+  AGRICULTURE 
+  MANUFACTURING 
+  OTHER
+}
+
+
+enum ToolUserType {
+  // --- Technology & Engineering ---
+  DEVELOPER
+  SOFTWARE_ENGINEER
+  MACHINE_LEARNING_ENGINEER
+  DATA_SCIENTIST
+  AI_RESEARCHER
+  IT_PROFESSIONAL
+  CLOUD_ENGINEER
+  DEVOPS_ENGINEER
+  CYBERSECURITY_SPECIALIST
+  QA_ENGINEER
+
+  // --- Business & Management ---
+  ENTREPRENEUR
+  BUSINESS_OWNER
+  PRODUCT_MANAGER
+  PROJECT_MANAGER
+  BUSINESS_ANALYST
+  CONSULTANT
+  SALES_PROFESSIONAL
+  CUSTOMER_SUPPORT_AGENT
+  OPERATIONS_MANAGER
+  STRATEGY_PLANNER
+
+  // --- Marketing & Growth ---
+  MARKETER
+  DIGITAL_MARKETER
+  SEO_SPECIALIST
+  SOCIAL_MEDIA_MANAGER
+  BRAND_MANAGER
+  ADVERTISING_SPECIALIST
+
+  // --- Creative & Media ---
+  DESIGNER
+  GRAPHIC_DESIGNER
+  UX_UI_DESIGNER
+  VIDEO_EDITOR
+  CONTENT_CREATOR
+  WRITER
+  COPYWRITER
+  MUSIC_PRODUCER
+  ANIMATOR
+
+  // --- Education & Research ---
+  STUDENT
+  TEACHER
+  TRAINER
+  RESEARCHER
+  EDUCATOR
+
+  // --- Specialized Professions ---
+  HEALTHCARE_PROFESSIONAL
+  LEGAL_PROFESSIONAL
+  FINANCE_PROFESSIONAL
+  HR_PROFESSIONAL
+
+  // --- General & Others ---
+  GAMER
+  HOBBYIST
+  OTHER
+}
+
+// WHICH data types it handles
+enum Modality {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  TABULAR
+  TIME_SERIES
+  GRAPH
+  THREE_D
+  MULTIMODAL 
+  SENSOR_DATA 
+  GEOSPATIAL
+}
 enum PlatformType {
   WEB
   MOBILE
-  DESKTOP
+  DESKTOP 
+  API
+  SDK
+  WEBHOOK
+  PLUGIN
+  EXTENSION
+  OTHER
 }
+
+// HOW it’s shipped
+enum Delivery {
+  SAAS
+  API
+  SDK
+  MODEL_WEIGHTS
+  OPEN_SOURCE
+  ON_PREM
+  EDGE_DEVICE
+  MARKETPLACE_PLUGIN
+}
+
+enum IntegrationOption {
+  ZAPIER             // No-code automation
+  INTEGROMAT         // Alternative to Zapier
+  SLACK              // ChatOps
+  MICROSOFT_TEAMS    // Team collaboration
+  GOOGLE_WORKSPACE   // Docs, Sheets, Gmail
+  NOTION             // Knowledge base
+  FIGMA              // Design tools
+  SHOPIFY            // E-commerce
+  WORDPRESS          // CMS
+  SALESFORCE         // CRM
+  HUBSPOT            // CRM/Marketing
+  CLOUD_DRIVE        // Google Drive, Dropbox
+  IDE_PLUGIN         // VSCode, JetBrains
+  CRM                // Generic CRM systems
+  DATABASE           // Direct DB integration
+  API_CONNECTOR      // Custom integrations
+  OTHER
+}
+
 
 //Enums 
 enum UserType {

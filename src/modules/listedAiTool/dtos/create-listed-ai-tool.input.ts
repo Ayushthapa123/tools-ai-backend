@@ -1,5 +1,15 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
-import { AiType, PlatformType, PricingType } from '@src/models/global.enum';
+import {
+  AiCapability,
+  AiType,
+  Delivery,
+  Domain,
+  IntegrationOption,
+  Modality,
+  PlatformType,
+  PricingType,
+  ToolUserType,
+} from '@src/models/global.enum';
 
 @InputType()
 export class CreateListedAiToolInput {
@@ -15,23 +25,35 @@ export class CreateListedAiToolInput {
   @Field()
   websiteUrl: string;
 
-  @Field(() => PricingType)
-  pricingType: PricingType;
+  @Field(() => [PricingType])
+  pricingType: PricingType[];
 
-  @Field(() => AiType)
-  aiType: AiType;
+  @Field(() => [AiType])
+  aiType: AiType[];
 
-  @Field(() => [String])
-  userTypes: string[];
+  @Field(() => [AiCapability])
+  aiCapabilities: AiCapability[];
 
-  @Field(() => [String])
-  keywords: string[];
+  @Field(() => [Modality])
+  modalities: Modality[];
+
+  @Field(() => [Delivery])
+  delivery: Delivery[];
 
   @Field(() => [PlatformType])
   platforms: PlatformType[];
 
+  @Field(() => [IntegrationOption])
+  integrationOptions: IntegrationOption[];
+
+  @Field(() => [Domain])
+  domains: Domain[];
+
+  @Field(() => [ToolUserType])
+  toolUserTypes: ToolUserType[];
+
   @Field(() => [String])
-  integrationOptions: string[];
+  keywords: string[];
 
   @Field(() => Int)
   popularityScore: number;

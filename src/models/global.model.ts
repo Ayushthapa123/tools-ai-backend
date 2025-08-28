@@ -9,6 +9,12 @@ import {
   PricingType,
   AiType,
   PlatformType,
+  AiCapability,
+  Modality,
+  Delivery,
+  IntegrationOption,
+  ToolUserType,
+  Domain,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -285,6 +291,9 @@ export class ListedAiToolData {
   name: string;
 
   @Field()
+  slug: string;
+
+  @Field()
   shortDescription: string;
 
   @Field()
@@ -293,23 +302,35 @@ export class ListedAiToolData {
   @Field()
   websiteUrl: string;
 
-  @Field(() => PricingType)
-  pricingType: PricingType;
-
-  @Field(() => AiType)
-  aiType: AiType;
-
-  @Field(() => [String])
-  userTypes: string[];
+  @Field(() => [ToolUserType])
+  toolUserTypes: ToolUserType[];
 
   @Field(() => [String])
   keywords: string[];
 
+  @Field(() => [PricingType])
+  pricingType: PricingType[];
+
+  @Field(() => [AiType])
+  aiType: AiType[];
+
+  @Field(() => [AiCapability])
+  aiCapabilities: AiCapability[];
+
+  @Field(() => [Modality])
+  modalities: Modality[];
+
+  @Field(() => [Delivery])
+  delivery: Delivery[];
+
+  @Field(() => [Domain])
+  domains: Domain[];
+
   @Field(() => [PlatformType])
   platforms: PlatformType[];
 
-  @Field(() => [String])
-  integrationOptions: string[];
+  @Field(() => [IntegrationOption])
+  integrationOptions: IntegrationOption[];
 
   @Field(() => Int)
   popularityScore: number;

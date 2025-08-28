@@ -21,6 +21,8 @@ import { CookieService } from '../auth/services/cookie.service';
 import { ListedAiToolService } from './listed-ai-tool.service';
 import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
 import { UpdateListedAiToolInput } from './dtos/update-listed-ai-tool.input';
+
+import { PrismaService } from '@src/prisma/prisma.service';
 // import { Controller } from '@nestjs/common';
 
 @ObjectType()
@@ -36,6 +38,7 @@ export class ListedAiToolResolver {
   constructor(
     private readonly listedAiToolService: ListedAiToolService,
     private readonly cookieService: CookieService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Query(() => ListedAiToolArrayResponse)
@@ -78,6 +81,12 @@ export class ListedAiToolResolver {
     return res;
   }
 
+  @Query(() => ListedAiTool, { nullable: true })
+  async getListedAiToolBySlug(@Args('slug') slug: string) {
+    const res = await this.listedAiToolService.getListedAiToolBySlug(slug);
+    return res;
+  }
+
   @Mutation(() => ListedAiTool)
   @UseGuards(AuthGuard)
   async createListedAiTool(
@@ -86,6 +95,13 @@ export class ListedAiToolResolver {
   ) {
     const userId = Number(ctx.user.sub);
     return this.listedAiToolService.createListedAiTool(userId, data);
+  }
+  @Mutation(() => ListedAiTool)
+  async createListedAiToolFromArray(
+    @Args('userId', { type: () => Int, defaultValue: 1 }) userId: number,
+  ) {
+    console.log('userId', userId);
+    return this.listedAiToolService.createListedAiToolFromArray();
   }
 
   @Mutation(() => ListedAiTool)
