@@ -155,6 +155,7 @@ enum Delivery {
 }
 
 enum Domain {
+  AGRICULTURE
   AUDIO_MUSIC
   AUTOMATION
   BUSINESS
@@ -174,6 +175,7 @@ enum Domain {
   HUMAN_RESOURCES
   IMAGE_GENERATION
   LEGAL
+  MANUFACTURING
   MARKETING
   OPERATIONS
   OTHER
@@ -298,6 +300,12 @@ type ListedAiToolData {
   websiteUrl: String!
 }
 
+type ListedAiToolList {
+  data: [ListedAiToolData!]
+  error: GraphQLError
+  pagination: Pagination
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -395,12 +403,17 @@ enum PricingType {
 
 type Query {
   findInputSchemaByToolId(toolId: Float!): InputSchema!
+  getAiToolsByDomain(domain: String!, limit: Int! = 20): ListedAiToolList!
   getAllListedAiTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ListedAiToolArrayResponse!
   getAllTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ToolArrayResponse!
+  getFeaturedAiTools(limit: Int! = 10): ListedAiToolList!
   getGoogleAuthUrl: GoogleOauthUrl!
   getListedAiToolById(toolId: Float!): ListedAiTool
   getListedAiToolBySlug(slug: String!): ListedAiTool
   getListedAiToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ListedAiToolArrayResponse!
+  getListedAiToolsByUserType(pageNumber: Int! = 1, pageSize: Int! = 6, userType: ToolUserType!): ListedAiToolArrayResponse!
+  getListedAiToolsWithHighPopularityScore(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
+  getPopularAiTools(limit: Int! = 10): ListedAiToolList!
   getToolById(toolId: Float!): Tool
   getToolBySlug(slug: String!): Tool
   getToolMetaDataByToolId(toolId: Float!): ToolMetadata!
@@ -408,12 +421,35 @@ type Query {
   getUserByAccessToken(accessToken: String!): User
   getUserById(id: Float!): User
   getUsers: [User!]!
+  searchListedAiTools(input: SearchListedAiToolInput!): ListedAiToolList!
   sendVerificationEmail(email: String!, name: String!, token: String!): Boolean!
 }
 
 input ResetPasswordInput {
   password: String!
   token: String!
+}
+
+input SearchListedAiToolInput {
+  aiCapabilities: [AiCapability!]
+  aiTypes: [AiType!]
+  delivery: [Delivery!]
+  domains: [Domain!]
+  featured: Boolean
+  integrationOptions: [IntegrationOption!]
+  keywords: [String!]
+  maxPopularityScore: Int
+  minPopularityScore: Int
+  modalities: [Modality!]
+  pageNumber: Int! = 1
+  pageSize: Int! = 20
+  platforms: [PlatformType!]
+  pricingTypes: [PricingType!]
+  searchTerm: String
+  sortBy: String
+  sortOrder: String
+  toolUserTypes: [ToolUserType!]
+  verified: Boolean
 }
 
 input SignupInput {

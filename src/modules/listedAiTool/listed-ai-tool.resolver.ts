@@ -23,6 +23,7 @@ import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
 import { UpdateListedAiToolInput } from './dtos/update-listed-ai-tool.input';
 
 import { PrismaService } from '@src/prisma/prisma.service';
+import { ToolUserType } from '@src/models/global.enum';
 // import { Controller } from '@nestjs/common';
 
 @ObjectType()
@@ -58,6 +59,39 @@ export class ListedAiToolResolver {
       pageNumber,
       isSuperAdmin,
     ); // Issue is caused by the async return type. which is not required
+  }
+
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsWithHighPopularityScore(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('isSuperAdmin', {
+      type: () => Boolean,
+      defaultValue: false,
+      nullable: true,
+    }) // make it optional
+    isSuperAdmin: boolean,
+  ) {
+    return this.listedAiToolService.getListedAiToolsWithHighPopularityScore(
+      pageSize,
+      pageNumber,
+      isSuperAdmin,
+    );
+  }
+
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsByUserType(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('userType', { type: () => ToolUserType }) userType: ToolUserType,
+  ) {
+    return this.listedAiToolService.getListedAiToolsByUserType(
+      pageSize,
+      pageNumber,
+      userType,
+    );
   }
 
   @UseGuards(AuthGuard)

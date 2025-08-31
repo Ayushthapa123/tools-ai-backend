@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 // import { HostelData } from '@src/models/global.model';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
-import { UserType } from '@src/models/global.enum';
+import { ToolUserType, UserType } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
@@ -29,6 +29,59 @@ export class ListedAiToolService {
     const tools = await this.prisma.listedAiTool.findMany({
       skip,
       take,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+  async getListedAiToolsWithHighPopularityScore(
+    pageSize: number,
+    pageNumber: number,
+    isSuperAdmin: boolean,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        popularityScore: {
+          gt: 90,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+
+  async getListedAiToolsByUserType(
+    pageSize: number,
+    pageNumber: number,
+    userType: ToolUserType,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        toolUserTypes: {
+          has: userType,
+        },
+      },
     });
 
     return {
@@ -45,12 +98,16 @@ export class ListedAiToolService {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
     // superadmin should get all verified/non verified hostels but other should get only verified
+    // get in reverse order of createdAt
     const tools = await this.prisma.listedAiTool.findMany({
       where: {
         ownerId: userId,
       },
       skip,
       take,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return {
@@ -126,8 +183,8 @@ export class ListedAiToolService {
   }
   async createListedAiToolFromArray() {
     console.log('createListedAiToolFromArray method called');
-
-    const models = [
+    // list few ai tools for each usertype,domain, aitype, modality in data.ts file and get from there
+    const generalModels = [
       'GPT-4o', // 2024, multimodal, ChatGPT default
       'GPT-4 Turbo', // 2023, cheaper & faster GPT-4 variant
       'GPT-5', // 2025, next-gen OpenAI flagship
@@ -136,6 +193,34 @@ export class ListedAiToolService {
       'Gemini 1.5 Flash', // 2024, faster/cheaper Gemini variant
       'Mistral Large', // 2024, open weights + API model
       'Llama 3 70B', // 2024, Meta’s strongest open-weight model
+    ];
+    const studentModels = [
+      'Pi (Inflection)', // Conversational tutor, friendly for Q&A
+      'Perplexity AI Pro', // Research-focused, sources included
+      'ChatGPT Edu', // Affordable access for universities/students
+      'Socratic by Google', // Step-by-step learning, problem explanations
+      'DeepSeek Coder', // Coding-focused model, great for CS students
+    ];
+    const marketingModels = [
+      'Jasper AI', // Specialized in ad copy, social posts
+      'Copy.ai', // Content automation for marketing teams
+      'Writesonic (Chatsonic)', // SEO + marketing content generation
+      'Surfer AI', // Blog writing + SEO optimization
+      'MarketMuse', // Marketing research + long-form content
+    ];
+    const businessOwnerModels = [
+      'Cohere Command R+', // Business reasoning, retrieval-augmented
+      'Writer Enterprise', // Brand-safe AI for internal docs & marketing
+      'xAI Grok (premium)', // Market insights, Elon’s business-focused model
+      'Otter.ai', // Meeting summaries & team productivity
+      'Fireflies.ai', // Business meeting notes + workflows
+    ];
+
+    const models = [
+      ...generalModels,
+      ...studentModels,
+      ...marketingModels,
+      ...businessOwnerModels,
     ];
 
     try {
