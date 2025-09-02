@@ -56,7 +56,7 @@ export class CreateListedAiToolInput {
   keywords: string[];
 
   @Field(() => Int)
-  popularityScore: number;
+  popularityScore?: number;
 
   @Field(() => Boolean)
   featured: boolean;

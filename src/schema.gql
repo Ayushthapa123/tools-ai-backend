@@ -138,6 +138,20 @@ input CustomerAvatarGeneratorInput {
   businessName: String!
 }
 
+type DNGData {
+  category: String!
+  items: [DomainItem!]!
+}
+
+type DNGList {
+  data: [DNGData!]
+  error: GraphQLError
+  message: String
+  pagination: Pagination
+  personalizedGuide: String
+  success: Boolean
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -188,6 +202,19 @@ enum Domain {
   VIDEO_CREATION
   VIRTUAL_ASSISTANT
   WRITING
+}
+
+type DomainItem {
+  available: Boolean!
+  item: String!
+  price: Float
+}
+
+input DomainNameGeneratorInput {
+  businessDescription: String!
+  businessName: String!
+  customPrompt: String!
+  domainExtension: String!
 }
 
 type ForgotPasswordResponse {
@@ -340,6 +367,7 @@ type Mutation {
   deleteTool(toolId: Float!): Tool!
   forgotPassword(email: String!): ForgotPasswordResponse!
   getCustomerAvatar(input: CustomerAvatarGeneratorInput!): CAGList!
+  getDomainNames(input: DomainNameGeneratorInput!): DNGList!
   getTravelBudget(input: TravelBudgetCalculatorInput!): TBCList!
   getTravelChecklist(input: TravelChecklistGeneratorInput!): TCGList!
   getTravelDestination(input: TravelDestinationFinderInput!): TDFList!
