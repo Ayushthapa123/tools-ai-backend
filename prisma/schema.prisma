@@ -163,12 +163,17 @@ model ListedAiTool {
   verified         Boolean   @default(false)
 
   useCases         String[]  @default([]) // e.g., ["content creation", "customer support", "product recommendations"]
-  // usps
+  // usps 
+  usps             String[]  @default([]) // e.g., ["content creation", "customer support", "product recommendations"]
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id])
-  like Like[] 
+  like             Like[] 
 
   // add listed by /gemenai,user,gpt
+
+  listedBy ListedBy @default(GEMENAI) 
+
+  publishedAt DateTime?
 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -183,7 +188,11 @@ model ListedAiTool {
 
 // also store other informations for listed ai tool like contacts, socials etc.
 
-
+enum ListedBy {
+  GEMENAI
+  USER
+  GPT
+}
 
 enum PricingType {
   FREE

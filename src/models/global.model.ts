@@ -15,6 +15,7 @@ import {
   IntegrationOption,
   ToolUserType,
   Domain,
+  ListedBy,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -308,6 +309,9 @@ export class ListedAiToolData {
   @Field(() => [String])
   keywords: string[];
 
+  @Field(() => ListedBy)
+  listedBy: ListedBy;
+
   @Field(() => [PricingType])
   pricingType: PricingType[];
 
@@ -343,6 +347,12 @@ export class ListedAiToolData {
 
   @Field(() => [String])
   useCases: string[];
+
+  @Field(() => [String])
+  usps: string[];
+
+  @Field(() => Date, { nullable: true })
+  publishedAt?: Date;
 
   @Field(() => Date)
   createdAt: Date;

@@ -106,6 +106,30 @@ export class SearchListedAiToolService {
       whereConditions.verified = input.verified;
     }
 
+    // Filter by date range
+    if (input.startDate || input.endDate) {
+      whereConditions.createdAt = {};
+      if (input.startDate) {
+        const startDate = new Date(input.startDate);
+        if (!isNaN(startDate.getTime())) {
+          whereConditions.createdAt.gte = startDate;
+        }
+      }
+      if (input.endDate) {
+        const endDate = new Date(input.endDate);
+        if (!isNaN(endDate.getTime())) {
+          whereConditions.createdAt.lte = endDate;
+        }
+      }
+    }
+
+    // Filter by research mode (this might need to be implemented based on your business logic)
+    if (input.researchMode !== undefined) {
+      // Add your research mode logic here
+      // This could be based on a specific field or combination of fields
+      // For now, I'll leave it as a placeholder
+    }
+
     // Build order by clause
     let orderBy: any = {};
     if (input.sortBy) {
@@ -166,6 +190,8 @@ export class SearchListedAiToolService {
       };
     }
   }
+
+  // not used yet
 
   async getPopularAiTools(limit: number = 10) {
     try {

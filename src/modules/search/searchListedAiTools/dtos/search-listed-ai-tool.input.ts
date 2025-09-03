@@ -22,6 +22,9 @@ export class SearchListedAiToolInput {
   @Field({ nullable: true })
   searchTerm?: string;
 
+  @Field(() => [String], { nullable: true })
+  keywords?: string[];
+
   @Field(() => [ToolUserType], { nullable: true })
   toolUserTypes?: ToolUserType[];
 
@@ -40,17 +43,14 @@ export class SearchListedAiToolInput {
   @Field(() => [Delivery], { nullable: true })
   delivery?: Delivery[];
 
-  @Field(() => [Domain], { nullable: true })
-  domains?: Domain[];
-
   @Field(() => [PlatformType], { nullable: true })
   platforms?: PlatformType[];
 
   @Field(() => [IntegrationOption], { nullable: true })
   integrationOptions?: IntegrationOption[];
 
-  @Field(() => [String], { nullable: true })
-  keywords?: string[];
+  @Field(() => [Domain], { nullable: true })
+  domains?: Domain[];
 
   @Field(() => Int, { nullable: true })
   minPopularityScore?: number;
@@ -69,4 +69,13 @@ export class SearchListedAiToolInput {
 
   @Field({ nullable: true })
   sortOrder?: 'asc' | 'desc';
+
+  @Field(() => Date, { nullable: true })
+  startDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  endDate?: Date;
+
+  @Field({ nullable: true })
+  researchMode?: boolean;
 }

@@ -5,6 +5,7 @@ import {
   Delivery,
   Domain,
   IntegrationOption,
+  ListedBy,
   Modality,
   PlatformType,
   PricingType,
@@ -54,6 +55,8 @@ export class CreateListedAiToolInput {
 
   @Field(() => [String])
   keywords: string[];
+  @Field(() => ListedBy)
+  listedBy: ListedBy;
 
   @Field(() => Int)
   popularityScore?: number;
@@ -66,4 +69,10 @@ export class CreateListedAiToolInput {
 
   @Field(() => [String])
   useCases: string[];
+
+  @Field(() => [String])
+  usps: string[];
+
+  @Field(() => Date, { nullable: true })
+  publishedAt?: Date;
 }

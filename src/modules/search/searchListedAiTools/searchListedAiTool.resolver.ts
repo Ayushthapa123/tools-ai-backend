@@ -2,7 +2,7 @@ import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { SearchListedAiToolService } from './searchListedAiTool.service';
 import { ListedAiToolList, ListedAiToolData } from '@src/models/global.model';
 import { SearchListedAiToolInput } from './dtos/search-listed-ai-tool.input';
-import { Domain } from '@prisma/client';
+import { Domain } from '@src/models/global.enum';
 
 @Resolver(() => ListedAiToolData)
 export class SearchListedAiToolResolver {
@@ -15,6 +15,7 @@ export class SearchListedAiToolResolver {
     return this.searchListedAiToolService.searchListedAiTools(input);
   }
 
+  // not used yet
   @Query(() => ListedAiToolList)
   async getPopularAiTools(
     @Args('limit', { type: () => Int, defaultValue: 10 }) limit: number,

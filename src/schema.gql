@@ -79,15 +79,18 @@ input CreateListedAiToolInput {
   featured: Boolean!
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
+  listedBy: ListedBy!
   logoUrl: String!
   modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
   popularityScore: Int!
   pricingType: [PricingType!]!
+  publishedAt: DateTime
   shortDescription: String!
   toolUserTypes: [ToolUserType!]!
   useCases: [String!]!
+  usps: [String!]!
   verified: Boolean!
   websiteUrl: String!
 }
@@ -312,17 +315,20 @@ type ListedAiToolData {
   id: ID!
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
+  listedBy: ListedBy!
   logoUrl: String!
   modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
   popularityScore: Int!
   pricingType: [PricingType!]!
+  publishedAt: DateTime
   shortDescription: String!
   slug: String!
   toolUserTypes: [ToolUserType!]!
   updatedAt: DateTime!
   useCases: [String!]!
+  usps: [String!]!
   verified: Boolean!
   websiteUrl: String!
 }
@@ -331,6 +337,12 @@ type ListedAiToolList {
   data: [ListedAiToolData!]
   error: GraphQLError
   pagination: Pagination
+}
+
+enum ListedBy {
+  GEMENAI
+  GPT
+  USER
 }
 
 input LoginInput {
@@ -463,6 +475,7 @@ input SearchListedAiToolInput {
   aiTypes: [AiType!]
   delivery: [Delivery!]
   domains: [Domain!]
+  endDate: DateTime
   featured: Boolean
   integrationOptions: [IntegrationOption!]
   keywords: [String!]
@@ -473,9 +486,11 @@ input SearchListedAiToolInput {
   pageSize: Int! = 20
   platforms: [PlatformType!]
   pricingTypes: [PricingType!]
+  researchMode: Boolean
   searchTerm: String
   sortBy: String
   sortOrder: String
+  startDate: DateTime
   toolUserTypes: [ToolUserType!]
   verified: Boolean
 }
@@ -703,15 +718,18 @@ input UpdateListedAiToolInput {
   id: Int!
   integrationOptions: [IntegrationOption!]
   keywords: [String!]
+  listedBy: ListedBy
   logoUrl: String
   modalities: [Modality!]
   name: String
   platforms: [PlatformType!]
   popularityScore: Int
   pricingType: [PricingType!]
+  publishedAt: DateTime
   shortDescription: String
   toolUserTypes: [ToolUserType!]
   useCases: [String!]
+  usps: [String!]
   verified: Boolean
   websiteUrl: String
 }

@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 // import { HostelData } from '@src/models/global.model';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
-import { ToolUserType, UserType } from '@src/models/global.enum';
+import { ToolUserType, UserType, ListedBy } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
-import models from '@src/data/models';
+import aiTools from '@src/data/ai-tools-seed';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -187,7 +187,7 @@ export class ListedAiToolService {
     // list few ai tools for each usertype,domain, aitype, modality in data.ts file and get from there
 
     try {
-      for (const model of models) {
+      for (const model of aiTools) {
         console.log(`Processing model: ${model}`);
 
         const modelInDb = await this.prisma.listedAiTool.findFirst({
@@ -210,7 +210,7 @@ export class ListedAiToolService {
         FIELD SPECIFICATIONS (with examples and constraints):
 
         - shortDescription: string - Write a realistic, specific description (1-2 sentences) that explains what ${model} actually does. Example: "Advanced multimodal AI model that can understand and generate text, images, and code with human-like reasoning capabilities."
-
+        - publishedAt: date - If this is a real tool, provide the actual published date. If unknown, use null. Example: "2025-01-01" or null
 
         - websiteUrl: string - If this is a real tool, provide the actual website. If unknown, use empty string "". Example: "https://openai.com" or ""
 
@@ -244,8 +244,8 @@ export class ListedAiToolService {
 
         - domains: Domain[] - Select  domains where ${model} would be most useful. Choose from: AGRICULTURE, MANUFACTURING, MARKETING, DEVELOPMENT, BUSINESS, DESIGN, FINANCE, HEALTHCARE, EDUCATION, PRODUCTIVITY, RESEARCH, LEGAL, ENTERTAINMENT, CUSTOMER_SUPPORT, SALES, DATA_ANALYTICS, HUMAN_RESOURCES, SECURITY, OPERATIONS, CONTENT_CREATION, ECOMMERCE, GAMING, SOCIAL_MEDIA, VIDEO_CREATION, AUDIO_MUSIC, WRITING, TRANSLATION, IMAGE_GENERATION, VIRTUAL_ASSISTANT, AUTOMATION, CHATBOT, CLOUD, OTHER
 
-        - useCases: string[] - Write 3-4 specific, realistic use cases that ${model} can actually perform. Example: ["Generate marketing copy for social media campaigns", "Analyze and summarize research papers", "Create code snippets for web development", "Generate product descriptions for e-commerce"]
-
+        - useCases: string[] - Write 3-4 specific, realistic use cases that ${model} can actually perform.Try to give the most valuable use cases. Example: ["Generate marketing copy for social media campaigns", "Analyze and summarize research papers", "Create code snippets for web development"]
+        - usps: string[] - Write 1-2 specific, realistic usps(unique selling propositions) that ${model} can actually perform.Try to give the most valuable usps of this tool.Basically what is the single thing it can do better then any other tools out there. Example: ["It outperforms gpt-4 in terms of cost "]
 
         - popularityScore: number - Assign a realistic popularity score (0-100) based on ${model}'s actual market presence and usage. Consider: Is it widely known? Is it actively used? Is it cutting-edge?
 
@@ -323,6 +323,9 @@ export class ListedAiToolService {
           featured: false,
           verified: false,
           popularityScore: aiData.popularityScore || 0,
+          listedBy: ListedBy.GEMENAI,
+          usps: aiData.usps || [],
+          publishedAt: aiData.publishedAt || null,
         };
 
         console.log('Prepared DB data:', ourData);

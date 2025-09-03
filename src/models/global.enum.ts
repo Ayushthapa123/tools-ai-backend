@@ -38,6 +38,12 @@ export enum PricingType {
   TRIAL = 'TRIAL',
 }
 
+export enum ListedBy {
+  GEMENAI = 'GEMENAI',
+  USER = 'USER',
+  GPT = 'GPT',
+}
+
 export enum AiType {
   GENERATIVE_AI = 'GENERATIVE_AI',
   CONVERSATIONAL_AI = 'CONVERSATIONAL_AI',
@@ -287,6 +293,10 @@ registerEnumType(ToolStatus, {
 
 registerEnumType(VisibilityType, {
   name: 'VisibilityType',
+});
+
+registerEnumType(ListedBy, {
+  name: 'ListedBy',
 });
 
 // Legacy enums for backward compatibility
