@@ -253,10 +253,10 @@ export class ListedAiToolService {
         - popularityScore: number - Assign a realistic popularity score (0-100) based on ${model}'s actual market presence and usage. Consider: Is it widely known? Is it actively used? Is it cutting-edge?
 
         VALIDATION RULES:
-        1. All enum fields must use exact values from the lists above
+        1. All enum fields must use exact values from the corresponding lists above
         2. Be realistic - don't overstate capabilities
         3. Consider ${model}'s actual features and limitations
-        4. Ensure data consistency across related fields
+        4. Ensure data consistency across related fields. Carefully choose the enum values. Only give values that are actually present in the provided lists.
         5. Popularity score should reflect actual market reality
 
         Return ONLY valid JSON matching this structure. DO NOT add extra text or explanation.

@@ -132,13 +132,13 @@ export class SearchListedAiToolService {
         if (input.startDate) {
           const startDate = new Date(input.startDate);
           if (!isNaN(startDate.getTime())) {
-            whereConditions.createdAt.gte = startDate;
+            whereConditions.publishedAt.gte = startDate;
           }
         }
         if (input.endDate) {
           const endDate = new Date(input.endDate);
           if (!isNaN(endDate.getTime())) {
-            whereConditions.createdAt.lte = endDate;
+            whereConditions.publishedAt.lte = endDate;
           }
         }
       }
