@@ -34,7 +34,6 @@ enum AiCapability {
 }
 
 enum AiType {
-  AI_AGENT
   ANALYTICS_AI
   AUTOMATION_AI
   CODE_AI
@@ -86,6 +85,7 @@ input CreateListedAiToolInput {
   platforms: [PlatformType!]!
   popularityScore: Int!
   pricingType: [PricingType!]!
+  productType: [ProductType!]!
   publishedAt: DateTime
   shortDescription: String!
   toolUserTypes: [ToolUserType!]!
@@ -322,6 +322,7 @@ type ListedAiToolData {
   platforms: [PlatformType!]!
   popularityScore: Int!
   pricingType: [PricingType!]!
+  productType: [ProductType!]!
   publishedAt: DateTime
   shortDescription: String!
   slug: String!
@@ -439,6 +440,19 @@ enum PricingType {
   FREEMIUM
   PAID
   TRIAL
+}
+
+enum ProductType {
+  AGENT
+  APPLICATION
+  DATASET
+  FRAMEWORK
+  HARDWARE
+  MODEL
+  OTHER
+  SERVICE
+  TEMPLATE
+  TOOLKIT
 }
 
 type Query {
@@ -725,6 +739,7 @@ input UpdateListedAiToolInput {
   platforms: [PlatformType!]
   popularityScore: Int
   pricingType: [PricingType!]
+  productType: [ProductType!]
   publishedAt: DateTime
   shortDescription: String
   toolUserTypes: [ToolUserType!]

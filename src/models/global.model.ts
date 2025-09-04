@@ -16,6 +16,7 @@ import {
   ToolUserType,
   Domain,
   ListedBy,
+  ProductType,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -317,6 +318,9 @@ export class ListedAiToolData {
 
   @Field(() => [AiType])
   aiType: AiType[];
+
+  @Field(() => [ProductType])
+  productType: ProductType[];
 
   @Field(() => [AiCapability])
   aiCapabilities: AiCapability[];

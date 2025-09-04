@@ -56,7 +56,20 @@ export enum AiType {
   CODE_AI = 'CODE_AI',
   MARKETING_AI = 'MARKETING_AI',
   SECURITY_AI = 'SECURITY_AI',
-  AI_AGENT = 'AI_AGENT',
+  // AI_AGENT = 'AI_AGENT',
+  OTHER = 'OTHER',
+}
+
+export enum ProductType {
+  APPLICATION = 'APPLICATION',
+  MODEL = 'MODEL',
+  DATASET = 'DATASET',
+  AGENT = 'AGENT',
+  FRAMEWORK = 'FRAMEWORK',
+  TOOLKIT = 'TOOLKIT',
+  TEMPLATE = 'TEMPLATE',
+  SERVICE = 'SERVICE',
+  HARDWARE = 'HARDWARE',
   OTHER = 'OTHER',
 }
 
@@ -253,6 +266,10 @@ registerEnumType(PricingType, {
 
 registerEnumType(AiType, {
   name: 'AiType',
+});
+
+registerEnumType(ProductType, {
+  name: 'ProductType',
 });
 
 registerEnumType(AiCapability, {

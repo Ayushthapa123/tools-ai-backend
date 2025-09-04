@@ -7,7 +7,7 @@ import { ToolUserType, UserType, ListedBy } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
-import aiTools from '@src/data/ai-tools-seed';
+import { aiTools } from '@src/data/ai-tools-seed';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -174,6 +174,7 @@ export class ListedAiToolService {
         error: null,
       };
     } catch (error) {
+      console.error('Error in createListedAiTool:', error);
       return {
         data: null,
         error: {
@@ -230,7 +231,9 @@ export class ListedAiToolService {
         - pricingType: PricingType[] - Select 1-2 realistic pricing models. Choose from: FREE, FREEMIUM, PAID, CUSTOM, TRIAL
           For ${model}, consider: Is it free to use? Does it have a freemium tier? Is it paid-only?
 
-        - aiType: AiType[] - Select  AI types that accurately describe ${model}. Choose from: GENERATIVE_AI, CONVERSATIONAL_AI, COMPUTER_VISION, SPEECH_AI, RECOMMENDATION_AI, AUTOMATION_AI, ANALYTICS_AI, SEARCH_RETRIEVAL_AI, CODE_AI, MARKETING_AI, SECURITY_AI, AI_AGENT, OTHER
+        - aiType: AiType[] - Select  AI types that accurately describe ${model}. Choose from: GENERATIVE_AI, CONVERSATIONAL_AI, COMPUTER_VISION, SPEECH_AI, RECOMMENDATION_AI, AUTOMATION_AI, ANALYTICS_AI, SEARCH_RETRIEVAL_AI, CODE_AI, MARKETING_AI, SECURITY_AI, OTHER
+
+        - productType: ProductType[] - Select  product types that ${model} actually is. Choose from: APPLICATION, MODEL, DATASET, AGENT, FRAMEWORK, TOOLKIT, TEMPLATE, SERVICE, HARDWARE, OTHER
 
         - aiCapabilities: AiCapability[] - Select  capabilities that ${model} actually has. Choose from: FOUNDATION_MODEL, GENERATIVE_TEXT, GENERATIVE_IMAGE, GENERATIVE_AUDIO, GENERATIVE_VIDEO, MULTIMODAL_UNDERSTANDING, NLP_UNDERSTANDING, SEARCH_RETRIEVAL, KNOWLEDGE_AI, COMPUTER_VISION, OCR_DOCUMENT_AI, SPEECH_ASR, SPEECH_TTS, SPEAKER_TECH, RECOMMENDATION, TIME_SERIES_FORECASTING, OPTIMIZATION_PLANNING, ANOMALY_DETECTION, CAUSAL_INFERENCE, ANALYTICS_BI, CODE_AI, SECURITY_ML, PRIVACY_PRESERVING_ML, MLOPS_OBSERVABILITY, SYNTHETIC_DATA, ROBOTICS_CONTROL, EDGE_AI, OTHER
 
@@ -245,7 +248,7 @@ export class ListedAiToolService {
         - domains: Domain[] - Select  domains where ${model} would be most useful. Choose from: AGRICULTURE, MANUFACTURING, MARKETING, DEVELOPMENT, BUSINESS, DESIGN, FINANCE, HEALTHCARE, EDUCATION, PRODUCTIVITY, RESEARCH, LEGAL, ENTERTAINMENT, CUSTOMER_SUPPORT, SALES, DATA_ANALYTICS, HUMAN_RESOURCES, SECURITY, OPERATIONS, CONTENT_CREATION, ECOMMERCE, GAMING, SOCIAL_MEDIA, VIDEO_CREATION, AUDIO_MUSIC, WRITING, TRANSLATION, IMAGE_GENERATION, VIRTUAL_ASSISTANT, AUTOMATION, CHATBOT, CLOUD, OTHER
 
         - useCases: string[] - Write 3-4 specific, realistic use cases that ${model} can actually perform.Try to give the most valuable use cases. Example: ["Generate marketing copy for social media campaigns", "Analyze and summarize research papers", "Create code snippets for web development"]
-        - usps: string[] - Write 1-2 specific, realistic usps(unique selling propositions) that ${model} can actually perform.Try to give the most valuable usps of this tool.Basically what is the single thing it can do better then any other tools out there. Example: ["It outperforms gpt-4 in terms of cost "]
+        - usps: string[] - Write 1-2 specific, realistic usps(unique selling propositions) that ${model} can actually perform.Try to give the most valuable usps of this tool.Basically what is the single thing it can do better then any other tools out there. Example: ["It outperforms gpt-4 in terms of cost "]. If possible just give only one and as short as possible.
 
         - popularityScore: number - Assign a realistic popularity score (0-100) based on ${model}'s actual market presence and usage. Consider: Is it widely known? Is it actively used? Is it cutting-edge?
 
@@ -313,6 +316,7 @@ export class ListedAiToolService {
           toolUserTypes: aiData.toolUserTypes || [],
           pricingType: aiData.pricingType || [],
           aiType: aiData.aiType || [],
+          productType: aiData.productType || [],
           aiCapabilities: aiData.aiCapabilities || [],
           modalities: aiData.modalities || [],
           delivery: aiData.delivery || [],
@@ -325,7 +329,7 @@ export class ListedAiToolService {
           popularityScore: aiData.popularityScore || 0,
           listedBy: ListedBy.GEMENAI,
           usps: aiData.usps || [],
-          publishedAt: aiData.publishedAt || null,
+          publishedAt: aiData.publishedAt ? new Date(aiData.publishedAt) : null,
         };
 
         console.log('Prepared DB data:', ourData);

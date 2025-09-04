@@ -9,6 +9,7 @@ import {
   Modality,
   PlatformType,
   PricingType,
+  ProductType,
   ToolUserType,
 } from '@src/models/global.enum';
 
@@ -31,6 +32,9 @@ export class CreateListedAiToolInput {
 
   @Field(() => [AiType])
   aiType: AiType[];
+
+  @Field(() => [ProductType])
+  productType: ProductType[];
 
   @Field(() => [AiCapability])
   aiCapabilities: AiCapability[];

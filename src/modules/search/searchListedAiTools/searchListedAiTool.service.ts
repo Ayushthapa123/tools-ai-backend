@@ -13,121 +13,142 @@ export class SearchListedAiToolService {
     const pageNumber = input.pageNumber || 1;
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
+    const isValidFilter =
+      input.toolUserTypes.length > 0 ||
+      input.pricingTypes.length > 0 ||
+      input.aiTypes.length > 0 ||
+      input.aiCapabilities.length > 0 ||
+      input.modalities.length > 0 ||
+      input.delivery.length > 0 ||
+      input.domains.length > 0 ||
+      input.platforms.length > 0 ||
+      input.integrationOptions.length > 0 ||
+      input.minPopularityScore != 0 ||
+      input.maxPopularityScore != 100 ||
+      input.featured ||
+      input.verified ||
+      input.startDate ||
+      input.endDate;
+    //  || input.researchMode;
+
+    console.log('isValidFilter', isValidFilter, input.keywords);
 
     // Build where conditions for filtering
     const whereConditions: any = {};
 
-    // Text search in name, description, and keywords
-    // if (input.searchTerm && input.searchTerm.trim()) {
-    //   whereConditions.OR = [
-    //     { name: { contains: input.searchTerm.trim(), mode: 'insensitive' } },
-    //     {
-    //       shortDescription: {
-    //         contains: input.searchTerm.trim(),
-    //         mode: 'insensitive',
-    //       },
-    //     },
-    //   ];
-    // }
+    // If no valid filters are applied, search keywords in keywords and shortDescription fields
+    if (!isValidFilter && input.keywords && input.keywords.length > 0) {
+      const keywordSearchConditions = [];
 
-    // Filter by tool user types - check if array contains any of the specified types
-    if (input.toolUserTypes && input.toolUserTypes.length > 0) {
-      whereConditions.toolUserTypes = { hasSome: input.toolUserTypes };
-    }
-
-    // Filter by pricing types - check if array contains any of the specified types
-    if (input.pricingTypes && input.pricingTypes.length > 0) {
-      whereConditions.pricingType = { hasSome: input.pricingTypes };
-    }
-
-    // Filter by AI types - check if array contains any of the specified types
-    if (input.aiTypes && input.aiTypes.length > 0) {
-      whereConditions.aiType = { hasSome: input.aiTypes };
-    }
-
-    // Filter by AI capabilities - check if array contains any of the specified types
-    if (input.aiCapabilities && input.aiCapabilities.length > 0) {
-      whereConditions.aiCapabilities = { hasSome: input.aiCapabilities };
-    }
-
-    // Filter by modalities - check if array contains any of the specified types
-    if (input.modalities && input.modalities.length > 0) {
-      whereConditions.modalities = { hasSome: input.modalities };
-    }
-
-    // Filter by delivery methods - check if array contains any of the specified types
-    if (input.delivery && input.delivery.length > 0) {
-      whereConditions.delivery = { hasSome: input.delivery };
-    }
-
-    // Filter by domains - check if array contains any of the specified types
-    if (input.domains && input.domains.length > 0) {
-      whereConditions.domains = { hasSome: input.domains };
-    }
-
-    // Filter by platforms - check if array contains any of the specified types
-    if (input.platforms && input.platforms.length > 0) {
-      whereConditions.platforms = { hasSome: input.platforms };
-    }
-
-    // Filter by integration options - check if array contains any of the specified types
-    if (input.integrationOptions && input.integrationOptions.length > 0) {
-      whereConditions.integrationOptions = {
-        hasSome: input.integrationOptions,
-      };
-    }
-
-    // Filter by keywords - check if array contains any of the specified keywords
-    if (input.keywords && input.keywords.length > 0) {
-      whereConditions.keywords = { hasSome: input.keywords };
-    }
-
-    // Filter by popularity score range
-    if (
-      input.minPopularityScore !== undefined ||
-      input.maxPopularityScore !== undefined
-    ) {
-      whereConditions.popularityScore = {};
-      if (input.minPopularityScore !== undefined) {
-        whereConditions.popularityScore.gte = input.minPopularityScore;
+      // Search each keyword in the keywords array and shortDescription
+      for (const keyword of input.keywords) {
+        keywordSearchConditions.push(
+          // Search in the keywords array field
+          { keywords: { has: keyword } },
+          // Search in shortDescription field
+          { shortDescription: { contains: keyword, mode: 'insensitive' } },
+        );
       }
-      if (input.maxPopularityScore !== undefined) {
-        whereConditions.popularityScore.lte = input.maxPopularityScore;
+
+      whereConditions.OR = keywordSearchConditions;
+    }
+
+    // Apply filters only if isValidFilter is true
+    if (isValidFilter) {
+      // Filter by tool user types - check if array contains any of the specified types
+      if (input.toolUserTypes && input.toolUserTypes.length > 0) {
+        whereConditions.toolUserTypes = { hasSome: input.toolUserTypes };
       }
-    }
 
-    // Filter by featured status
-    if (input.featured !== undefined) {
-      whereConditions.featured = input.featured;
-    }
+      // Filter by pricing types - check if array contains any of the specified types
+      if (input.pricingTypes && input.pricingTypes.length > 0) {
+        whereConditions.pricingType = { hasSome: input.pricingTypes };
+      }
 
-    // Filter by verified status
-    if (input.verified !== undefined) {
-      whereConditions.verified = input.verified;
-    }
+      // Filter by AI types - check if array contains any of the specified types
+      if (input.aiTypes && input.aiTypes.length > 0) {
+        whereConditions.aiType = { hasSome: input.aiTypes };
+      }
 
-    // Filter by date range
-    if (input.startDate || input.endDate) {
-      whereConditions.createdAt = {};
-      if (input.startDate) {
-        const startDate = new Date(input.startDate);
-        if (!isNaN(startDate.getTime())) {
-          whereConditions.createdAt.gte = startDate;
+      // Filter by AI capabilities - check if array contains any of the specified types
+      if (input.aiCapabilities && input.aiCapabilities.length > 0) {
+        whereConditions.aiCapabilities = { hasSome: input.aiCapabilities };
+      }
+
+      // Filter by modalities - check if array contains any of the specified types
+      if (input.modalities && input.modalities.length > 0) {
+        whereConditions.modalities = { hasSome: input.modalities };
+      }
+
+      // Filter by delivery methods - check if array contains any of the specified types
+      if (input.delivery && input.delivery.length > 0) {
+        whereConditions.delivery = { hasSome: input.delivery };
+      }
+
+      // Filter by domains - check if array contains any of the specified types
+      if (input.domains && input.domains.length > 0) {
+        whereConditions.domains = { hasSome: input.domains };
+      }
+
+      // Filter by platforms - check if array contains any of the specified types
+      if (input.platforms && input.platforms.length > 0) {
+        whereConditions.platforms = { hasSome: input.platforms };
+      }
+
+      // Filter by integration options - check if array contains any of the specified types
+      if (input.integrationOptions && input.integrationOptions.length > 0) {
+        whereConditions.integrationOptions = {
+          hasSome: input.integrationOptions,
+        };
+      }
+
+      // Filter by popularity score range
+      if (
+        input.minPopularityScore !== undefined ||
+        input.maxPopularityScore !== undefined
+      ) {
+        whereConditions.popularityScore = {};
+        if (input.minPopularityScore !== undefined) {
+          whereConditions.popularityScore.gte = input.minPopularityScore;
+        }
+        if (input.maxPopularityScore !== undefined) {
+          whereConditions.popularityScore.lte = input.maxPopularityScore;
         }
       }
-      if (input.endDate) {
-        const endDate = new Date(input.endDate);
-        if (!isNaN(endDate.getTime())) {
-          whereConditions.createdAt.lte = endDate;
+
+      // Filter by featured status
+      if (input.featured !== undefined) {
+        whereConditions.featured = input.featured;
+      }
+
+      // Filter by verified status
+      if (input.verified !== undefined) {
+        whereConditions.verified = input.verified;
+      }
+
+      // Filter by date range
+      if (input.startDate || input.endDate) {
+        whereConditions.createdAt = {};
+        if (input.startDate) {
+          const startDate = new Date(input.startDate);
+          if (!isNaN(startDate.getTime())) {
+            whereConditions.createdAt.gte = startDate;
+          }
+        }
+        if (input.endDate) {
+          const endDate = new Date(input.endDate);
+          if (!isNaN(endDate.getTime())) {
+            whereConditions.createdAt.lte = endDate;
+          }
         }
       }
-    }
 
-    // Filter by research mode (this might need to be implemented based on your business logic)
-    if (input.researchMode !== undefined) {
-      // Add your research mode logic here
-      // This could be based on a specific field or combination of fields
-      // For now, I'll leave it as a placeholder
+      // Filter by research mode (this might need to be implemented based on your business logic)
+      if (input.researchMode !== undefined) {
+        // Add your research mode logic here
+        // This could be based on a specific field or combination of fields
+        // For now, I'll leave it as a placeholder
+      }
     }
 
     // Build order by clause

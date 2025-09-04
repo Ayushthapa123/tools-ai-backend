@@ -147,6 +147,7 @@ model ListedAiTool {
   keywords         String[]  @default([])
   toolUserTypes        ToolUserType[]  @default([]) // e.g., ["developer", "writer"]
 
+  productType      ProductType[] @default([]) // e.g., ["application", "model", "dataset", "agent", "framework", "toolkit", "template", "service", "hardware"]
   pricingType      PricingType[]    // "free" | "freemium" | "paid" | "custom" | "trial"
   aiType           AiType[] @default([]) 
   aiCapabilities   AiCapability[] @default([]) 
@@ -201,6 +202,21 @@ enum PricingType {
   CUSTOM
   TRIAL
 }
+
+// product type 
+enum ProductType {
+  APPLICATION              // General-purpose software or SaaS product
+  MODEL            // Pre-trained or foundation model (GPT-4, Stable Diffusion, LLaMA)
+  DATASET          // Dataset for ML/AI use
+  AGENT            // Autonomous or semi-autonomous AI agent
+  FRAMEWORK        // Developer framework (LangChain, AutoGen, etc.)
+  TOOLKIT          // Bundle of utilities or specialized functions
+  TEMPLATE         // Prompts, workflows, no-code starter kits
+  SERVICE          // Consulting, managed services, custom integrations
+  HARDWARE         // AI-enabled hardware (edge devices, wearables, IoT)
+  OTHER            // Catch-all
+}
+
 // high level ai type
 enum AiType {
   GENERATIVE_AI        // Text, image, audio, or video generation
@@ -214,7 +230,7 @@ enum AiType {
   CODE_AI              // Code generation, debugging
   MARKETING_AI         // AI for marketing automation and insights
   SECURITY_AI          // Threat detection, fraud prevention 
-  AI_AGENT             // AI agents, multi-agent systems
+  // AI_AGENT             // AI agents, multi-agent systems
 
   OTHER
 }
@@ -376,7 +392,7 @@ enum PlatformType {
   OTHER
 }
 
-// HOW it’s shipped
+// HOW it’s shipped Delivery or Product Type
 enum Delivery {
   SAAS
   API
