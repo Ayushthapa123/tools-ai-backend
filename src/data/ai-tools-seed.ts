@@ -3,7 +3,7 @@
 // 30 for each ai type
 // 30 for each modality
 
-const generalAiTools = [
+const popularAiTools = [
   'GPT-4o', // 2024, multimodal, ChatGPT default
   'GPT-4 Turbo', // 2023, cheaper & faster GPT-4 variant
   'GPT-5', // 2025, next-gen OpenAI flagship
@@ -59,7 +59,7 @@ const businessOwnerAiTools = [
 ];
 
 const aiTools = [
-  ...generalAiTools,
+  ...popularAiTools,
   ...studentAiTools,
   ...marketingAiTools,
   ...businessOwnerAiTools,

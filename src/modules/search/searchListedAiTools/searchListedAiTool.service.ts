@@ -18,17 +18,17 @@ export class SearchListedAiToolService {
     const whereConditions: any = {};
 
     // Text search in name, description, and keywords
-    if (input.searchTerm && input.searchTerm.trim()) {
-      whereConditions.OR = [
-        { name: { contains: input.searchTerm.trim(), mode: 'insensitive' } },
-        {
-          shortDescription: {
-            contains: input.searchTerm.trim(),
-            mode: 'insensitive',
-          },
-        },
-      ];
-    }
+    // if (input.searchTerm && input.searchTerm.trim()) {
+    //   whereConditions.OR = [
+    //     { name: { contains: input.searchTerm.trim(), mode: 'insensitive' } },
+    //     {
+    //       shortDescription: {
+    //         contains: input.searchTerm.trim(),
+    //         mode: 'insensitive',
+    //       },
+    //     },
+    //   ];
+    // }
 
     // Filter by tool user types - check if array contains any of the specified types
     if (input.toolUserTypes && input.toolUserTypes.length > 0) {
