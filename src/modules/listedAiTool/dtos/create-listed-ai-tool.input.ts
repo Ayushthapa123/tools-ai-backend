@@ -77,6 +77,9 @@ export class CreateListedAiToolInput {
   @Field(() => [String])
   usps: string[];
 
+  @Field(() => [String])
+  features: string[];
+
   @Field(() => Date, { nullable: true })
   publishedAt?: Date;
 }

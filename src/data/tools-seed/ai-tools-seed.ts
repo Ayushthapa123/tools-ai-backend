@@ -1,3 +1,5 @@
+import { aiToolsWithProductType } from './product-type';
+
 const foundationModels = [
   'GPT-4o', // 2024, multimodal, ChatGPT default
   'GPT-4 Turbo', // 2023, cheaper & faster GPT-4 variant
@@ -183,11 +185,12 @@ const businessOwnerAiTools = [
 
 // Combine all
 const aiTools = [
-  ...foundationModels,
-  ...popularAiTools,
-  ...studentAiTools,
-  ...marketingAiTools,
-  ...businessOwnerAiTools,
+  // ...foundationModels,
+  // ...popularAiTools,
+  // ...studentAiTools,
+  // ...marketingAiTools,
+  // ...businessOwnerAiTools,
+  ...aiToolsWithProductType,
 ];
 
 export {

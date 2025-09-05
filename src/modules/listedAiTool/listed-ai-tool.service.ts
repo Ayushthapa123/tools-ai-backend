@@ -7,7 +7,7 @@ import { ToolUserType, UserType, ListedBy } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
-import { aiTools } from '@src/data/ai-tools-seed';
+import { aiTools } from '@src/data/tools-seed/ai-tools-seed';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -26,10 +26,11 @@ export class ListedAiToolService {
   ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
-    // superadmin should get all verified/non verified hostels but other should get only verified
+    // superadmin should get all verified/non verified tools but other should get only verified
     const tools = await this.prisma.listedAiTool.findMany({
       skip,
       take,
+      where: isSuperAdmin ? {} : { verified: true },
       orderBy: {
         createdAt: 'desc',
       },
@@ -47,7 +48,7 @@ export class ListedAiToolService {
   ) {
     const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
-    // superadmin should get all verified/non verified hostels but other should get only verified
+    // superadmin should get all verified/non verified tools but other should get only verified
     const tools = await this.prisma.listedAiTool.findMany({
       skip,
       take,
@@ -55,9 +56,10 @@ export class ListedAiToolService {
         popularityScore: {
           gt: 84,
         },
+        ...(isSuperAdmin ? {} : { verified: true }),
       },
       orderBy: {
-        createdAt: 'desc',
+        popularityScore: 'desc',
       },
     });
 
@@ -187,6 +189,10 @@ export class ListedAiToolService {
     console.log('createListedAiToolFromArray method called');
     // list few ai tools for each usertype,domain, aitype, modality in data.ts file and get from there
 
+    let successCount = 0;
+    let errorCount = 0;
+    const errors: string[] = [];
+
     try {
       for (const model of aiTools) {
         console.log(`Processing model: ${model}`);
@@ -202,70 +208,145 @@ export class ListedAiToolService {
 
         console.log(`${model} not in the database`);
 
-        // Prompt: instruct AI to generate full schema-compliant JSON
+        // Enhanced prompt for more accurate AI tool data generation
         const prompt = `
-        You are an AI expert creating realistic data for an AI tool named "${model}". Generate JSON data that accurately represents this tool's capabilities and characteristics.
+        You are an expert AI researcher and data analyst specializing in AI tools and models. Your task is to generate comprehensive, accurate data for the AI tool "${model}".
 
-        CONTEXT: ${model} is a state-of-the-art AI model. Consider its actual capabilities when generating data.
+        🎯 PRIMARY OBJECTIVE: Create realistic, factually accurate data that represents ${model}'s actual capabilities, market position, and characteristics.
 
-        FIELD SPECIFICATIONS (with examples and constraints):
+        📋 TOOL ANALYSIS FRAMEWORK:
+        Before generating data, consider these aspects of "${model}":
+        1. What type of AI tool/model is it? (Foundation model, application, service, etc.)
+        2. Who are its primary users? (Developers, businesses, consumers, etc.)
+        3. What are its core capabilities? (Text generation, image creation, coding, etc.)
+        4. How is it typically accessed? (API, web app, mobile app, etc.)
+        5. What makes it unique in the market?
 
-        - shortDescription: string - Write a realistic, specific description (1-2 sentences) that explains what ${model} actually does. Example: "Advanced multimodal AI model that can understand and generate text, images, and code with human-like reasoning capabilities."
-        - publishedAt: date - If this is a real tool, provide the actual published date. If unknown, use null. Example: "2025-01-01" or null
+        📊 FIELD SPECIFICATIONS & VALIDATION RULES:
 
-        - websiteUrl: string - If this is a real tool, provide the actual website. If unknown, use empty string "". Example: "https://openai.com" or ""
+        **CORE INFORMATION:**
+        - shortDescription: string (REQUIRED)
+          • Write 1-2 sentences that accurately describe what ${model} does
+          • Be specific about its primary function and key capabilities
+          • Example: "Advanced large language model that excels at code generation, mathematical reasoning, and multilingual text understanding with 128K context window."
 
-        - keywords: string[] - Choose 4-6 highly relevant, specific keywords that accurately describe ${model}'s capabilities. Example: ["multimodal AI", "code generation", "image understanding", "reasoning", "GPT-4 successor"]
+        - publishedAt: string | null
+          • Use actual release date if known (format: "YYYY-MM-DD")
+          • Use null if unknown or not yet released
+          • Research the tool's actual launch date
 
-        - toolUserTypes: ToolUserType[] - Select 3-5 user types that would actually use ${model}. Choose from:
-          DEVELOPER, SOFTWARE_ENGINEER, MACHINE_LEARNING_ENGINEER, DATA_SCIENTIST, AI_RESEARCHER,
-          IT_PROFESSIONAL, CLOUD_ENGINEER, DEVOPS_ENGINEER, CYBERSECURITY_SPECIALIST, QA_ENGINEER,
-          ENTREPRENEUR, BUSINESS_OWNER, PRODUCT_MANAGER, PROJECT_MANAGER, BUSINESS_ANALYST, CONSULTANT,
-          SALES_PROFESSIONAL, CUSTOMER_SUPPORT_AGENT, OPERATIONS_MANAGER, STRATEGY_PLANNER,
-          MARKETER, DIGITAL_MARKETER, SEO_SPECIALIST, SOCIAL_MEDIA_MANAGER, BRAND_MANAGER, ADVERTISING_SPECIALIST,
-          DESIGNER, GRAPHIC_DESIGNER, UX_UI_DESIGNER, VIDEO_EDITOR, CONTENT_CREATOR, WRITER, COPYWRITER,
-          MUSIC_PRODUCER, ANIMATOR, STUDENT, TEACHER, TRAINER, RESEARCHER, EDUCATOR,
-          HEALTHCARE_PROFESSIONAL, LEGAL_PROFESSIONAL, FINANCE_PROFESSIONAL, HR_PROFESSIONAL,
-          GAMER, HOBBYIST, OTHER
+        - websiteUrl: string
+          • Provide the official website URL if it exists
+          • Use empty string "" if no official website
+          • Example: "https://openai.com" or ""
 
-        - pricingType: PricingType[] - Select 1-2 realistic pricing models. Choose from: FREE, FREEMIUM, PAID, CUSTOM, TRIAL
-          For ${model}, consider: Is it free to use? Does it have a freemium tier? Is it paid-only?
+        - keywords: string[] (4-6 items)
+          • Choose highly specific, technical keywords that describe ${model}'s capabilities
+          • Avoid generic terms like "AI" or "machine learning"
+          • Example: ["code generation", "mathematical reasoning", "128K context", "multimodal AI", "reasoning engine"]
 
-        - aiType: AiType[] - Select  AI types that accurately describe ${model}. Choose from: GENERATIVE_AI, CONVERSATIONAL_AI, COMPUTER_VISION, SPEECH_AI, RECOMMENDATION_AI, AUTOMATION_AI, ANALYTICS_AI, SEARCH_RETRIEVAL_AI, CODE_AI, MARKETING_AI, SECURITY_AI, OTHER
+        **USER TARGETING:**
+        - toolUserTypes: ToolUserType[] (3-5 items)
+          • Select user types who would actually use ${model}
+          • Consider the tool's complexity, cost, and use cases
+          • Available options: DEVELOPER, SOFTWARE_ENGINEER, MACHINE_LEARNING_ENGINEER, DATA_SCIENTIST, AI_RESEARCHER, IT_PROFESSIONAL, CLOUD_ENGINEER, DEVOPS_ENGINEER, CYBERSECURITY_SPECIALIST, QA_ENGINEER, ENTREPRENEUR, BUSINESS_OWNER, PRODUCT_MANAGER, PROJECT_MANAGER, BUSINESS_ANALYST, CONSULTANT, SALES_PROFESSIONAL, CUSTOMER_SUPPORT_AGENT, OPERATIONS_MANAGER, STRATEGY_PLANNER, MARKETER, DIGITAL_MARKETER, SEO_SPECIALIST, SOCIAL_MEDIA_MANAGER, BRAND_MANAGER, ADVERTISING_SPECIALIST, DESIGNER, GRAPHIC_DESIGNER, UX_UI_DESIGNER, VIDEO_EDITOR, CONTENT_CREATOR, WRITER, COPYWRITER, MUSIC_PRODUCER, ANIMATOR, STUDENT, TEACHER, TRAINER, RESEARCHER, EDUCATOR, HEALTHCARE_PROFESSIONAL, LEGAL_PROFESSIONAL, FINANCE_PROFESSIONAL, HR_PROFESSIONAL, GAMER, HOBBYIST, OTHER
 
-        - productType: ProductType[] - Select  product types that ${model} actually is. Choose from: APPLICATION, MODEL, DATASET, AGENT, FRAMEWORK, TOOLKIT, TEMPLATE, SERVICE, HARDWARE, OTHER
+        **PRICING & BUSINESS MODEL:**
+        - pricingType: PricingType[]
+          • Research the actual pricing model of ${model}
+          • Options: FREE, FREEMIUM, PAID, CUSTOM, TRIAL
+          • Consider: Is it free? Has freemium tier? Enterprise pricing?
 
-        - aiCapabilities: AiCapability[] - Select  capabilities that ${model} actually has. Choose from: FOUNDATION_MODEL, GENERATIVE_TEXT, GENERATIVE_IMAGE, GENERATIVE_AUDIO, GENERATIVE_VIDEO, MULTIMODAL_UNDERSTANDING, NLP_UNDERSTANDING, SEARCH_RETRIEVAL, KNOWLEDGE_AI, COMPUTER_VISION, OCR_DOCUMENT_AI, SPEECH_ASR, SPEECH_TTS, SPEAKER_TECH, RECOMMENDATION, TIME_SERIES_FORECASTING, OPTIMIZATION_PLANNING, ANOMALY_DETECTION, CAUSAL_INFERENCE, ANALYTICS_BI, CODE_AI, SECURITY_ML, PRIVACY_PRESERVING_ML, MLOPS_OBSERVABILITY, SYNTHETIC_DATA, ROBOTICS_CONTROL, EDGE_AI, OTHER
+        **TECHNICAL CLASSIFICATION:**
+        - aiType: AiType[] 
+          • Select types that accurately describe ${model}
+          • Options: GENERATIVE_AI, CONVERSATIONAL_AI, COMPUTER_VISION, SPEECH_AI, RECOMMENDATION_AI, AUTOMATION_AI, ANALYTICS_AI, SEARCH_RETRIEVAL_AI, CODE_AI, MARKETING_AI, SECURITY_AI, OTHER
 
-        - modalities: Modality[] - Select modalities that ${model} can actually process. Choose from: TEXT, IMAGE, AUDIO, VIDEO, TABULAR, TIME_SERIES, GRAPH, THREE_D, MULTIMODAL, SENSOR_DATA, GEOSPATIAL
+        - productType: ProductType[] 
+          • What type of product is ${model}?
+          • Options: APPLICATION, MODEL, DATASET, AGENT, FRAMEWORK, TOOLKIT, TEMPLATE, SERVICE, HARDWARE, OTHER
 
-        - delivery: Delivery[] - Select  realistic delivery methods. Choose from: SAAS, API, SDK, MODEL_WEIGHTS, OPEN_SOURCE, ON_PREM, EDGE_DEVICE, MARKETPLACE_PLUGIN
+        - aiCapabilities: AiCapability[] (3-6 items)
+          • Select capabilities that ${model} actually has
+          • Options: FOUNDATION_MODEL, GENERATIVE_TEXT, GENERATIVE_IMAGE, GENERATIVE_AUDIO, GENERATIVE_VIDEO, MULTIMODAL_UNDERSTANDING, NLP_UNDERSTANDING, SEARCH_RETRIEVAL, KNOWLEDGE_AI, COMPUTER_VISION, OCR_DOCUMENT_AI, SPEECH_ASR, SPEECH_TTS, SPEAKER_TECH, RECOMMENDATION, TIME_SERIES_FORECASTING, OPTIMIZATION_PLANNING, ANOMALY_DETECTION, CAUSAL_INFERENCE, ANALYTICS_BI, CODE_AI, SECURITY_ML, PRIVACY_PRESERVING_ML, MLOPS_OBSERVABILITY, SYNTHETIC_DATA, ROBOTICS_CONTROL, EDGE_AI, OTHER
 
-        - platforms: PlatformType[] - Select platforms where ${model} is actually available. Choose from: WEB, MOBILE, DESKTOP, API, SDK, WEBHOOK, PLUGIN, EXTENSION, OTHER
+        - modalities: Modality[] (1-4 items)
+          • What data types can ${model} process?
+          • Options: TEXT, IMAGE, AUDIO, VIDEO, TABULAR, TIME_SERIES, GRAPH, THREE_D, MULTIMODAL, SENSOR_DATA, GEOSPATIAL
 
-        - integrationOptions: IntegrationOption[] - Select 2-4 realistic integration options. Choose from: ZAPIER, INTEGROMAT, SLACK, MICROSOFT_TEAMS, GOOGLE_WORKSPACE, NOTION, FIGMA, SHOPIFY, WORDPRESS, SALESFORCE, HUBSPOT, CLOUD_DRIVE, IDE_PLUGIN, CRM, DATABASE, API_CONNECTOR, OTHER
+        **DEPLOYMENT & ACCESS:**
+        - delivery: Delivery[] 
+          • How is ${model} typically delivered?
+          • Options: SAAS, API, SDK, MODEL_WEIGHTS, OPEN_SOURCE, ON_PREM, EDGE_DEVICE, MARKETPLACE_PLUGIN
 
-        - domains: Domain[] - Select  domains where ${model} would be most useful. Choose from: AGRICULTURE, MANUFACTURING, MARKETING, DEVELOPMENT, BUSINESS, DESIGN, FINANCE, HEALTHCARE, EDUCATION, PRODUCTIVITY, RESEARCH, LEGAL, ENTERTAINMENT, CUSTOMER_SUPPORT, SALES, DATA_ANALYTICS, HUMAN_RESOURCES, SECURITY, OPERATIONS, CONTENT_CREATION, ECOMMERCE, GAMING, SOCIAL_MEDIA, VIDEO_CREATION, AUDIO_MUSIC, WRITING, TRANSLATION, IMAGE_GENERATION, VIRTUAL_ASSISTANT, AUTOMATION, CHATBOT, CLOUD, OTHER
+        - platforms: PlatformType[]
+          • Where is ${model} available?
+          • Options: WEB, MOBILE, DESKTOP, API, SDK, WEBHOOK, PLUGIN, EXTENSION, OTHER
 
-        - useCases: string[] - Write 3-4 specific, realistic use cases that ${model} can actually perform.Try to give the most valuable use cases. Example: ["Generate marketing copy for social media campaigns", "Analyze and summarize research papers", "Create code snippets for web development"]
-        - usps: string[] - Write 1-2 specific, realistic usps(unique selling propositions) that ${model} can actually perform.Try to give the most valuable usps of this tool.Basically what is the single thing it can do better then any other tools out there. Example: ["It outperforms gpt-4 in terms of cost "]. If possible just give only one and as short as possible.
+        - integrationOptions: IntegrationOption[]
+          • What can ${model} integrate with?
+          • Options: ZAPIER, INTEGROMAT, SLACK, MICROSOFT_TEAMS, GOOGLE_WORKSPACE, NOTION, FIGMA, SHOPIFY, WORDPRESS, SALESFORCE, HUBSPOT, CLOUD_DRIVE, IDE_PLUGIN, CRM, DATABASE, API_CONNECTOR, OTHER
 
-        - popularityScore: number - Assign a realistic popularity score (0-100) based on ${model}'s actual market presence and usage. Consider: Is it widely known? Is it actively used? Is it cutting-edge?
+        **USE CASES & VALUE PROPOSITION:**
+        - domains: Domain[] (3-6 items)
+          • Which industries/domains use ${model}?
+          • Options: AGRICULTURE, MANUFACTURING, MARKETING, DEVELOPMENT, BUSINESS, DESIGN, FINANCE, HEALTHCARE, EDUCATION, PRODUCTIVITY, RESEARCH, LEGAL, ENTERTAINMENT, CUSTOMER_SUPPORT, SALES, DATA_ANALYTICS, HUMAN_RESOURCES, SECURITY, OPERATIONS, CONTENT_CREATION, ECOMMERCE, GAMING, SOCIAL_MEDIA, VIDEO_CREATION, AUDIO_MUSIC, WRITING, TRANSLATION, IMAGE_GENERATION, VIRTUAL_ASSISTANT, AUTOMATION, CHATBOT, CLOUD, OTHER
 
-        VALIDATION RULES:
-        1. All enum fields must use exact values from the corresponding lists above
-        2. Be realistic - don't overstate capabilities
-        3. Consider ${model}'s actual features and limitations
-        4. Ensure data consistency across related fields. Carefully choose the enum values. Only give values that are actually present in the provided lists.
-        5. Popularity score should reflect actual market reality
+        - useCases: string[] (3-4 items)
+          • Write specific, actionable use cases
+          • Be concrete about what users can accomplish
+          • Example: ["Generate Python code for data analysis tasks", "Create technical documentation from code comments", "Debug and explain complex algorithms"]
 
-        Return ONLY valid JSON matching this structure. DO NOT add extra text or explanation.
+        - usps: string[] (1-2 items)
+          • What makes ${model} unique or better than competitors?
+          • Focus on quantifiable advantages
+          • Example: ["10x faster code generation than GPT-4", "Only model with 1M token context window"]
+
+        - features: string[] (3-5 items)
+          • List specific features and capabilities
+          • Be technical and specific
+          • Example: ["128K token context window", "Real-time code execution", "Multi-language support", "API rate limiting", "Custom model fine-tuning"]
+
+        - popularityScore: number (0-100)
+          • Research ${model}'s actual market presence
+          • Consider: GitHub stars, user adoption, media coverage, enterprise usage
+          • Scale: 0-30 (niche), 31-60 (moderate), 61-80 (popular), 81-100 (mainstream)
+
+        🔍 CRITICAL VALIDATION RULES:
+        1. **ACCURACY FIRST**: Only include capabilities that ${model} actually has
+        2. **ENUM COMPLIANCE**: Use exact values from the provided lists - invalid values will be filtered out
+        3. **REALISTIC SCORING**: Base popularity score on actual market data
+        4. **CONSISTENCY**: Ensure related fields align (e.g., if it's a foundation model, include FOUNDATION_MODEL in aiCapabilities)
+        5. **RESEARCH-BASED**: Use current information about ${model}'s actual features and limitations
+        6. **NO HALLUCINATION**: If uncertain about a fact, use conservative estimates or omit
+        7. **COMPLETE DATA**: ALL required fields must be present and valid - incomplete responses will be rejected
+        8. **NO PLACEHOLDERS**: Do not use generic or placeholder values - be specific and accurate
+
+        📝 OUTPUT FORMAT:
+        Return ONLY a valid JSON object with the exact structure specified. No markdown, no explanations, no additional text.
+
+        Generate data for: "${model}"
         `;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash-lite', // Latest and most capable available Gemini model
-          contents: prompt,
-        });
+        // Try with the most capable model first, with fallback options
+        let response;
+        const models = ['gemini-2.5-flash-lite'];
+
+        for (const modelName of models) {
+          try {
+            response = await ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+            });
+            console.log(`Successfully used model: ${modelName}`);
+            break;
+          } catch (modelError) {
+            console.warn(`Failed to use model ${modelName}:`, modelError);
+            if (modelName === models[models.length - 1]) {
+              throw modelError; // If all models fail, throw the last error
+            }
+          }
+        }
 
         console.log('Raw AI response:', response);
 
@@ -292,18 +373,287 @@ export class ListedAiToolService {
           .replace(/```$/, '')
           .trim();
 
-        // --- parse JSON safely ---
+        // --- parse JSON safely with enhanced error handling ---
         let aiData;
         try {
           aiData = JSON.parse(text);
+
+          // Validate required fields exist
+          const requiredFields = [
+            'shortDescription',
+            'keywords',
+            'toolUserTypes',
+            'pricingType',
+            'aiType',
+            'productType',
+            'aiCapabilities',
+            'modalities',
+            'delivery',
+            'platforms',
+            'integrationOptions',
+            'domains',
+            'useCases',
+            'usps',
+            'features',
+            'popularityScore',
+          ];
+          const missingFields = requiredFields.filter(
+            (field) => !aiData.hasOwnProperty(field),
+          );
+
+          if (missingFields.length > 0) {
+            console.error(
+              `Missing required fields for ${model}:`,
+              missingFields,
+            );
+            throw new Error(
+              `Incomplete AI response for ${model} - missing fields: ${missingFields.join(', ')}`,
+            );
+          }
+
+          // Filter out invalid enum values (keep only valid ones)
+          const filterEnumField = (field: string, validValues: string[]) => {
+            if (aiData[field] && Array.isArray(aiData[field])) {
+              const originalLength = aiData[field].length;
+              aiData[field] = aiData[field].filter((value: string) =>
+                validValues.includes(value),
+              );
+              const removedCount = originalLength - aiData[field].length;
+              if (removedCount > 0) {
+                console.warn(
+                  `Removed ${removedCount} invalid enum values for ${field} in ${model}`,
+                );
+              }
+            }
+          };
+
+          // Apply filtering for each enum field (using first few valid values as examples)
+          filterEnumField('toolUserTypes', [
+            'DEVELOPER',
+            'SOFTWARE_ENGINEER',
+            'MACHINE_LEARNING_ENGINEER',
+            'DATA_SCIENTIST',
+            'AI_RESEARCHER',
+            'IT_PROFESSIONAL',
+            'CLOUD_ENGINEER',
+            'DEVOPS_ENGINEER',
+            'CYBERSECURITY_SPECIALIST',
+            'QA_ENGINEER',
+            'ENTREPRENEUR',
+            'BUSINESS_OWNER',
+            'PRODUCT_MANAGER',
+            'PROJECT_MANAGER',
+            'BUSINESS_ANALYST',
+            'CONSULTANT',
+            'SALES_PROFESSIONAL',
+            'CUSTOMER_SUPPORT_AGENT',
+            'OPERATIONS_MANAGER',
+            'STRATEGY_PLANNER',
+            'MARKETER',
+            'DIGITAL_MARKETER',
+            'SEO_SPECIALIST',
+            'SOCIAL_MEDIA_MANAGER',
+            'BRAND_MANAGER',
+            'ADVERTISING_SPECIALIST',
+            'DESIGNER',
+            'GRAPHIC_DESIGNER',
+            'UX_UI_DESIGNER',
+            'VIDEO_EDITOR',
+            'CONTENT_CREATOR',
+            'WRITER',
+            'COPYWRITER',
+            'MUSIC_PRODUCER',
+            'ANIMATOR',
+            'STUDENT',
+            'TEACHER',
+            'TRAINER',
+            'RESEARCHER',
+            'EDUCATOR',
+            'HEALTHCARE_PROFESSIONAL',
+            'LEGAL_PROFESSIONAL',
+            'FINANCE_PROFESSIONAL',
+            'HR_PROFESSIONAL',
+            'GAMER',
+            'HOBBYIST',
+            'OTHER',
+          ]);
+          filterEnumField('pricingType', [
+            'FREE',
+            'FREEMIUM',
+            'PAID',
+            'CUSTOM',
+            'TRIAL',
+          ]);
+          filterEnumField('aiType', [
+            'GENERATIVE_AI',
+            'CONVERSATIONAL_AI',
+            'COMPUTER_VISION',
+            'SPEECH_AI',
+            'RECOMMENDATION_AI',
+            'AUTOMATION_AI',
+            'ANALYTICS_AI',
+            'SEARCH_RETRIEVAL_AI',
+            'CODE_AI',
+            'MARKETING_AI',
+            'SECURITY_AI',
+            'OTHER',
+          ]);
+          filterEnumField('productType', [
+            'APPLICATION',
+            'MODEL',
+            'DATASET',
+            'AGENT',
+            'FRAMEWORK',
+            'TOOLKIT',
+            'TEMPLATE',
+            'SERVICE',
+            'HARDWARE',
+            'OTHER',
+          ]);
+          filterEnumField('aiCapabilities', [
+            'FOUNDATION_MODEL',
+            'GENERATIVE_TEXT',
+            'GENERATIVE_IMAGE',
+            'GENERATIVE_AUDIO',
+            'GENERATIVE_VIDEO',
+            'MULTIMODAL_UNDERSTANDING',
+            'NLP_UNDERSTANDING',
+            'SEARCH_RETRIEVAL',
+            'KNOWLEDGE_AI',
+            'COMPUTER_VISION',
+            'OCR_DOCUMENT_AI',
+            'SPEECH_ASR',
+            'SPEECH_TTS',
+            'SPEAKER_TECH',
+            'RECOMMENDATION',
+            'TIME_SERIES_FORECASTING',
+            'OPTIMIZATION_PLANNING',
+            'ANOMALY_DETECTION',
+            'CAUSAL_INFERENCE',
+            'ANALYTICS_BI',
+            'CODE_AI',
+            'SECURITY_ML',
+            'PRIVACY_PRESERVING_ML',
+            'MLOPS_OBSERVABILITY',
+            'SYNTHETIC_DATA',
+            'ROBOTICS_CONTROL',
+            'EDGE_AI',
+            'OTHER',
+          ]);
+          filterEnumField('modalities', [
+            'TEXT',
+            'IMAGE',
+            'AUDIO',
+            'VIDEO',
+            'TABULAR',
+            'TIME_SERIES',
+            'GRAPH',
+            'THREE_D',
+            'MULTIMODAL',
+            'SENSOR_DATA',
+            'GEOSPATIAL',
+          ]);
+          filterEnumField('delivery', [
+            'SAAS',
+            'API',
+            'SDK',
+            'MODEL_WEIGHTS',
+            'OPEN_SOURCE',
+            'ON_PREM',
+            'EDGE_DEVICE',
+            'MARKETPLACE_PLUGIN',
+          ]);
+          filterEnumField('platforms', [
+            'WEB',
+            'MOBILE',
+            'DESKTOP',
+            'API',
+            'SDK',
+            'WEBHOOK',
+            'PLUGIN',
+            'EXTENSION',
+            'OTHER',
+          ]);
+          filterEnumField('integrationOptions', [
+            'ZAPIER',
+            'INTEGROMAT',
+            'SLACK',
+            'MICROSOFT_TEAMS',
+            'GOOGLE_WORKSPACE',
+            'NOTION',
+            'FIGMA',
+            'SHOPIFY',
+            'WORDPRESS',
+            'SALESFORCE',
+            'HUBSPOT',
+            'CLOUD_DRIVE',
+            'IDE_PLUGIN',
+            'CRM',
+            'DATABASE',
+            'API_CONNECTOR',
+            'OTHER',
+          ]);
+          filterEnumField('domains', [
+            'AGRICULTURE',
+            'MANUFACTURING',
+            'MARKETING',
+            'DEVELOPMENT',
+            'BUSINESS',
+            'DESIGN',
+            'FINANCE',
+            'HEALTHCARE',
+            'EDUCATION',
+            'PRODUCTIVITY',
+            'RESEARCH',
+            'LEGAL',
+            'ENTERTAINMENT',
+            'CUSTOMER_SUPPORT',
+            'SALES',
+            'DATA_ANALYTICS',
+            'HUMAN_RESOURCES',
+            'SECURITY',
+            'OPERATIONS',
+            'CONTENT_CREATION',
+            'ECOMMERCE',
+            'GAMING',
+            'SOCIAL_MEDIA',
+            'VIDEO_CREATION',
+            'AUDIO_MUSIC',
+            'WRITING',
+            'TRANSLATION',
+            'IMAGE_GENERATION',
+            'VIRTUAL_ASSISTANT',
+            'AUTOMATION',
+            'CHATBOT',
+            'CLOUD',
+            'OTHER',
+          ]);
+
+          // Ensure popularity score is within valid range
+          if (
+            typeof aiData.popularityScore !== 'number' ||
+            aiData.popularityScore < 0 ||
+            aiData.popularityScore > 100
+          ) {
+            console.error(
+              `Invalid popularity score for ${model}:`,
+              aiData.popularityScore,
+            );
+            throw new Error(
+              `Invalid popularity score for ${model}: must be a number between 0-100`,
+            );
+          }
         } catch (err) {
-          console.warn(
-            `Failed to parse AI JSON response for ${model}:`,
+          console.error(
+            `Failed to process AI response for ${model}:`,
             err,
             'Raw text:',
             text,
           );
-          continue; // skip this model if parsing fails
+          console.log(`Skipping ${model} due to invalid response`);
+          errorCount++;
+          errors.push(`${model}: ${err.message}`);
+          continue; // Skip this model and move to the next one
         }
         console.log('aiData', aiData);
 
@@ -320,7 +670,7 @@ export class ListedAiToolService {
           aiCapabilities: aiData.aiCapabilities || [],
           modalities: aiData.modalities || [],
           delivery: aiData.delivery || [],
-          platforms: aiData.platforms || ['WEB'],
+          platforms: aiData.platforms || [],
           integrationOptions: aiData.integrationOptions || [],
           domains: aiData.domains || [],
           useCases: aiData.useCases || [],
@@ -329,15 +679,22 @@ export class ListedAiToolService {
           popularityScore: aiData.popularityScore || 0,
           listedBy: ListedBy.GEMENAI,
           usps: aiData.usps || [],
+          features: aiData.features || [],
           publishedAt: aiData.publishedAt ? new Date(aiData.publishedAt) : null,
         };
 
         console.log('Prepared DB data:', ourData);
         await this.createListedAiTool(1, ourData);
         console.log(`${model} added to database`);
+        successCount++;
       }
 
-      console.log('createListedAiToolFromArray completed successfully');
+      console.log(
+        `createListedAiToolFromArray completed: ${successCount} successful, ${errorCount} errors`,
+      );
+      if (errors.length > 0) {
+        console.log('Errors encountered:', errors);
+      }
       return { data: [], error: null };
     } catch (error) {
       console.error('Error in createListedAiToolFromArray:', error);

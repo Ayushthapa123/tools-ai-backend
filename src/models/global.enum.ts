@@ -147,9 +147,12 @@ export enum Modality {
   VIDEO = 'VIDEO',
   TABULAR = 'TABULAR',
   TIME_SERIES = 'TIME_SERIES',
+
   GRAPH = 'GRAPH',
   THREE_D = 'THREE_D',
   MULTIMODAL = 'MULTIMODAL',
+  SENSOR_DATA = 'SENSOR_DATA',
+  GEOSPATIAL = 'GEOSPATIAL',
 }
 
 export enum Delivery {

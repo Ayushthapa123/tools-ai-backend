@@ -355,6 +355,9 @@ export class ListedAiToolData {
   @Field(() => [String])
   usps: string[];
 
+  @Field(() => [String])
+  features: string[];
+
   @Field(() => Date, { nullable: true })
   publishedAt?: Date;
 

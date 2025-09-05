@@ -166,6 +166,7 @@ model ListedAiTool {
   useCases         String[]  @default([]) // e.g., ["content creation", "customer support", "product recommendations"]
   // usps 
   usps             String[]  @default([]) // e.g., ["content creation", "customer support", "product recommendations"]
+  features         String[]  @default([])
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id])
   like             Like[] 
@@ -185,6 +186,7 @@ model ListedAiTool {
   @@index([featured])
   @@index([createdAt])
   @@index([updatedAt]) 
+  @@index([publishedAt])
 }
 
 // also store other informations for listed ai tool like contacts, socials etc.

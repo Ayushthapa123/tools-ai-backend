@@ -76,6 +76,7 @@ input CreateListedAiToolInput {
   delivery: [Delivery!]!
   domains: [Domain!]!
   featured: Boolean!
+  features: [String!]!
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
   listedBy: ListedBy!
@@ -312,6 +313,7 @@ type ListedAiToolData {
   delivery: [Delivery!]!
   domains: [Domain!]!
   featured: Boolean!
+  features: [String!]!
   id: ID!
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
@@ -729,6 +731,7 @@ input UpdateListedAiToolInput {
   delivery: [Delivery!]
   domains: [Domain!]
   featured: Boolean
+  features: [String!]
   id: Int!
   integrationOptions: [IntegrationOption!]
   keywords: [String!]
