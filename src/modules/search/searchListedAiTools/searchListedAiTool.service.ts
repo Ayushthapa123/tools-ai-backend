@@ -158,7 +158,7 @@ export class SearchListedAiToolService {
       orderBy[sortField] = input.sortOrder || 'desc';
     } else {
       // Default sorting by popularity score and creation date
-      orderBy = [{ popularityScore: 'desc' }, { createdAt: 'desc' }];
+      orderBy = [{ popularityScore: 'desc' }];
     }
 
     try {
@@ -168,14 +168,116 @@ export class SearchListedAiToolService {
       });
 
       // Get paginated results
-      const tools = await this.prisma.listedAiTool.findMany({
+      let tools = await this.prisma.listedAiTool.findMany({
         where: whereConditions,
         skip,
         take,
         orderBy,
       });
 
-      // Calculate pagination info
+      // If no results found and we have keywords, try searching in useCases and usps
+      if (tools.length === 0 && input.keywords && input.keywords.length > 0) {
+        try {
+          // Build case-insensitive search using raw SQL
+          const keywordConditions = input.keywords
+            .map((keyword, index) => {
+              const paramIndex = index + 1;
+              return `(EXISTS (SELECT 1 FROM unnest("useCases") AS uc WHERE LOWER(uc) LIKE LOWER($${paramIndex})) OR 
+                       EXISTS (SELECT 1 FROM unnest("usps") AS usp WHERE LOWER(usp) LIKE LOWER($${paramIndex})))`;
+            })
+            .join(' OR ');
+
+          const countQuery = `SELECT COUNT(*) as count FROM "ListedAiTool" WHERE ${keywordConditions}`;
+          const searchQuery = `
+            SELECT * FROM "ListedAiTool" 
+            WHERE ${keywordConditions}
+            ORDER BY "popularityScore" DESC, "createdAt" DESC
+            LIMIT $${input.keywords.length + 1} OFFSET $${input.keywords.length + 2}
+          `;
+
+          // Prepare parameters with wildcards for partial matching
+          const searchParams = input.keywords.map((keyword) => `%${keyword}%`);
+          const queryParams = [...searchParams, take, skip];
+
+          // Get total count for fallback search
+          const countResult = await this.prisma.$queryRawUnsafe(
+            countQuery,
+            ...searchParams,
+          );
+          const fallbackTotalCount = parseInt((countResult as any)[0].count);
+
+          // Get paginated results from fallback search
+          const rawResults = await this.prisma.$queryRawUnsafe(
+            searchQuery,
+            ...queryParams,
+          );
+
+          // Convert raw results back to the expected format
+          tools = rawResults as any[];
+
+          // Calculate pagination info for fallback search
+          const totalPages = Math.ceil(fallbackTotalCount / pageSize);
+          const hasNextPage = pageNumber < totalPages;
+          const hasPreviousPage = pageNumber > 1;
+
+          return {
+            data: tools,
+            error: null,
+            pagination: {
+              total: fallbackTotalCount,
+              page: pageNumber,
+              limit: pageSize,
+              hasNextPage,
+              hasPreviousPage,
+              totalPages,
+            },
+          };
+        } catch (sqlError) {
+          console.error('Error in fallback search:', sqlError);
+          // Fall back to the original Prisma approach if raw SQL fails
+          const fallbackSearchConditions = [];
+          for (const keyword of input.keywords) {
+            fallbackSearchConditions.push(
+              { useCases: { has: keyword } },
+              { usps: { has: keyword } },
+            );
+          }
+
+          const fallbackWhereConditions = {
+            OR: fallbackSearchConditions,
+          };
+
+          const fallbackTotalCount = await this.prisma.listedAiTool.count({
+            where: fallbackWhereConditions,
+          });
+
+          tools = await this.prisma.listedAiTool.findMany({
+            where: fallbackWhereConditions,
+            skip,
+            take,
+            orderBy,
+          });
+
+          const totalPages = Math.ceil(fallbackTotalCount / pageSize);
+          const hasNextPage = pageNumber < totalPages;
+          const hasPreviousPage = pageNumber > 1;
+
+          return {
+            data: tools,
+            error: null,
+            pagination: {
+              total: fallbackTotalCount,
+              page: pageNumber,
+              limit: pageSize,
+              hasNextPage,
+              hasPreviousPage,
+              totalPages,
+            },
+          };
+        }
+      }
+
+      // Calculate pagination info for original search
       const totalPages = Math.ceil(totalCount / pageSize);
       const hasNextPage = pageNumber < totalPages;
       const hasPreviousPage = pageNumber > 1;

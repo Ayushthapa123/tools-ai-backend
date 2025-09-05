@@ -360,9 +360,11 @@ type LogoutResponse {
 
 enum Modality {
   AUDIO
+  GEOSPATIAL
   GRAPH
   IMAGE
   MULTIMODAL
+  SENSOR_DATA
   TABULAR
   TEXT
   THREE_D
