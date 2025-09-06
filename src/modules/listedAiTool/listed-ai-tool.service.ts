@@ -8,16 +8,56 @@ import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
 import { aiTools } from '@src/data/tools-seed/ai-tools-seed';
+import { google } from 'googleapis';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
+
 @Injectable()
 export class ListedAiToolService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cookieService: CookieService,
   ) {}
+
+  /**
+   * Validates and normalizes video URLs
+   * @param videoUrl - The video URL to validate
+   * @returns Normalized URL or empty string if invalid
+   */
+  private validateVideoUrl(videoUrl: string): string {
+    if (!videoUrl || typeof videoUrl !== 'string') {
+      return '';
+    }
+
+    const trimmedUrl = videoUrl.trim();
+    if (trimmedUrl === '') {
+      return '';
+    }
+
+    try {
+      const url = new URL(trimmedUrl);
+
+      // Check if it's a supported video platform
+      const supportedDomains = ['youtube.com', 'www.youtube.com'];
+
+      const isSupported = supportedDomains.some(
+        (domain) =>
+          url.hostname === domain || url.hostname.endsWith('.' + domain),
+      );
+
+      if (!isSupported) {
+        console.warn(`Unsupported video platform: ${url.hostname}`);
+        return '';
+      }
+
+      return trimmedUrl;
+    } catch (error) {
+      console.warn(`Invalid video URL format: ${trimmedUrl}`);
+      return '';
+    }
+  }
 
   async getAllListedAiTools(
     pageSize: number,
@@ -699,6 +739,120 @@ export class ListedAiToolService {
     } catch (error) {
       console.error('Error in createListedAiToolFromArray:', error);
       return { data: [], error: { message: 'Failed to process AI tools' } };
+    }
+  }
+
+  async updateListedAiToolFromArrayForVideoUrl() {
+    console.log('updateListedAiToolFromArrayForVideoUrl method called');
+    // Update videoUrl field for existing AI tools in the database
+
+    let successCount = 0;
+    let errorCount = 0;
+    const errors: string[] = [];
+
+    try {
+      for (const model of aiTools) {
+        console.log(`Processing model: ${model}`);
+        console.log('xxxxxxxxxxxxxxxxxxx', successCount, errorCount);
+
+        const modelInDb = await this.prisma.listedAiTool.findFirst({
+          where: { name: model },
+          select: { id: true, name: true, videoUrl: true },
+        });
+        console.log('modelInDb', modelInDb);
+
+        if (!modelInDb?.name) {
+          console.log(`${model} not found in the database, skipping...`);
+          continue;
+        }
+        // if videoUrl is already present in the database skipt the model and continue to the next one
+        if (modelInDb.videoUrl) {
+          console.log(
+            `${model} videoUrl already present in the database, skipping...`,
+          );
+          successCount++;
+          continue;
+        }
+
+        console.log(
+          `Found ${model} in database, current videoUrl: ${modelInDb.videoUrl || 'null'}`,
+        );
+
+        // get the video url by api call to youtube
+        const youtube = google.youtube({
+          version: 'v3',
+          auth: process.env.YOUTUBE_API_KEY, // store API key in .env
+        });
+
+        const res = await youtube.search.list({
+          part: ['snippet'],
+          q: `${model} ai tool official demo`,
+          type: ['video'],
+          maxResults: 1, // you can increase if you want multiple results
+        });
+        console.log('ressssssssssss', res);
+        const videoId = res?.data?.items[0]?.id?.videoId || null;
+
+        // Check if videoUrl actually changed
+        const newVideoUrl =
+          `https://www.youtube.com/watch?v=${videoId}` as string;
+        if (modelInDb.videoUrl === newVideoUrl) {
+          console.log(
+            `${model} videoUrl unchanged (${newVideoUrl || 'null'}), skipping update`,
+          );
+          successCount++;
+          continue;
+        }
+
+        const ourData: UpdateListedAiToolInput = {
+          id: modelInDb.id,
+          videoUrl: newVideoUrl,
+        };
+
+        console.log(
+          `Updating ${model} videoUrl from "${modelInDb.videoUrl || 'null'}" to "${newVideoUrl || 'null'}"`,
+        );
+
+        try {
+          await this.updateListedAiTool(modelInDb.id, ourData);
+          console.log(`✅ Successfully updated ${model} videoUrl`);
+          successCount++;
+        } catch (updateError) {
+          console.error(`❌ Failed to update ${model} videoUrl:`, updateError);
+          errorCount++;
+          errors.push(
+            `${model}: Database update failed - ${updateError.message}`,
+          );
+        }
+      }
+
+      console.log(
+        `🎬 updateListedAiToolFromArrayForVideoUrl completed: ${successCount} successful, ${errorCount} errors`,
+      );
+      if (errors.length > 0) {
+        console.log('❌ Errors encountered:', errors);
+      }
+      return {
+        data: {
+          successCount,
+          errorCount,
+          totalProcessed: aiTools.length,
+          errors: errors.length > 0 ? errors : null,
+        },
+        error: null,
+      };
+    } catch (error) {
+      console.error(
+        '💥 Error in updateListedAiToolFromArrayForVideoUrl:',
+        error,
+      );
+      return {
+        data: null,
+        error: {
+          message: 'Failed to process video URL updates',
+          details: error.message,
+        },
+      };
     }
   }
 

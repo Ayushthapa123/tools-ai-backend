@@ -128,7 +128,7 @@ export class SearchListedAiToolService {
 
       // Filter by date range
       if (input.startDate || input.endDate) {
-        whereConditions.createdAt = {};
+        whereConditions.publishedAt = {};
         if (input.startDate) {
           const startDate = new Date(input.startDate);
           if (!isNaN(startDate.getTime())) {

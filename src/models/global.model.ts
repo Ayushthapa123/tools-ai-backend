@@ -298,11 +298,14 @@ export class ListedAiToolData {
   @Field()
   shortDescription: string;
 
-  @Field()
-  logoUrl: string;
+  @Field({ nullable: true })
+  logoUrl?: string;
 
-  @Field()
-  websiteUrl: string;
+  @Field({ nullable: true })
+  websiteUrl?: string; 
+
+  @Field({ nullable: true })
+  videoUrl?: string;
 
   @Field(() => [ToolUserType])
   toolUserTypes: ToolUserType[];

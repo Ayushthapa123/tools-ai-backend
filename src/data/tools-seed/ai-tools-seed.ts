@@ -185,11 +185,11 @@ const businessOwnerAiTools = [
 
 // Combine all
 const aiTools = [
-  // ...foundationModels,
-  // ...popularAiTools,
-  // ...studentAiTools,
-  // ...marketingAiTools,
-  // ...businessOwnerAiTools,
+  ...foundationModels,
+  ...popularAiTools,
+  ...studentAiTools,
+  ...marketingAiTools,
+  ...businessOwnerAiTools,
   ...aiToolsWithProductType,
 ];
 

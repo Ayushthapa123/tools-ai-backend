@@ -21,11 +21,14 @@ export class CreateListedAiToolInput {
   @Field()
   shortDescription: string;
 
-  @Field()
+  @Field({ nullable: true })
   logoUrl: string;
 
   @Field()
   websiteUrl: string;
+
+  @Field({ nullable: true })
+  videoUrl?: string;
 
   @Field(() => [PricingType])
   pricingType: PricingType[];

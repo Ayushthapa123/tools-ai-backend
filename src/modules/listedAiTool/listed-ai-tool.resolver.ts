@@ -139,6 +139,14 @@ export class ListedAiToolResolver {
   }
 
   @Mutation(() => ListedAiTool)
+  async updateListedAiToolFromArrayForVideoUrl(
+    @Args('userId', { type: () => Int, defaultValue: 1 }) userId: number,
+  ) {
+    console.log('userId', userId);
+    return this.listedAiToolService.updateListedAiToolFromArrayForVideoUrl();
+  }
+
+  @Mutation(() => ListedAiTool)
   async updateListedAiTool(
     @Args('toolId') toolId: number,
     @Args('data') data: UpdateListedAiToolInput,

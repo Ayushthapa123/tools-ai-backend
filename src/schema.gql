@@ -80,7 +80,7 @@ input CreateListedAiToolInput {
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
   listedBy: ListedBy!
-  logoUrl: String!
+  logoUrl: String
   modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
@@ -93,6 +93,7 @@ input CreateListedAiToolInput {
   useCases: [String!]!
   usps: [String!]!
   verified: Boolean!
+  videoUrl: String
   websiteUrl: String!
 }
 
@@ -318,7 +319,7 @@ type ListedAiToolData {
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
   listedBy: ListedBy!
-  logoUrl: String!
+  logoUrl: String
   modalities: [Modality!]!
   name: String!
   platforms: [PlatformType!]!
@@ -333,7 +334,8 @@ type ListedAiToolData {
   useCases: [String!]!
   usps: [String!]!
   verified: Boolean!
-  websiteUrl: String!
+  videoUrl: String
+  websiteUrl: String
 }
 
 type ListedAiToolList {
@@ -401,6 +403,7 @@ type Mutation {
   signupUser(input: SignupInput!): UsersAndToken!
   updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
   updateListedAiTool(data: UpdateListedAiToolInput!, toolId: Float!): ListedAiTool!
+  updateListedAiToolFromArrayForVideoUrl(userId: Int! = 1): ListedAiTool!
   updateTool(data: UpdateToolInput!, toolId: Float!): Tool!
   updateToolMetaData(updateToolMetaDataInput: UpdateToolMetaDataDto!): ToolMetadata!
   updateUser(input: UpdateUserInput!): User!
@@ -504,6 +507,7 @@ input SearchListedAiToolInput {
   pageSize: Int! = 20
   platforms: [PlatformType!]
   pricingTypes: [PricingType!]
+  productTypes: [ProductType!]
   researchMode: Boolean
   searchTerm: String
   sortBy: String
@@ -751,6 +755,7 @@ input UpdateListedAiToolInput {
   useCases: [String!]
   usps: [String!]
   verified: Boolean
+  videoUrl: String
   websiteUrl: String
 }
 

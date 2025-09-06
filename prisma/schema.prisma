@@ -143,6 +143,7 @@ model ListedAiTool {
   shortDescription String
   logoUrl          String?
   websiteUrl       String
+  videoUrl         String?
 
   keywords         String[]  @default([])
   toolUserTypes        ToolUserType[]  @default([]) // e.g., ["developer", "writer"]
