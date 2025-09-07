@@ -1,0 +1,61 @@
+export const securityAiList = [
+  // --- Threat Detection & SIEM ---
+  'CrowdStrike Falcon',
+  'Darktrace',
+  'Vectra AI',
+  'Splunk Enterprise Security',
+  'IBM QRadar',
+  'Microsoft Sentinel',
+  'Exabeam',
+  'LogRhythm',
+  'Rapid7 InsightIDR',
+  'Securonix',
+
+  // --- Fraud Detection & Prevention ---
+  'Forter',
+  'Kount',
+  'Riskified',
+  'Sift',
+  'Ravelin',
+  'Simility',
+  'Featurespace',
+  'Guardian Analytics',
+  'Actimize',
+  'Fraud.net',
+
+  // --- Endpoint & Network Security ---
+  'SentinelOne',
+  'Palo Alto Networks Cortex XDR',
+  'Sophos Intercept X',
+  'McAfee MVISION',
+  'Trend Micro Apex One',
+  'FireEye Helix',
+  'Cybereason',
+  'Bitdefender GravityZone',
+  'Check Point Quantum Security',
+  'F-Secure Elements',
+
+  // --- Cloud Security & Compliance ---
+  'Orca Security',
+  'Aqua Security',
+  'Prisma Cloud',
+  'Lacework',
+  'Qualys',
+  'Tenable.io',
+  'CrowdStrike Cloud Security',
+  'Snyk',
+  'StackRox',
+  'Sysdig Secure',
+
+  // --- Threat Intelligence & Specialized AI ---
+  'Recorded Future',
+  'Anomali',
+  'IntSights',
+  'Blueliv',
+  'Group-IB',
+  'Cylance',
+  'CyGlass',
+  'Vectra Cognito',
+  'Deep Instinct',
+  'Sophos AI Threat Detection',
+];

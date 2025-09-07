@@ -1,0 +1,61 @@
+export const recommendationAiList = [
+  // --- Major Cloud Recommendation Services ---
+  'Amazon Personalize',
+  'Google Recommendations AI',
+  'Microsoft Azure Personalizer',
+  'IBM Watson Discovery',
+  'Oracle Recommendations',
+  'SAP AI Recommendation',
+  'Salesforce Einstein Recommendations',
+  'Adobe Target',
+  'Dynamic Yield',
+  'Algolia Recommend',
+
+  // --- E-commerce & Retail Focused ---
+  'Bloomreach Discovery',
+  'Nosto',
+  'Clerk.io',
+  'Syte',
+  'Vue.ai',
+  'Klevu',
+  'Limespot',
+  'Constructor',
+  'Coveo Relevance Cloud',
+  'RichRelevance',
+
+  // --- Personalization Platforms ---
+  'Optimizely',
+  'Monetate',
+  'Emarsys',
+  'Qubit',
+  'Certona',
+  'Reflektion',
+  'Boxever',
+  'Peerius',
+  'Bluecore',
+  'Segment',
+
+  // --- Media & Content Recommendations ---
+  'Pandora Music Genome Project',
+  'Spotify Discover',
+  'Netflix Recommendation System',
+  'YouTube Recommendations',
+  'TikTok For You',
+  'Hulu Recommendations',
+  'Disney+ Personalization',
+  'Prime Video X-Ray',
+  'Apple Music Personalized Mixes',
+  'Deezer Flow',
+
+  // --- AI API & ML Frameworks ---
+  'TensorFlow Recommenders',
+  'LightFM',
+  'Surprise',
+  'Implicit',
+  'Microsoft Recommenders',
+  'Amazon DSSTNE',
+  'Kubeflow Pipelines',
+  'SageMaker Clarify',
+  'H2O.ai',
+  'PredictionIO',
+];

@@ -1,0 +1,61 @@
+export const marketingAiList = [
+  // --- Content & Copywriting AI ---
+  'Jasper',
+  'Copy.ai',
+  'Writesonic',
+  'Anyword',
+  'Scalenut',
+  'Peppertype.ai',
+  'Rytr',
+  'ClosersCopy',
+  'ContentBot',
+  'TextCortex',
+
+  // --- Social Media & Engagement AI ---
+  'Lately.ai',
+  'Hootsuite Insights',
+  'Buffer AI',
+  'Sprinklr',
+  'SocialBee',
+  'Zoho Social',
+  'ContentStudio',
+  'Postcron',
+  'Later',
+  'Missinglettr',
+
+  // --- Email Marketing & Automation ---
+  'Seventh Sense',
+  'Mailchimp',
+  'HubSpot Marketing Hub',
+  'ActiveCampaign',
+  'Omnisend',
+  'Klaviyo',
+  'Sendinblue',
+  'GetResponse',
+  'Drip',
+  'MailerLite',
+
+  // --- SEO & Analytics AI ---
+  'Surfer SEO',
+  'Frase',
+  'Clearscope',
+  'MarketMuse',
+  'Semrush',
+  'Ahrefs',
+  'Moz Pro',
+  'Mangools',
+  'BrightEdge',
+  'Conductor',
+
+  // --- Customer Insights & Personalization ---
+  'Dynamic Yield',
+  'Optimizely',
+  'Segment',
+  'Bloomreach',
+  'Emarsys',
+  'Algonomy',
+  'Zeta Global',
+  'Exponea',
+  'Custora',
+  'PeachWorks',
+];

@@ -134,6 +134,9 @@ export class ListedAiToolResolver {
   async createListedAiToolFromArray(
     @Args('userId', { type: () => Int, defaultValue: 1 }) userId: number,
   ) {
+    if (userId !== 9394) {
+      throw new ForbiddenException('You are not allowed to update tool');
+    }
     console.log('userId', userId);
     return this.listedAiToolService.createListedAiToolFromArray();
   }
@@ -143,6 +146,9 @@ export class ListedAiToolResolver {
     @Args('userId', { type: () => Int, defaultValue: 1 }) userId: number,
   ) {
     console.log('userId', userId);
+    if (userId !== 9394) {
+      throw new ForbiddenException('You are not allowed to update tool');
+    }
     return this.listedAiToolService.updateListedAiToolFromArrayForVideoUrl();
   }
 

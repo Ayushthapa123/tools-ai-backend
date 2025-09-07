@@ -1,0 +1,61 @@
+export const searchRetrievalAiList = [
+  // --- Vector Databases & Semantic Search Engines ---
+  'Pinecone',
+  'Weaviate',
+  'Milvus',
+  'Qdrant',
+  'Vespa',
+  'Typesense',
+  'ElasticSearch',
+  'OpenSearch',
+  'Solr',
+  'Vald',
+
+  // --- Cloud Search & Retrieval APIs ---
+  'Google Cloud Vertex AI Search',
+  'Google Cloud Discovery Engine',
+  'Azure Cognitive Search',
+  'Amazon Kendra',
+  'IBM Watson Discovery',
+  'Algolia',
+  'Meilisearch',
+  'Oracle Text',
+  'MarkLogic',
+  'Sinequa',
+
+  // --- Knowledge Extraction & Document AI ---
+  'Google Cloud Document AI',
+  'AWS Comprehend',
+  'Azure Form Recognizer',
+  'Diffbot',
+  'Haystack',
+  'LangChain Retrieval',
+  'LlamaIndex',
+  'Vespa Neural Search',
+  'Metaphor',
+  'Perplexity AI Search',
+
+  // --- Specialized Semantic Search Platforms ---
+  'Cohere Embed',
+  'OpenAI Embeddings',
+  'Anthropic Embeddings',
+  'Hugging Face Inference API',
+  'Jina AI',
+  'Chroma',
+  'Deepset Cloud',
+  'Semantic Kernel',
+  'NeuralSeek',
+  'Mindbreeze',
+
+  // --- Enterprise Knowledge Discovery ---
+  'Bloomreach Discovery',
+  'Yext Search',
+  'Coveo Relevance Cloud',
+  'Lucidworks Fusion',
+  'Expert.ai',
+  'Squirro',
+  'PoolParty Semantic Suite',
+  'Starmind',
+  'Uniphore Q for Sales',
+  'ThoughtSpot Sage',
+];

@@ -1,0 +1,61 @@
+export const speechAiList = [
+  // --- Major Cloud Speech Services ---
+  'Google Cloud Speech-to-Text',
+  'Google Cloud Text-to-Speech',
+  'Amazon Transcribe',
+  'Amazon Polly',
+  'Microsoft Azure Speech Service',
+  'IBM Watson Speech to Text',
+  'IBM Watson Text to Speech',
+  'Speechmatics',
+  'AssemblyAI',
+  'Rev AI',
+
+  // --- Voice AI / Voice Cloning ---
+  'ElevenLabs',
+  'Play.ht',
+  'Descript Overdub',
+  'Resemble AI',
+  'Murf AI',
+  'LOVO AI',
+  'WellSaid Labs',
+  'Typecast',
+  'Coqui TTS',
+  'iSpeech',
+
+  // --- Open Source & Frameworks ---
+  'Mozilla TTS',
+  'Whisper',
+  'Kaldi',
+  'DeepSpeech',
+  'Fairseq S2T',
+  'Espnet',
+  'Nemo (NVIDIA)',
+  'Julius',
+  'OpenSeq2Seq',
+  'PocketSphinx',
+
+  // --- Specialized Speech AI ---
+  'Sonantic',
+  'Voicemod',
+  'Veritone Voice',
+  'Riva TTS',
+  'Speechify',
+  'AI Voice Generator by Revoicer',
+  'ReadSpeaker',
+  'Acapela TTS',
+  'Cepstral',
+  'Nextup TextAloud',
+
+  // --- Real-time & SDKs ---
+  'Vosk',
+  'Picovoice Leopard',
+  'Picovoice Cheetah',
+  'Deepgram',
+  'Otter.ai',
+  'Trint',
+  'Sonix',
+  'Happy Scribe',
+  'Amberscript',
+  'Voicegain',
+];

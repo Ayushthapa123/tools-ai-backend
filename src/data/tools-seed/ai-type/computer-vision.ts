@@ -1,0 +1,61 @@
+export const computerVisionList = [
+  // --- Major Cloud Vision APIs ---
+  'Google Cloud Vision AI',
+  'Amazon Rekognition',
+  'Microsoft Azure Computer Vision',
+  'IBM Watson Visual Recognition',
+  'Clarifai',
+  'OpenCV',
+  'Vize.ai',
+  'Viso Suite',
+  'Deep Vision',
+  'Sighthound',
+
+  // --- OCR (Optical Character Recognition) ---
+  'Tesseract OCR',
+  'Adobe Sensei',
+  'ABBYY FineReader',
+  'Readiris',
+  'Anyline',
+  'Rossum',
+  'Nanonets',
+  'Docsumo',
+  'Veryfi OCR',
+  'Scanbot SDK',
+
+  // --- Object Detection & Recognition Frameworks ---
+  'YOLOv8',
+  'YOLO-NAS',
+  'Detectron2',
+  'Mask R-CNN',
+  'Faster R-CNN',
+  'EfficientDet',
+  'CenterNet',
+  'RetinaNet',
+  'OpenMMLab',
+  'MMDetection',
+
+  // --- Face & Biometric Recognition ---
+  'Face++',
+  'Trueface',
+  'Kairos',
+  'Neurotechnology VeriLook',
+  'Luxand',
+  'Clearview AI',
+  'FaceFirst',
+  'iProov',
+  'Cognitec',
+  'AwareABIS',
+
+  // --- Specialized Vision AI ---
+  'Ximilar',
+  'Scandit',
+  'Playment',
+  'V7 Darwin',
+  'SuperAnnotate',
+  'LandingLens',
+  'AlwaysAI',
+  'Edge Impulse',
+  'Chooch AI',
+  'DeepAI Image Recognition',
+];

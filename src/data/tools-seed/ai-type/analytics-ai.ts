@@ -1,0 +1,61 @@
+export const analyticsAiList = [
+  // --- Cloud AI Analytics Platforms ---
+  'Google Cloud BigQuery',
+  'Google Looker',
+  'Amazon QuickSight',
+  'Microsoft Power BI',
+  'Azure Synapse Analytics',
+  'IBM Cognos Analytics',
+  'Oracle Analytics Cloud',
+  'Salesforce Tableau',
+  'SAP Analytics Cloud',
+  'SAS Viya',
+
+  // --- Forecasting & Predictive Analytics ---
+  'Amazon Forecast',
+  'Azure Machine Learning',
+  'Google Cloud Vertex AI Forecast',
+  'H2O Driverless AI',
+  'DataRobot',
+  'RapidMiner',
+  'Alteryx',
+  'TIBCO Spotfire',
+  'Anaplan',
+  'Q Research Software',
+
+  // --- Business Intelligence Tools ---
+  'Qlik Sense',
+  'MicroStrategy',
+  'Domo',
+  'Sisense',
+  'Board',
+  'Yellowfin BI',
+  'GoodData',
+  'Zoho Analytics',
+  'Mode Analytics',
+  'Chartio',
+
+  // --- Customer & Marketing Analytics ---
+  'Adobe Analytics',
+  'Heap',
+  'Mixpanel',
+  'Amplitude',
+  'Pendo',
+  'Kissmetrics',
+  'Indicative',
+  'Segment',
+  'Totango',
+  'Glassbox',
+
+  // --- Open Source & Specialized Analytics ---
+  'Apache Superset',
+  'Metabase',
+  'Redash',
+  'KNIME',
+  'RStudio',
+  'JASP',
+  'Orange',
+  'WEKA',
+  'Elasticsearch Kibana',
+  'Grafana',
+];

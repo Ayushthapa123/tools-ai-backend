@@ -125,6 +125,9 @@ export class ListedAiToolService {
           has: userType,
         },
       },
+      orderBy: {
+        popularityScore: 'desc',
+      },
     });
 
     return {
