@@ -79,10 +79,11 @@ input CreateListedAiToolInput {
   features: [String!]!
   integrationOptions: [IntegrationOption!]!
   keywords: [String!]!
-  listedBy: ListedBy!
+  listedBy: ListedBy
   logoUrl: String
   modalities: [Modality!]!
   name: String!
+  ownerEmail: String
   platforms: [PlatformType!]!
   popularityScore: Int!
   pricingType: [PricingType!]!
@@ -378,6 +379,7 @@ type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
   createInputSchema(createInputSchemaInput: CreateInputSchema!): InputSchema!
   createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
+  createListedAiToolAnonymously(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolFromArray(userId: Int! = 1): ListedAiTool!
   createTool(data: CreateToolInput!): Tool!
   createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
@@ -745,6 +747,7 @@ input UpdateListedAiToolInput {
   logoUrl: String
   modalities: [Modality!]
   name: String
+  ownerEmail: String
   platforms: [PlatformType!]
   popularityScore: Int
   pricingType: [PricingType!]

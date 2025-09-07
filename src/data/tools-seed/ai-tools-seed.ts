@@ -120,7 +120,7 @@ const aiTools = [
   // ...marketingAiTools,
   // ...businessOwnerAiTools,
   // product type wise. done
-  // ...aiToolsWithProductType,
+  ...aiToolsWithProductType,
   // ai type wise.  done
   // ...aiToolsWithAiType,
 ];

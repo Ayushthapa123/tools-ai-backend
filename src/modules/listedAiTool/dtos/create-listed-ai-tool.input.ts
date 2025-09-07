@@ -62,8 +62,9 @@ export class CreateListedAiToolInput {
 
   @Field(() => [String])
   keywords: string[];
-  @Field(() => ListedBy)
-  listedBy: ListedBy;
+
+  @Field(() => ListedBy, { nullable: true })
+  listedBy?: ListedBy;
 
   @Field(() => Int)
   popularityScore?: number;
@@ -75,14 +76,17 @@ export class CreateListedAiToolInput {
   verified: boolean;
 
   @Field(() => [String])
-  useCases: string[];
+  useCases?: string[];
 
   @Field(() => [String])
-  usps: string[];
+  usps?: string[];
 
   @Field(() => [String])
-  features: string[];
+  features?: string[];
 
   @Field(() => Date, { nullable: true })
   publishedAt?: Date;
+
+  @Field({ nullable: true })
+  ownerEmail?: string;
 }

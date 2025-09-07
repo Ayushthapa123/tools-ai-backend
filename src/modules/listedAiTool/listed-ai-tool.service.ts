@@ -96,12 +96,12 @@ export class ListedAiToolService {
         popularityScore: {
           gt: 84,
         },
-        ...(isSuperAdmin ? {} : { verified: true }),
       },
       orderBy: {
         popularityScore: 'desc',
       },
     });
+    console.log('toolsssssssssssssssssssss', tools);
 
     return {
       data: tools,
@@ -228,6 +228,53 @@ export class ListedAiToolService {
       };
     }
   }
+
+  async createListedAiToolAnonymously(data: CreateListedAiToolInput) {
+    console.log('createListedAiToolAnonymously method called');
+    const { ownerEmail, ...rest } = data;
+    // find the user by email
+    let user = await this.prisma.user.findUnique({
+      where: {
+        email: ownerEmail,
+      },
+    });
+    if (!user) {
+      // create a new user
+      user = await this.prisma.user.create({
+        data: {
+          email: ownerEmail,
+          fullName: 'Anonymous User',
+          username: ownerEmail.split('@')[0],
+        },
+      });
+    }
+    const userId = user?.id;
+    // generate slug from name
+    const slug = generateSlug(data.name);
+    // check if slug already exists
+    try {
+      const res = await this.prisma.listedAiTool.create({
+        data: {
+          ...rest,
+          ownerId: userId,
+          slug: slug,
+        },
+      });
+      return {
+        data: res,
+        error: null,
+      };
+    } catch (error) {
+      console.error('Error in createListedAiTool:', error);
+      return {
+        data: null,
+        error: {
+          message: 'not allowed',
+        },
+      };
+    }
+  }
+
   async createListedAiToolFromArray() {
     console.log('createListedAiToolFromArray method called');
     // list few ai tools for each usertype,domain, aitype, modality in data.ts file and get from there

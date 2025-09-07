@@ -9,12 +9,12 @@ import { aiServiceList } from './ai-service';
 import { aiHardwareList } from './ai-hardware';
 
 export const aiToolsWithProductType = [
-  ...aiApplicationsList,
-  ...aiModelsList,
-  ...aiAgentList,
-  ...aiDatasetList,
-  ...aiFrameworkList,
-  ...aiToolkitList, // failed here
+  // ...aiApplicationsList,
+  // ...aiModelsList,
+  // ...aiAgentList,
+  // ...aiDatasetList,
+  // ...aiFrameworkList,
+  // ...aiToolkitList, // failed here
   ...aiTemplateList,
   ...aiServiceList,
   ...aiHardwareList,

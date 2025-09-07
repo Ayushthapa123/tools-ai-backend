@@ -130,6 +130,14 @@ export class ListedAiToolResolver {
     const userId = Number(ctx.user.sub);
     return this.listedAiToolService.createListedAiTool(userId, data);
   }
+
+  @Mutation(() => ListedAiTool)
+  async createListedAiToolAnonymously(
+    @Args('data') data: CreateListedAiToolInput,
+  ) {
+    return this.listedAiToolService.createListedAiToolAnonymously(data);
+  }
+
   @Mutation(() => ListedAiTool)
   async createListedAiToolFromArray(
     @Args('userId', { type: () => Int, defaultValue: 1 }) userId: number,
