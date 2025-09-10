@@ -11,11 +11,11 @@ import { automationAiList } from './automation-ai';
 import { securityAiList } from './security-ai';
 
 export const aiToolsWithAiType = [
-  ...generativeAiList,
-  ...computerVisionList,
-  ...conversationalAiList,
-  ...speechAiList,
-  ...analyticsAiList,
+  // ...generativeAiList, //videos added
+  // ...computerVisionList,
+  // ...conversationalAiList,
+  // ...speechAiList,
+  // ...analyticsAiList,
   ...codeAiList,
   ...searchRetrievalAiList,
   ...recommendationAiList,

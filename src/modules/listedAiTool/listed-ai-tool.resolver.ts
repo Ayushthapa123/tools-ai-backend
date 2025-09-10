@@ -23,7 +23,7 @@ import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
 import { UpdateListedAiToolInput } from './dtos/update-listed-ai-tool.input';
 
 import { PrismaService } from '@src/prisma/prisma.service';
-import { ToolUserType } from '@src/models/global.enum';
+import { ToolUserType, ProductType } from '@src/models/global.enum';
 // import { Controller } from '@nestjs/common';
 
 @ObjectType()
@@ -77,6 +77,21 @@ export class ListedAiToolResolver {
       pageSize,
       pageNumber,
       isSuperAdmin,
+    );
+  }
+
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsByProductType(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('productType', { type: () => ProductType }) productType: ProductType,
+  ) {
+    console.log('productType', productType);
+    return this.listedAiToolService.getListedAiToolsByProductType(
+      pageSize,
+      pageNumber,
+      productType,
     );
   }
 

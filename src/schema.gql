@@ -473,6 +473,7 @@ type Query {
   getGoogleAuthUrl: GoogleOauthUrl!
   getListedAiToolById(toolId: Float!): ListedAiTool
   getListedAiToolBySlug(slug: String!): ListedAiTool
+  getListedAiToolsByProductType(pageNumber: Int! = 1, pageSize: Int! = 6, productType: ProductType!): ListedAiToolArrayResponse!
   getListedAiToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ListedAiToolArrayResponse!
   getListedAiToolsByUserType(pageNumber: Int! = 1, pageSize: Int! = 6, userType: ToolUserType!): ListedAiToolArrayResponse!
   getListedAiToolsWithHighPopularityScore(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!

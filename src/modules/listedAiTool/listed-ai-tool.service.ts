@@ -3,7 +3,12 @@ import { Injectable } from '@nestjs/common';
 // import { HostelData } from '@src/models/global.model';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
-import { ToolUserType, UserType, ListedBy } from '@src/models/global.enum';
+import {
+  ToolUserType,
+  UserType,
+  ListedBy,
+  ProductType,
+} from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
 import { GoogleGenAI } from '@google/genai';
@@ -102,6 +107,33 @@ export class ListedAiToolService {
       },
     });
     console.log('toolsssssssssssssssssssss', tools);
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+
+  async getListedAiToolsByProductType(
+    pageSize: number,
+    pageNumber: number,
+    productType: ProductType,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        productType: {
+          has: productType,
+        },
+      },
+      orderBy: {
+        popularityScore: 'desc',
+      },
+    });
 
     return {
       data: tools,
@@ -833,10 +865,9 @@ export class ListedAiToolService {
           version: 'v3',
           auth: process.env.YOUTUBE_API_KEY, // store API key in .env
         });
-
         const res = await youtube.search.list({
           part: ['snippet'],
-          q: `${model} ai tool official demo`,
+          q: `${model}  official demo`,
           type: ['video'],
           maxResults: 1, // you can increase if you want multiple results
         });

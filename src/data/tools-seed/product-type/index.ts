@@ -15,7 +15,7 @@ export const aiToolsWithProductType = [
   // ...aiDatasetList,
   // ...aiFrameworkList,
   // ...aiToolkitList, // failed here
-  ...aiTemplateList,
-  ...aiServiceList,
-  ...aiHardwareList,
+  // ...aiTemplateList,
+  // ...aiServiceList,
+  // ...aiHardwareList,// finished videos
 ];
