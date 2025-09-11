@@ -23,7 +23,13 @@ import { CreateListedAiToolInput } from './dtos/create-listed-ai-tool.input';
 import { UpdateListedAiToolInput } from './dtos/update-listed-ai-tool.input';
 
 import { PrismaService } from '@src/prisma/prisma.service';
-import { ToolUserType, ProductType } from '@src/models/global.enum';
+import {
+  ToolUserType,
+  ProductType,
+  AiType,
+  AiCapability,
+  Domain,
+} from '@src/models/global.enum';
 // import { Controller } from '@nestjs/common';
 
 @ObjectType()
@@ -108,6 +114,54 @@ export class ListedAiToolResolver {
       userType,
     );
   }
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsByAiType(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('aiType', { type: () => AiType }) aiType: AiType,
+  ) {
+    console.log('aiType', aiType);
+    return this.listedAiToolService.getListedAiToolsByAiType(
+      pageSize,
+      pageNumber,
+      aiType,
+    );
+  }
+
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsByAiCapability(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('aiCapability', { type: () => AiCapability })
+    aiCapability: AiCapability,
+  ) {
+    console.log('aiCapability', aiCapability);
+    return this.listedAiToolService.getListedAiToolsByAiCapability(
+      pageSize,
+      pageNumber,
+      aiCapability,
+    );
+  }
+
+  @Query(() => ListedAiToolArrayResponse)
+  async getListedAiToolsByDomain(
+    @Args('pageSize', { type: () => Int, defaultValue: 6 }) pageSize: number,
+    @Args('pageNumber', { type: () => Int, defaultValue: 1 })
+    pageNumber: number,
+    @Args('domain', { type: () => Domain })
+    domain: Domain,
+  ) {
+    console.log('domain', domain);
+    return this.listedAiToolService.getListedAiToolsByDomain(
+      pageSize,
+      pageNumber,
+      domain,
+    );
+  }
+
+
 
   @UseGuards(AuthGuard)
   @Query(() => ListedAiToolArrayResponse)

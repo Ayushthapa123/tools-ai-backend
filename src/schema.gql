@@ -473,6 +473,9 @@ type Query {
   getGoogleAuthUrl: GoogleOauthUrl!
   getListedAiToolById(toolId: Float!): ListedAiTool
   getListedAiToolBySlug(slug: String!): ListedAiTool
+  getListedAiToolsByAiCapability(aiCapability: AiCapability!, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
+  getListedAiToolsByAiType(aiType: AiType!, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
+  getListedAiToolsByDomain(domain: Domain!, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
   getListedAiToolsByProductType(pageNumber: Int! = 1, pageSize: Int! = 6, productType: ProductType!): ListedAiToolArrayResponse!
   getListedAiToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ListedAiToolArrayResponse!
   getListedAiToolsByUserType(pageNumber: Int! = 1, pageSize: Int! = 6, userType: ToolUserType!): ListedAiToolArrayResponse!

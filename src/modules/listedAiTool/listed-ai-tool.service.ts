@@ -8,6 +8,9 @@ import {
   UserType,
   ListedBy,
   ProductType,
+  AiType,
+  AiCapability,
+  Domain,
 } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
 import { generateSlug } from '@src/helpers/generateSlug';
@@ -155,6 +158,87 @@ export class ListedAiToolService {
       where: {
         toolUserTypes: {
           has: userType,
+        },
+      },
+      orderBy: {
+        popularityScore: 'desc',
+      },
+    });
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+
+  async getListedAiToolsByAiType(
+    pageSize: number,
+    pageNumber: number,
+    aiType: AiType,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        aiType: {
+          has: aiType,
+        },
+      },
+      orderBy: {
+        popularityScore: 'desc',
+      },
+    });
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+
+  async getListedAiToolsByAiCapability(
+    pageSize: number,
+    pageNumber: number,
+    aiCapability: AiCapability,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        aiCapabilities: {
+          has: aiCapability,
+        },
+      },
+      orderBy: {
+        popularityScore: 'desc',
+      },
+    });
+
+    return {
+      data: tools,
+      error: null,
+    };
+  }
+
+  async getListedAiToolsByDomain(
+    pageSize: number,
+    pageNumber: number,
+    domain: Domain,
+  ) {
+    const skip = (pageNumber - 1) * pageSize;
+    const take = pageSize;
+    // superadmin should get all verified/non verified hostels but other should get only verified
+    const tools = await this.prisma.listedAiTool.findMany({
+      skip,
+      take,
+      where: {
+        domains: {
+          has: domain,
         },
       },
       orderBy: {
@@ -652,7 +736,7 @@ export class ListedAiToolService {
             'OPTIMIZATION_PLANNING',
             'ANOMALY_DETECTION',
             'CAUSAL_INFERENCE',
-            'ANALYTICS_BI',
+            'ANALYTICS_AI',
             'CODE_AI',
             'SECURITY_ML',
             'PRIVACY_PRESERVING_ML',
