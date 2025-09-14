@@ -487,6 +487,7 @@ type Query {
   getToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ToolArrayResponse!
   getUserByAccessToken(accessToken: String!): User
   getUserById(id: Float!): User
+  getUserByUsername(username: String!): User
   getUsers: [User!]!
   searchListedAiTools(input: SearchListedAiToolInput!): ListedAiToolList!
   sendVerificationEmail(email: String!, name: String!, token: String!): Boolean!
@@ -824,7 +825,7 @@ type UserData {
   passwordHash: String
   phoneNumber: String
   profilePicture: String
-  tools: [ToolData!]
+  tool: [ToolData!]
   updatedAt: DateTime!
   userType: UserType!
   username: String!

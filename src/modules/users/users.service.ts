@@ -37,6 +37,29 @@ export class UsersService {
     };
   }
 
+  async getUserByUsername(username: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { username },
+      include: {
+        tool: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        data: null,
+        error: {
+          message: `User with Username ${username} not found`,
+        },
+      };
+    }
+
+    return {
+      data: user,
+      error: null,
+    };
+  }
+
   async getUserByEmail(email: string) {
     const user = await this.prismaService.user.findUnique({
       where: { email },

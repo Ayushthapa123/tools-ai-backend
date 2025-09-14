@@ -112,7 +112,7 @@ export class UserData {
   updatedAt: Date;
 
   @Field(() => [ToolData], { nullable: true })
-  tools?: ToolData[];
+  tool?: ToolData[];
 }
 
 @ObjectType()
@@ -302,7 +302,7 @@ export class ListedAiToolData {
   logoUrl?: string;
 
   @Field({ nullable: true })
-  websiteUrl?: string; 
+  websiteUrl?: string;
 
   @Field({ nullable: true })
   videoUrl?: string;

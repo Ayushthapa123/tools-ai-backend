@@ -19,6 +19,11 @@ export class UsersResolver {
   }
 
   @Query(() => User, { nullable: true })
+  async getUserByUsername(@Args('username') username: string) {
+    return this.usersService.getUserByUsername(username);
+  }
+
+  @Query(() => User, { nullable: true })
   async getUserByAccessToken(@Args('accessToken') accessToken: string) {
     return this.usersService.getUserByToken(accessToken);
   }

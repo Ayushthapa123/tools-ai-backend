@@ -112,7 +112,7 @@ export class ToolService {
   }
 
   async createTool(userId: number, data: CreateToolInput) {
-    const slug = generateSlug(data.name);
+    const slug = data.slug ?? generateSlug(data.name);
 
     try {
       const res = await this.prisma.tool.create({
