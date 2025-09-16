@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ToolType" ADD VALUE 'IO_TEXT_TO_IMAGE';

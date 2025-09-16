@@ -8,6 +8,16 @@ export class IOGenericData {
 }
 
 @ObjectType()
+export class IOGenericTextToImageData {
+  @Field(() => String)
+  lowResolutionImage: string;
+  @Field(() => String)
+  mediumResolutionImage: string;
+  @Field(() => String)
+  highResolutionImage: string;
+}
+
+@ObjectType()
 export class IOGeneric extends BaseResponse {
   @Field(() => IOGenericData, { nullable: true })
   data?: IOGenericData;
@@ -19,4 +29,16 @@ export class IOGenericList extends BaseResponse {
   data?: IOGenericData[];
   @Field(() => String, { nullable: true })
   personalizedGuide?: string;
+}
+
+@ObjectType()
+export class IOGenericTextToImage extends BaseResponse {
+  @Field(() => IOGenericTextToImageData, { nullable: true })
+  data?: IOGenericTextToImageData;
+}
+
+@ObjectType()
+export class IOGenericTextToImageList extends BaseResponse {
+  @Field(() => [IOGenericTextToImageData], { nullable: true })
+  data?: IOGenericTextToImageData[];
 }

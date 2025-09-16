@@ -3,9 +3,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { GoogleGenAI } from '@google/genai';
+import Jimp from 'jimp';
 
 import { IOGenericInput } from './dto/io-generic.input';
-import { IOGeneric } from './models/io-generic.model';
+import { IOGeneric, IOGenericTextToImage } from './models/io-generic.model';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -65,6 +71,129 @@ export class IoGenericService {
     }
   }
 
+  async processGenericIOTextToImageOpenAI(
+    input: IOGenericInput,
+  ): Promise<IOGeneric> {
+    console.log('Generic IO Input:', input);
+
+    try {
+      const prompt =
+        'Generate a cover photo  image of a cat. Please make it 256x256 pixels. or as small as possible';
+
+      const response = await openai.images.generate({
+        model: 'gpt-image-1',
+        prompt,
+        size: 'auto',
+        // response_format: 'url', // return a hosted URL
+      });
+      console.log('response', response);
+
+      const imageUrl = response.data[0].url;
+
+      return {
+        data: {
+          htmlResponse: imageUrl || null,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to process generic IO:', error);
+      return {
+        data: {
+          htmlResponse: null,
+        },
+      };
+    }
+  }
+  async processGenericIOTextToImageGemini(
+    input: IOGenericInput,
+  ): Promise<IOGenericTextToImage> {
+    console.log('Generic IO Input:', input);
+
+    try {
+      const prompt = this.buildCustomPromptTextToImage(
+        input.schema,
+        input.data,
+      );
+
+      // Ask Gemini for IMAGE output, not just text
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-image-preview',
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }],
+          },
+        ],
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+          // Note: mediaResolution is unreliable; we'll compress programmatically below
+        },
+      });
+
+      let imageBase64: string | null = null;
+      const parts = response?.candidates?.[0]?.content?.parts ?? [];
+
+      for (const part of parts as any[]) {
+        if (part?.inlineData?.data) {
+          imageBase64 = part.inlineData.data as string;
+          break;
+        }
+      }
+
+      let lowResolutionImage: string | null = null;
+      let mediumResolutionImage: string | null = null;
+      let highResolutionImage: string | null = null;
+      if (imageBase64) {
+        // Programmatically reduce size without external services: Jimp resize (fit inside) + JPEG encode
+        const inputBuffer = Buffer.from(imageBase64, 'base64');
+        const image = await Jimp.read(inputBuffer);
+        const thumbnailImageOriginal = image.clone();
+        thumbnailImageOriginal.scaleToFit(256, 256); // non-cropping fit inside
+        thumbnailImageOriginal.quality(60); // JPEG quality
+        const compressedBufferLowResolution =
+          await thumbnailImageOriginal.getBufferAsync(Jimp.MIME_JPEG);
+        const compressedBase64LowResolution =
+          compressedBufferLowResolution.toString('base64');
+        lowResolutionImage = `data:image/jpeg;base64,${compressedBase64LowResolution}`;
+        // medium resolution
+        const mediumResolutionImageOriginal = image.clone();
+        mediumResolutionImageOriginal.scaleToFit(512, 512); // non-cropping fit inside
+        mediumResolutionImageOriginal.quality(60); // JPEG quality
+        const compressedBufferMediumResolution =
+          await mediumResolutionImageOriginal.getBufferAsync(Jimp.MIME_JPEG);
+        const compressedBase64MediumResolution =
+          compressedBufferMediumResolution.toString('base64');
+        mediumResolutionImage = `data:image/jpeg;base64,${compressedBase64MediumResolution}`;
+        // high resolution
+        image.scaleToFit(1280, 1280); // non-cropping fit inside
+        image.quality(50); // JPEG quality
+        const compressedBufferHighResolution = await image.getBufferAsync(
+          Jimp.MIME_JPEG,
+        );
+        const compressedBase64HighResolution =
+          compressedBufferHighResolution.toString('base64');
+        highResolutionImage = `data:image/jpeg;base64,${compressedBase64HighResolution}`;
+        image.scaleToFit(1280, 1280); // non-cropping fit inside
+      }
+
+      return {
+        data: {
+          lowResolutionImage: lowResolutionImage || null,
+          mediumResolutionImage: mediumResolutionImage || null,
+          highResolutionImage: highResolutionImage || null,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to process generic IO:', error);
+      return {
+        data: {
+          lowResolutionImage: null,
+          mediumResolutionImage: null,
+          highResolutionImage: null,
+        },
+      };
+    }
+  }
   private buildCustomPrompt(schema: any, data: any): string {
     // Extract the custom prompt and output format guide from schema
     const { customPrompt, outputFormatGuide, inputSchema } = schema;
@@ -101,6 +230,35 @@ SECURITY REQUIREMENTS:
 - DO NOT include any HTML comments or hidden content
 - Only generate safe, display-oriented HTML content (div, p, h1-h6, span, ul, ol, li, table, img, a, etc.)
 - Focus on content presentation and styling, not interactivity`;
+
+    return prompt;
+  }
+  private buildCustomPromptTextToImage(schema: any, data: any): string {
+    // Extract the custom prompt and output format guide from schema
+    const { customPrompt, outputFormatGuide, inputSchema } = schema;
+
+    let prompt = '';
+
+    // Use the custom prompt if provided
+    if (customPrompt) {
+      prompt += `${customPrompt}\n\n`;
+    }
+
+    // Add input schema information if provided
+    if (inputSchema) {
+      prompt += `Input Schema:\n${JSON.stringify(inputSchema, null, 2)}\n\n`;
+    }
+
+    // Add the actual input data
+    prompt += `Input Data:\n${JSON.stringify(data, null, 2)}\n\n`;
+
+    // Add output format guide if provided
+    if (outputFormatGuide) {
+      prompt += `Output Format Guide:\n${outputFormatGuide}\n\n`;
+    }
+
+    // Always instruct to return HTML
+    prompt += `IMPORTANT: Please provide your response in IMAGE format`;
 
     return prompt;
   }

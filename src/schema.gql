@@ -258,6 +258,18 @@ input IOGenericInput {
   schema: JSON!
 }
 
+type IOGenericTextToImage {
+  data: IOGenericTextToImageData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type IOGenericTextToImageData {
+  highResolutionImage: String!
+  lowResolutionImage: String!
+  mediumResolutionImage: String!
+}
+
 type InputSchema {
   data: InputSchemaData
   error: GraphQLError
@@ -395,6 +407,8 @@ type Mutation {
   loginUser(input: LoginInput!): UsersAndToken!
   logout: LogoutResponse!
   processGenericIO(input: IOGenericInput!): IOGeneric!
+  processGenericIOTextToImageGemini(input: IOGenericInput!): IOGenericTextToImage!
+  processGenericIOTextToImageOpenAI(input: IOGenericInput!): IOGeneric!
   refreshTokens: UsersHostelIdAndToken!
   removeInputSchema(id: Float!): InputSchema!
   removeToolMetaData(id: Float!): ToolMetadata!
@@ -643,6 +657,7 @@ type ToolMetadataData {
 enum ToolType {
   CURD
   IO
+  IO_TEXT_TO_IMAGE
 }
 
 enum ToolUserType {

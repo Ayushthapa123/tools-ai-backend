@@ -444,6 +444,7 @@ enum GenderType {
 
 enum ToolType {
   IO  
+  IO_TEXT_TO_IMAGE
   CRUD 
   LISTED_AI_TOOL
 

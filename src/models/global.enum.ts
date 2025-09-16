@@ -18,6 +18,7 @@ export enum GenderType {
 export enum ToolType {
   IO = 'IO',
   CURD = 'CURD',
+  IO_TEXT_TO_IMAGE = 'IO_TEXT_TO_IMAGE',
 }
 
 export enum ToolStatus {
