@@ -408,6 +408,7 @@ type Mutation {
   logout: LogoutResponse!
   processGenericIO(input: IOGenericInput!): IOGeneric!
   processGenericIOTextToImageGemini(input: IOGenericInput!): IOGenericTextToImage!
+  processGenericIOTextToImageGeminiTest(prompt: String!): IOGenericTextToImage!
   processGenericIOTextToImageOpenAI(input: IOGenericInput!): IOGeneric!
   refreshTokens: UsersHostelIdAndToken!
   removeInputSchema(id: Float!): InputSchema!

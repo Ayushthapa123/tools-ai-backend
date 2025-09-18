@@ -137,6 +137,32 @@ export class ToolService {
       };
     }
   }
+  async createToolBySeedList(userId: number, data: CreateToolInput) {
+    const slug = data.slug ?? generateSlug(data.name);
+
+    try {
+      const res = await this.prisma.tool.create({
+        data: {
+          ...data,
+          slug: slug,
+          handle: data.handle ?? slug,
+          ownerId: userId,
+          visibility: data.visibility,
+        },
+      });
+      return {
+        data: res,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: {
+          message: 'not allowed',
+        },
+      };
+    }
+  }
 
   async updateTool(toolId: number, data: UpdateToolInput) {
     const res = await this.prisma.tool.update({

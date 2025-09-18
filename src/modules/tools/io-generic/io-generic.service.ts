@@ -194,6 +194,89 @@ export class IoGenericService {
       };
     }
   }
+  async processGenericIOTextToImageGeminiTest(
+    prompt: string,
+  ): Promise<IOGenericTextToImage> {
+    try {
+      // Ask Gemini for IMAGE output, not just text
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-image-preview',
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }],
+          },
+        ],
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+          // Note: mediaResolution is unreliable; we'll compress programmatically below
+        },
+      });
+
+      let imageBase64: string | null = null;
+      const parts = response?.candidates?.[0]?.content?.parts ?? [];
+
+      for (const part of parts as any[]) {
+        if (part?.inlineData?.data) {
+          imageBase64 = part.inlineData.data as string;
+          break;
+        }
+      }
+
+      let lowResolutionImage: string | null = null;
+      let mediumResolutionImage: string | null = null;
+      let highResolutionImage: string | null = null;
+      if (imageBase64) {
+        // Programmatically reduce size without external services: Jimp resize (fit inside) + JPEG encode
+        const inputBuffer = Buffer.from(imageBase64, 'base64');
+        const image = await Jimp.read(inputBuffer);
+        const thumbnailImageOriginal = image.clone();
+        thumbnailImageOriginal.scaleToFit(256, 256); // non-cropping fit inside
+        thumbnailImageOriginal.quality(60); // JPEG quality
+        const compressedBufferLowResolution =
+          await thumbnailImageOriginal.getBufferAsync(Jimp.MIME_JPEG);
+        const compressedBase64LowResolution =
+          compressedBufferLowResolution.toString('base64');
+        lowResolutionImage = `data:image/jpeg;base64,${compressedBase64LowResolution}`;
+        // medium resolution
+        const mediumResolutionImageOriginal = image.clone();
+        mediumResolutionImageOriginal.scaleToFit(512, 512); // non-cropping fit inside
+        mediumResolutionImageOriginal.quality(60); // JPEG quality
+        const compressedBufferMediumResolution =
+          await mediumResolutionImageOriginal.getBufferAsync(Jimp.MIME_JPEG);
+        const compressedBase64MediumResolution =
+          compressedBufferMediumResolution.toString('base64');
+        mediumResolutionImage = `data:image/jpeg;base64,${compressedBase64MediumResolution}`;
+        // high resolution
+        image.scaleToFit(1280, 1280); // non-cropping fit inside
+        image.quality(50); // JPEG quality
+        const compressedBufferHighResolution = await image.getBufferAsync(
+          Jimp.MIME_JPEG,
+        );
+        const compressedBase64HighResolution =
+          compressedBufferHighResolution.toString('base64');
+        highResolutionImage = `data:image/jpeg;base64,${compressedBase64HighResolution}`;
+        image.scaleToFit(1280, 1280); // non-cropping fit inside
+      }
+
+      return {
+        data: {
+          lowResolutionImage: lowResolutionImage || null,
+          mediumResolutionImage: mediumResolutionImage || null,
+          highResolutionImage: highResolutionImage || null,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to process generic IO:', error);
+      return {
+        data: {
+          lowResolutionImage: null,
+          mediumResolutionImage: null,
+          highResolutionImage: null,
+        },
+      };
+    }
+  }
   private buildCustomPrompt(schema: any, data: any): string {
     // Extract the custom prompt and output format guide from schema
     const { customPrompt, outputFormatGuide, inputSchema } = schema;

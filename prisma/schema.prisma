@@ -442,7 +442,7 @@ enum GenderType {
 }
 
 
-enum ToolType {
+enum ToolType { // it needs improvization
   IO  
   IO_TEXT_TO_IMAGE
   CRUD 

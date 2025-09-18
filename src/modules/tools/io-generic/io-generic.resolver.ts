@@ -30,4 +30,8 @@ export class IoGenericResolver {
     console.log('input', input);
     return this.ioGenericService.processGenericIOTextToImageGemini(input);
   }
+  @Mutation(() => IOGenericTextToImage)
+  async processGenericIOTextToImageGeminiTest(@Args('prompt') prompt: string) {
+    return this.ioGenericService.processGenericIOTextToImageGeminiTest(prompt);
+  }
 }
