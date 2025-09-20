@@ -81,6 +81,7 @@ export class ToolService {
         inputSchema: true,
         outputSchema: true,
         toolMetadata: true,
+        comment: true,
         // owner: true,
       },
     });

@@ -33,6 +33,7 @@ model User {
   tool     Tool[]
   listedAiTool ListedAiTool[]
   like Like[]
+  comment Comment[]
 }
 
 model Tool {
@@ -57,7 +58,7 @@ model Tool {
   outputSchema        OutputSchema?
   toolMetadata      ToolMetadata?
   like Like[]
-
+  comment Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
   @@index([id,slug])
@@ -171,7 +172,7 @@ model ListedAiTool {
   ownerId          Int
   owner            User             @relation(fields: [ownerId], references: [id])
   like             Like[] 
-
+  comment Comment[]
   // add listed by /gemenai,user,gpt
 
   listedBy ListedBy @default(GEMENAI) 
@@ -191,6 +192,26 @@ model ListedAiTool {
 }
 
 // also store other informations for listed ai tool like contacts, socials etc.
+
+model Comment {
+  id Int @id @unique @default(autoincrement()) 
+  toolId Int? 
+  listedAiToolId Int? 
+  toolType ToolType @default(IO) 
+  userId Int? 
+  comment String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tool Tool? @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listedAiTool ListedAiTool? @relation(fields: [listedAiToolId], references: [id], onDelete: Cascade)
+  @@index([toolId])
+  @@index([userId])
+  @@index([listedAiToolId])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
 
 enum ListedBy {
   GEMENAI

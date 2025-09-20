@@ -17,6 +17,7 @@ import {
   Domain,
   ListedBy,
   ProductType,
+  ToolStatus,
 } from './global.enum';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -127,6 +128,45 @@ export class UserList extends BaseResponse {
   data?: UserData[];
 }
 
+// Comment related types
+@ObjectType()
+export class CommentData {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => Int, { nullable: true })
+  toolId?: number;
+
+  @Field(() => Int, { nullable: true })
+  listedAiToolId?: number;
+
+  @Field(() => ToolType)
+  toolType: ToolType;
+
+  @Field(() => UserData, { nullable: true })
+  user?: UserData;
+
+  @Field(() => String)
+  comment: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class Comment extends BaseResponse {
+  @Field(() => CommentData, { nullable: true })
+  data?: CommentData;
+}
+
+@ObjectType()
+export class CommentList extends BaseResponse {
+  @Field(() => [CommentData], { nullable: true })
+  data?: CommentData[];
+}
 // InputSchema related types
 @ObjectType()
 export class InputSchemaData {
@@ -244,6 +284,9 @@ export class ToolData {
   @Field(() => VisibilityType)
   visibility: VisibilityType;
 
+  @Field(() => ToolStatus)
+  toolStatus: ToolStatus;
+
   @Field(() => Int)
   ownerId: number;
 
@@ -261,6 +304,9 @@ export class ToolData {
 
   @Field(() => ToolMetadataData, { nullable: true })
   toolMetadata?: ToolMetadataData;
+
+  @Field(() => [CommentData], { nullable: true })
+  comment?: CommentData[];
 
   @Field(() => Date)
   createdAt: Date;

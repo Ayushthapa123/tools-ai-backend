@@ -65,6 +65,31 @@ input ChangePasswordInput {
   newPassword: String!
 }
 
+type Comment {
+  data: CommentData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type CommentData {
+  comment: String!
+  createdAt: DateTime!
+  id: ID!
+  listedAiToolId: Int
+  toolId: Int
+  toolType: ToolType!
+  updatedAt: DateTime!
+  user: UserData
+}
+
+input CreateComment {
+  comment: String!
+  listedAiToolId: Float
+  toolId: Float
+  toolType: String!
+  userId: Int
+}
+
 input CreateInputSchema {
   schema: String!
   toolId: Float!
@@ -107,9 +132,10 @@ input CreateToolInput {
   shortDescription: String!
   slug: String
   thumbnailUrl: String
+  toolStatus: String = "DRAFT"
   toolType: String = "IO"
   verifiedBySuperAdmin: Boolean = false
-  visibility: String = "PUBLIC"
+  visibility: String = "PRIVATE"
 }
 
 input CreateToolMetaDataDto {
@@ -389,6 +415,7 @@ enum Modality {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!, userId: Float!): String!
+  createComment(createCommentInput: CreateComment!): Comment!
   createInputSchema(createInputSchemaInput: CreateInputSchema!): InputSchema!
   createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolAnonymously(data: CreateListedAiToolInput!): ListedAiTool!
@@ -411,6 +438,7 @@ type Mutation {
   processGenericIOTextToImageGeminiTest(prompt: String!): IOGenericTextToImage!
   processGenericIOTextToImageOpenAI(input: IOGenericInput!): IOGeneric!
   refreshTokens: UsersHostelIdAndToken!
+  removeComment(id: Float!): Comment!
   removeInputSchema(id: Float!): InputSchema!
   removeToolMetaData(id: Float!): ToolMetadata!
   resendVerificationMail(id: Float!): Boolean!
@@ -418,6 +446,7 @@ type Mutation {
   sendCustomEmail(email: String!, htmlContent: String!, name: String!, subject: String!): Boolean!
   signUpWithGoogle(input: SignupWithGoogleInput!): UsersAndToken!
   signupUser(input: SignupInput!): UsersAndToken!
+  updateComment(updateCommentInput: UpdateComment!): Comment!
   updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
   updateListedAiTool(data: UpdateListedAiToolInput!, toolId: Float!): ListedAiTool!
   updateListedAiToolFromArrayForVideoUrl(userId: Int! = 1): ListedAiTool!
@@ -484,6 +513,8 @@ type Query {
   getAiToolsByDomain(domain: String!, limit: Int! = 20): ListedAiToolList!
   getAllListedAiTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ListedAiToolArrayResponse!
   getAllTools(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 200): ToolArrayResponse!
+  getCommentById(id: Float!): Comment!
+  getCommentsByToolId(toolId: Float!): Comment!
   getFeaturedAiTools(limit: Int! = 10): ListedAiToolList!
   getGoogleAuthUrl: GoogleOauthUrl!
   getListedAiToolById(toolId: Float!): ListedAiTool
@@ -615,6 +646,7 @@ type ToolArrayResponse {
 }
 
 type ToolData {
+  comment: [CommentData!]
   createdAt: DateTime!
   deletedAt: DateTime
   description: String
@@ -630,6 +662,7 @@ type ToolData {
   slug: String!
   thumbnailUrl: String
   toolMetadata: ToolMetadataData
+  toolStatus: ToolStatus!
   toolType: ToolType!
   updatedAt: DateTime!
   verifiedBySuperAdmin: Boolean!
@@ -653,6 +686,11 @@ type ToolMetadataData {
   title: String!
   toolId: Int!
   updatedAt: DateTime!
+}
+
+enum ToolStatus {
+  DRAFT
+  PUBLISHED
 }
 
 enum ToolType {
@@ -748,6 +786,15 @@ input TravelDestinationFinderInput {
   travelType: String!
 }
 
+input UpdateComment {
+  comment: String
+  id: Float!
+  listedAiToolId: Float
+  toolId: Float
+  toolType: String
+  userId: Int
+}
+
 input UpdateInputSchema {
   id: Float!
   schema: String!
@@ -793,9 +840,10 @@ input UpdateToolInput {
   shortDescription: String
   slug: String
   thumbnailUrl: String
+  toolStatus: String = "DRAFT"
   toolType: String = "IO"
   verifiedBySuperAdmin: Boolean = false
-  visibility: String = "PUBLIC"
+  visibility: String = "PRIVATE"
 }
 
 input UpdateToolMetaDataDto {

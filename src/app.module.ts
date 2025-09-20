@@ -18,6 +18,7 @@ import { MailersendModule } from './modules/mailersend/mailersend.module';
 import { ToolsModule } from './modules/tools/tools.module';
 import { ToolModule } from './modules/tool/tool.module';
 import { ListedAiToolModule } from './modules/listedAiTool/listed-ai-tool.module';
+import { CommentModule } from './modules/comment/comment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,7 @@ import { ListedAiToolModule } from './modules/listedAiTool/listed-ai-tool.module
     ToolsModule,
     ToolModule,
     ListedAiToolModule,
+    CommentModule,
   ],
 
   controllers: [AppController], //we don't need it now

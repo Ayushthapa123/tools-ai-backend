@@ -1,5 +1,5 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
-import { ToolType, VisibilityType } from '@prisma/client';
+import { ToolStatus, ToolType, VisibilityType } from '@prisma/client';
 
 @InputType()
 export class CreateToolInput {
@@ -22,8 +22,11 @@ export class CreateToolInput {
   @Field({ nullable: true })
   thumbnailUrl?: string;
 
-  @Field({ nullable: true, defaultValue: VisibilityType.PUBLIC }) // set default to public
+  @Field({ nullable: true, defaultValue: VisibilityType.PRIVATE }) // set default to public
   visibility: VisibilityType;
+
+  @Field({ nullable: true, defaultValue: ToolStatus.DRAFT }) // set default to draft
+  toolStatus: ToolStatus;
 
   @Field({ nullable: true, defaultValue: ToolType.IO }) // set default to generic
   toolType: ToolType;
