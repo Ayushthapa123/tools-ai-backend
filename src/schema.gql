@@ -48,6 +48,21 @@ enum AiType {
   SPEECH_AI
 }
 
+type ApiToken {
+  data: ApiTokenData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type ApiTokenData {
+  createdAt: DateTime!
+  gemenaiToken: String
+  gptToken: String
+  id: ID!
+  updatedAt: DateTime!
+  userId: Int!
+}
+
 type CAGData {
   category: String!
   items: [String!]!
@@ -123,6 +138,12 @@ input CreateListedAiToolInput {
   websiteUrl: String!
 }
 
+input CreateToken {
+  gemenaiToken: String
+  gptToken: String
+  userId: Int!
+}
+
 input CreateToolInput {
   description: String!
   handle: String
@@ -135,7 +156,7 @@ input CreateToolInput {
   toolStatus: String = "DRAFT"
   toolType: String = "IO"
   verifiedBySuperAdmin: Boolean = false
-  visibility: String = "PRIVATE"
+  visibility: String = "PUBLIC"
 }
 
 input CreateToolMetaDataDto {
@@ -420,6 +441,7 @@ type Mutation {
   createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolAnonymously(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolFromArray(userId: Int! = 1): ListedAiTool!
+  createToken(createTokenInput: CreateToken!): ApiToken!
   createTool(data: CreateToolInput!): Tool!
   createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
   createUser(input: CreateUserInput!): User!
@@ -440,6 +462,7 @@ type Mutation {
   refreshTokens: UsersHostelIdAndToken!
   removeComment(id: Float!): Comment!
   removeInputSchema(id: Float!): InputSchema!
+  removeToken(id: Float!): ApiToken!
   removeToolMetaData(id: Float!): ToolMetadata!
   resendVerificationMail(id: Float!): Boolean!
   resetPassword(input: ResetPasswordInput!): UsersAndToken!
@@ -450,6 +473,7 @@ type Mutation {
   updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
   updateListedAiTool(data: UpdateListedAiToolInput!, toolId: Float!): ListedAiTool!
   updateListedAiToolFromArrayForVideoUrl(userId: Int! = 1): ListedAiTool!
+  updateToken(updateTokenInput: UpdateToken!): ApiToken!
   updateTool(data: UpdateToolInput!, toolId: Float!): Tool!
   updateToolMetaData(updateToolMetaDataInput: UpdateToolMetaDataDto!): ToolMetadata!
   updateUser(input: UpdateUserInput!): User!
@@ -527,8 +551,10 @@ type Query {
   getListedAiToolsByUserType(pageNumber: Int! = 1, pageSize: Int! = 6, userType: ToolUserType!): ListedAiToolArrayResponse!
   getListedAiToolsWithHighPopularityScore(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
   getPopularAiTools(limit: Int! = 10): ListedAiToolList!
+  getTokenById(id: Float!): ApiToken!
+  getTokenByUserToken: ApiToken!
   getToolById(toolId: Float!): Tool
-  getToolBySlug(slug: String!): Tool
+  getToolBySlug(slug: String!, toolStatus: ToolStatus): Tool
   getToolMetaDataByToolId(toolId: Float!): ToolMetadata!
   getToolsByUserToken(pageNumber: Int! = 1, pageSize: Int! = 30): ToolArrayResponse!
   getUserByAccessToken(accessToken: String!): User
@@ -830,6 +856,13 @@ input UpdateListedAiToolInput {
   websiteUrl: String
 }
 
+input UpdateToken {
+  gemenaiToken: String
+  gptToken: String
+  id: Float!
+  userId: Int
+}
+
 input UpdateToolInput {
   description: String
   handle: String
@@ -843,7 +876,7 @@ input UpdateToolInput {
   toolStatus: String = "DRAFT"
   toolType: String = "IO"
   verifiedBySuperAdmin: Boolean = false
-  visibility: String = "PRIVATE"
+  visibility: String = "PUBLIC"
 }
 
 input UpdateToolMetaDataDto {

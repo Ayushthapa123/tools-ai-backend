@@ -6,6 +6,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateToolInput } from './dtos/create-tool.input';
 import { UserType } from '@src/models/global.enum';
 import { CookieService } from '../auth/services/cookie.service';
+import { ToolStatus } from '@prisma/client';
 
 @Injectable()
 export class ToolService {
@@ -54,7 +55,7 @@ export class ToolService {
         inputSchema: true,
         outputSchema: true,
         toolMetadata: true,
-        // owner: true,
+        owner: true,
       },
     });
 
@@ -74,15 +75,15 @@ export class ToolService {
     };
   }
 
-  async getToolBySlug(slug: string) {
+  async getToolBySlug(slug: string, toolStatus?: ToolStatus) {
     const tool = await this.prisma.tool.findUnique({
-      where: { slug },
+      where: { slug, ...(toolStatus ? { toolStatus } : {}) },
       include: {
         inputSchema: true,
         outputSchema: true,
         toolMetadata: true,
         comment: true,
-        // owner: true,
+        owner: true,
       },
     });
 

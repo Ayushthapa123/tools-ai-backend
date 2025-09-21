@@ -167,6 +167,41 @@ export class CommentList extends BaseResponse {
   @Field(() => [CommentData], { nullable: true })
   data?: CommentData[];
 }
+
+// Token related types
+@ObjectType()
+export class ApiTokenData {
+  @Field(() => ID)
+  id: number;
+
+  @Field({ nullable: true })
+  gemenaiToken?: string;
+
+  @Field({ nullable: true })
+  gptToken?: string;
+
+  @Field(() => Int)
+  userId: number;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class ApiToken extends BaseResponse {
+  @Field(() => ApiTokenData, { nullable: true })
+  data?: ApiTokenData;
+}
+
+@ObjectType()
+export class ApiTokenList extends BaseResponse {
+  @Field(() => [ApiTokenData], { nullable: true })
+  data?: ApiTokenData[];
+}
+
 // InputSchema related types
 @ObjectType()
 export class InputSchemaData {

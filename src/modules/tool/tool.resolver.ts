@@ -21,6 +21,7 @@ import { CookieService } from '../auth/services/cookie.service';
 import { ToolService } from './tool.service';
 import { CreateToolInput } from './dtos/create-tool.input';
 import { UpdateToolInput } from './dtos/update-tool.input';
+import { ToolStatus } from '@src/models/global.enum';
 // import { Controller } from '@nestjs/common';
 
 @ObjectType()
@@ -75,8 +76,12 @@ export class ToolResolver {
   }
 
   @Query(() => Tool, { nullable: true })
-  async getToolBySlug(@Args('slug') slug: string) {
-    return this.toolService.getToolBySlug(slug);
+  async getToolBySlug(
+    @Args('slug') slug: string,
+    @Args('toolStatus', { type: () => ToolStatus, nullable: true })
+    toolStatus?: ToolStatus,
+  ) {
+    return this.toolService.getToolBySlug(slug, toolStatus);
   }
 
   @Mutation(() => Tool)

@@ -22,7 +22,7 @@ export class CreateToolInput {
   @Field({ nullable: true })
   thumbnailUrl?: string;
 
-  @Field({ nullable: true, defaultValue: VisibilityType.PRIVATE }) // set default to public
+  @Field({ nullable: true, defaultValue: VisibilityType.PUBLIC }) // set default to public
   visibility: VisibilityType;
 
   @Field({ nullable: true, defaultValue: ToolStatus.DRAFT }) // set default to draft

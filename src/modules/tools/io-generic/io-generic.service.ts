@@ -23,6 +23,30 @@ export class IoGenericService {
 
   async processGenericIO(input: IOGenericInput): Promise<IOGeneric> {
     console.log('Generic IO Input:', input);
+    const toolSlug = input.data.slug;
+    console.log('toolSlug', toolSlug);
+    const toolOwner = await this.prismaService.tool.findUnique({
+      where: {
+        slug: toolSlug,
+      },
+      include: {
+        owner: {
+          include: {
+            token: {
+              select: {
+                gemenaiToken: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log('toolOwner', toolOwner);
+
+    const gemini = new GoogleGenAI({
+      apiKey: toolOwner.owner.token.gemenaiToken,
+    });
 
     try {
       // Extract schema and data from input
@@ -30,8 +54,9 @@ export class IoGenericService {
 
       // Use the custom prompt and output format guide from the input
       const prompt = this.buildCustomPrompt(schema, data);
+      console.log('prompt', prompt);
 
-      const response = await ai.models.generateContent({
+      const response = await gemini.models.generateContent({
         model: 'gemini-2.5-flash-lite',
         contents: prompt,
       });
@@ -64,8 +89,10 @@ export class IoGenericService {
       console.error('Failed to process generic IO:', error);
       return {
         data: {
-          htmlResponse:
-            'Sorry, we encountered an error processing your request. Please try again.',
+          htmlResponse: `Sorry, we encountered  an error processing please check your api token <a href="/app/settings">here</a>`,
+        },
+        error: {
+          message: 'Failed to process generic IO',
         },
       };
     }
@@ -278,31 +305,36 @@ export class IoGenericService {
     }
   }
   private buildCustomPrompt(schema: any, data: any): string {
-    // Extract the custom prompt and output format guide from schema
-    const { customPrompt, outputFormatGuide, inputSchema } = schema;
-
     let prompt = '';
+
+    // Extract custom prompt and response format from data object
+    const customPrompt = data.custom_prompt;
+    const responseFormat = data.response_format;
 
     // Use the custom prompt if provided
     if (customPrompt) {
       prompt += `${customPrompt}\n\n`;
     }
 
-    // Add input schema information if provided
-    if (inputSchema) {
-      prompt += `Input Schema:\n${JSON.stringify(inputSchema, null, 2)}\n\n`;
+    // Add input schema information if provided (schema is now an array)
+    if (schema && Array.isArray(schema)) {
+      prompt += `Input Schema:\n${JSON.stringify(schema, null, 2)}\n\n`;
     }
 
-    // Add the actual input data
-    prompt += `Input Data:\n${JSON.stringify(data, null, 2)}\n\n`;
+    // Add the actual input data (excluding the custom prompt and response format to avoid duplication)
+    const dataForPrompt = { ...data };
+    delete dataForPrompt.custom_prompt;
+    delete dataForPrompt.response_format;
 
-    // Add output format guide if provided
-    if (outputFormatGuide) {
-      prompt += `Output Format Guide:\n${outputFormatGuide}\n\n`;
+    prompt += `Input Data:\n${JSON.stringify(dataForPrompt, null, 2)}\n\n`;
+
+    // Add response format guide if provided
+    if (responseFormat) {
+      prompt += `Response Format Guide:\n${responseFormat}\n\n`;
     }
 
     // Always instruct to return HTML
-    prompt += `IMPORTANT: Please provide your response in HTML format. ${outputFormatGuide ? 'Follow the output format guide above.' : 'Format the response appropriately for web display.'} Do not include markdown code blocks, just return the HTML directly.
+    prompt += `IMPORTANT: Please provide your response in HTML format. ${responseFormat ? 'Follow the response format guide above.' : 'Format the response appropriately for web display.'} Do not include markdown code blocks, just return the HTML directly.
 
 SECURITY REQUIREMENTS:
 - DO NOT include any <script> tags or JavaScript code
@@ -317,30 +349,35 @@ SECURITY REQUIREMENTS:
     return prompt;
   }
   private buildCustomPromptTextToImage(schema: any, data: any): string {
-    // Extract the custom prompt and output format guide from schema
-    const { customPrompt, outputFormatGuide, inputSchema } = schema;
-
     let prompt = '';
+
+    // Extract custom prompt and response format from data object
+    const customPrompt = data.custom_prompt;
+    const responseFormat = data.response_format;
 
     // Use the custom prompt if provided
     if (customPrompt) {
       prompt += `${customPrompt}\n\n`;
     }
 
-    // Add input schema information if provided
-    if (inputSchema) {
-      prompt += `Input Schema:\n${JSON.stringify(inputSchema, null, 2)}\n\n`;
+    // Add input schema information if provided (schema is now an array)
+    if (schema && Array.isArray(schema)) {
+      prompt += `Input Schema:\n${JSON.stringify(schema, null, 2)}\n\n`;
     }
 
-    // Add the actual input data
-    prompt += `Input Data:\n${JSON.stringify(data, null, 2)}\n\n`;
+    // Add the actual input data (excluding the custom prompt and response format to avoid duplication)
+    const dataForPrompt = { ...data };
+    delete dataForPrompt.custom_prompt;
+    delete dataForPrompt.response_format;
 
-    // Add output format guide if provided
-    if (outputFormatGuide) {
-      prompt += `Output Format Guide:\n${outputFormatGuide}\n\n`;
+    prompt += `Input Data:\n${JSON.stringify(dataForPrompt, null, 2)}\n\n`;
+
+    // Add response format guide if provided
+    if (responseFormat) {
+      prompt += `Response Format Guide:\n${responseFormat}\n\n`;
     }
 
-    // Always instruct to return HTML
+    // Always instruct to return IMAGE format
     prompt += `IMPORTANT: Please provide your response in IMAGE format`;
 
     return prompt;
