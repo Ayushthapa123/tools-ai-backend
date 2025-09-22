@@ -84,6 +84,17 @@ export class ToolResolver {
     return this.toolService.getToolBySlug(slug, toolStatus);
   }
 
+  @Query(() => ToolArrayResponse)
+  async getRelatedToolsBySlug(
+    @Args('slug') slug: string,
+    @Args('toolStatus', { type: () => ToolStatus, nullable: true })
+    toolStatus?: ToolStatus,
+    @Args('count', { type: () => Int, nullable: true })
+    count?: number,
+  ) {
+    return this.toolService.getRelatedToolsBySlug(slug, toolStatus, count);
+  }
+
   @Mutation(() => Tool)
   @UseGuards(AuthGuard)
   async createTool(

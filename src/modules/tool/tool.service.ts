@@ -92,6 +92,37 @@ export class ToolService {
       error: null,
     };
   }
+  async getRelatedToolsBySlug(
+    slug: string,
+    toolStatus?: ToolStatus,
+    count?: number,
+  ) {
+    const toolOwner = await this.prisma.tool.findUnique({
+      where: {
+        slug: slug,
+        ...(toolStatus ? { toolStatus } : {}),
+      },
+      include: {
+        owner: true,
+      },
+    });
+    const relatedTools = await this.prisma.tool.findMany({
+      // here get only count tools
+      where: {
+        ownerId: toolOwner.ownerId,
+        ...(toolStatus ? { toolStatus } : {}),
+      },
+      include: {
+        owner: true,
+      },
+      take: count ?? 3,
+    });
+
+    return {
+      data: relatedTools,
+      error: null,
+    };
+  }
 
   async getToolBytoken(toolId: number) {
     try {

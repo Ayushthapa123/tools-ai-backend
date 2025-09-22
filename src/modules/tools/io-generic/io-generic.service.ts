@@ -42,6 +42,17 @@ export class IoGenericService {
       },
     });
 
+    // if token not foun return error TOKEN_NOT_FOUND
+    if (!toolOwner.owner.token.gemenaiToken) {
+      return {
+        data: null,
+        error: {
+          message: 'token not found',
+          code: 'TOKEN_NOT_FOUND',
+        },
+      };
+    }
+
     console.log('toolOwner', toolOwner);
 
     const gemini = new GoogleGenAI({
@@ -93,6 +104,7 @@ export class IoGenericService {
         },
         error: {
           message: 'Failed to process generic IO',
+          code: 'TOKEN_ERROR',
         },
       };
     }
@@ -135,6 +147,30 @@ export class IoGenericService {
     input: IOGenericInput,
   ): Promise<IOGenericTextToImage> {
     console.log('Generic IO Input:', input);
+    const toolSlug = input.data.slug;
+    console.log('toolSlug', toolSlug);
+    const toolOwner = await this.prismaService.tool.findUnique({
+      where: {
+        slug: toolSlug,
+      },
+      include: {
+        owner: {
+          include: {
+            token: {
+              select: {
+                gemenaiToken: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log('toolOwner', toolOwner);
+
+    const gemini = new GoogleGenAI({
+      apiKey: toolOwner.owner.token.gemenaiToken,
+    });
 
     try {
       const prompt = this.buildCustomPromptTextToImage(
@@ -143,7 +179,7 @@ export class IoGenericService {
       );
 
       // Ask Gemini for IMAGE output, not just text
-      const response = await ai.models.generateContent({
+      const response = await gemini.models.generateContent({
         model: 'gemini-2.5-flash-image-preview',
         contents: [
           {

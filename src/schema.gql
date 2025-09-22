@@ -551,6 +551,7 @@ type Query {
   getListedAiToolsByUserType(pageNumber: Int! = 1, pageSize: Int! = 6, userType: ToolUserType!): ListedAiToolArrayResponse!
   getListedAiToolsWithHighPopularityScore(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
   getPopularAiTools(limit: Int! = 10): ListedAiToolList!
+  getRelatedToolsBySlug(count: Int, slug: String!, toolStatus: ToolStatus): ToolArrayResponse!
   getTokenById(id: Float!): ApiToken!
   getTokenByUserToken: ApiToken!
   getToolById(toolId: Float!): Tool
