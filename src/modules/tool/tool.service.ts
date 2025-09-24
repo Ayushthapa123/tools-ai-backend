@@ -161,7 +161,8 @@ export class ToolService {
         data: res,
         error: null,
       };
-    } catch (error) {
+    } catch (error) { 
+      console.error('Error in createTool:', error);
       return {
         data: null,
         error: {

@@ -23,41 +23,41 @@ export class IoGenericService {
 
   async processGenericIO(input: IOGenericInput): Promise<IOGeneric> {
     console.log('Generic IO Input:', input);
-    const toolSlug = input.data.slug;
-    console.log('toolSlug', toolSlug);
-    const toolOwner = await this.prismaService.tool.findUnique({
-      where: {
-        slug: toolSlug,
-      },
-      include: {
-        owner: {
-          include: {
-            token: {
-              select: {
-                gemenaiToken: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // const toolSlug = input.data.slug;
+    // console.log('toolSlug', toolSlug);
+    // const toolOwner = await this.prismaService.tool.findUnique({
+    //   where: {
+    //     slug: toolSlug,
+    //   },
+    //   include: {
+    //     owner: {
+    //       include: {
+    //         token: {
+    //           select: {
+    //             gemenaiToken: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
     // if token not foun return error TOKEN_NOT_FOUND
-    if (!toolOwner.owner.token.gemenaiToken) {
-      return {
-        data: null,
-        error: {
-          message: 'token not found',
-          code: 'TOKEN_NOT_FOUND',
-        },
-      };
-    }
+    // if (!toolOwner.owner.token.gemenaiToken) {
+    //   return {
+    //     data: null,
+    //     error: {
+    //       message: 'token not found',
+    //       code: 'TOKEN_NOT_FOUND',
+    //     },
+    //   };
+    // }
 
-    console.log('toolOwner', toolOwner);
+    // console.log('toolOwner', toolOwner);
 
-    const gemini = new GoogleGenAI({
-      apiKey: toolOwner.owner.token.gemenaiToken,
-    });
+    // const gemini = new GoogleGenAI({
+    //   apiKey: toolOwner.owner.token.gemenaiToken,
+    // });
 
     try {
       // Extract schema and data from input
@@ -67,7 +67,7 @@ export class IoGenericService {
       const prompt = this.buildCustomPrompt(schema, data);
       console.log('prompt', prompt);
 
-      const response = await gemini.models.generateContent({
+      const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-lite',
         contents: prompt,
       });
