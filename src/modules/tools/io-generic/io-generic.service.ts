@@ -147,30 +147,30 @@ export class IoGenericService {
     input: IOGenericInput,
   ): Promise<IOGenericTextToImage> {
     console.log('Generic IO Input:', input);
-    const toolSlug = input.data.slug;
-    console.log('toolSlug', toolSlug);
-    const toolOwner = await this.prismaService.tool.findUnique({
-      where: {
-        slug: toolSlug,
-      },
-      include: {
-        owner: {
-          include: {
-            token: {
-              select: {
-                gemenaiToken: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // const toolSlug = input.data.slug;
+    // console.log('toolSlug', toolSlug);
+    // const toolOwner = await this.prismaService.tool.findUnique({
+    //   where: {
+    //     slug: toolSlug,
+    //   },
+    //   include: {
+    //     owner: {
+    //       include: {
+    //         token: {
+    //           select: {
+    //             gemenaiToken: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
-    console.log('toolOwner', toolOwner);
+    // console.log('toolOwner', toolOwner);
 
-    const gemini = new GoogleGenAI({
-      apiKey: toolOwner.owner.token.gemenaiToken,
-    });
+    // const gemini = new GoogleGenAI({
+    //   apiKey: toolOwner.owner.token.gemenaiToken,
+    // });
 
     try {
       const prompt = this.buildCustomPromptTextToImage(
@@ -179,7 +179,7 @@ export class IoGenericService {
       );
 
       // Ask Gemini for IMAGE output, not just text
-      const response = await gemini.models.generateContent({
+      const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image-preview',
         contents: [
           {
@@ -388,8 +388,8 @@ SECURITY REQUIREMENTS:
     let prompt = '';
 
     // Extract custom prompt and response format from data object
-    const customPrompt = data.custom_prompt;
-    const responseFormat = data.response_format;
+    const customPrompt = data?.custom_prompt;
+    const responseFormat = data?.response_format;
 
     // Use the custom prompt if provided
     if (customPrompt) {

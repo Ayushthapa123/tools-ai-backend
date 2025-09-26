@@ -138,6 +138,11 @@ input CreateListedAiToolInput {
   websiteUrl: String!
 }
 
+input CreateSavedTool {
+  toolId: Int!
+  userId: Int!
+}
+
 input CreateToken {
   gemenaiToken: String
   gptToken: String
@@ -441,6 +446,7 @@ type Mutation {
   createListedAiTool(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolAnonymously(data: CreateListedAiToolInput!): ListedAiTool!
   createListedAiToolFromArray(userId: Int! = 1): ListedAiTool!
+  createSavedTool(createSavedToolInput: CreateSavedTool!): SavedTool!
   createToken(createTokenInput: CreateToken!): ApiToken!
   createTool(data: CreateToolInput!): Tool!
   createToolMetaData(createToolMetaDataInput: CreateToolMetaDataDto!): ToolMetadata!
@@ -462,6 +468,7 @@ type Mutation {
   refreshTokens: UsersHostelIdAndToken!
   removeComment(id: Float!): Comment!
   removeInputSchema(id: Float!): InputSchema!
+  removeSavedTool(id: Float!): SavedTool!
   removeToken(id: Float!): ApiToken!
   removeToolMetaData(id: Float!): ToolMetadata!
   resendVerificationMail(id: Float!): Boolean!
@@ -473,6 +480,7 @@ type Mutation {
   updateInputSchema(updateInputSchemaInput: UpdateInputSchema!): InputSchema!
   updateListedAiTool(data: UpdateListedAiToolInput!, toolId: Float!): ListedAiTool!
   updateListedAiToolFromArrayForVideoUrl(userId: Int! = 1): ListedAiTool!
+  updateSavedTool(updateSavedToolInput: UpdateSavedTool!): SavedTool!
   updateToken(updateTokenInput: UpdateToken!): ApiToken!
   updateTool(data: UpdateToolInput!, toolId: Float!): Tool!
   updateToolMetaData(updateToolMetaDataInput: UpdateToolMetaDataDto!): ToolMetadata!
@@ -552,6 +560,8 @@ type Query {
   getListedAiToolsWithHighPopularityScore(isSuperAdmin: Boolean = false, pageNumber: Int! = 1, pageSize: Int! = 6): ListedAiToolArrayResponse!
   getPopularAiTools(limit: Int! = 10): ListedAiToolList!
   getRelatedToolsBySlug(count: Int, slug: String!, toolStatus: ToolStatus): ToolArrayResponse!
+  getSavedToolById(id: Float!): SavedTool!
+  getSavedToolsByToolId(toolId: Float!): SavedTool!
   getTokenById(id: Float!): ApiToken!
   getTokenByUserToken: ApiToken!
   getToolById(toolId: Float!): Tool
@@ -569,6 +579,20 @@ type Query {
 input ResetPasswordInput {
   password: String!
   token: String!
+}
+
+type SavedTool {
+  data: SavedToolData
+  error: GraphQLError
+  pagination: Pagination
+}
+
+type SavedToolData {
+  createdAt: DateTime!
+  id: ID!
+  toolId: Int!
+  updatedAt: DateTime!
+  user: UserData!
 }
 
 input SearchListedAiToolInput {
@@ -855,6 +879,12 @@ input UpdateListedAiToolInput {
   verified: Boolean
   videoUrl: String
   websiteUrl: String
+}
+
+input UpdateSavedTool {
+  id: Float!
+  toolId: Int
+  userId: Int
 }
 
 input UpdateToken {

@@ -20,6 +20,7 @@ import { ToolModule } from './modules/tool/tool.module';
 import { ListedAiToolModule } from './modules/listedAiTool/listed-ai-tool.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { TokenModule } from './modules/token/token.module';
+import { SavedToolModule } from './modules/SavedTool/savedTool.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -45,6 +46,7 @@ import { TokenModule } from './modules/token/token.module';
     ListedAiToolModule,
     CommentModule,
     TokenModule,
+    SavedToolModule,
   ],
 
   controllers: [AppController], //we don't need it now

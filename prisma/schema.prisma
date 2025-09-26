@@ -33,6 +33,7 @@ model User {
   tool     Tool[]
   listedAiTool ListedAiTool[]
   like Like[]
+  savedTool SavedTool[]
   comment Comment[]
   token ApiToken?  
 }
@@ -59,6 +60,7 @@ model Tool {
   outputSchema        OutputSchema?
   toolMetadata      ToolMetadata?
   like Like[]
+  savedTool SavedTool[]
   comment Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
@@ -135,6 +137,24 @@ model Like {
   @@index([listedAiToolId])
   @@unique([userId, toolId])
   @@unique([userId, listedAiToolId])
+
+}
+model SavedTool {
+  id Int @id @unique @default(autoincrement()) 
+  userId Int  
+  toolId Int  
+  
+  // Computed field to determine what type of tool this like is for
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool Tool? @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([toolId])
+  @@unique([userId, toolId])
 
 }
 
