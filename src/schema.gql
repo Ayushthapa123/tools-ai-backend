@@ -562,6 +562,7 @@ type Query {
   getRelatedToolsBySlug(count: Int, slug: String!, toolStatus: ToolStatus): ToolArrayResponse!
   getSavedToolById(id: Float!): SavedTool!
   getSavedToolsByToolId(toolId: Float!): SavedTool!
+  getSavedToolsByUserToken: SavedToolList!
   getTokenById(id: Float!): ApiToken!
   getTokenByUserToken: ApiToken!
   getToolById(toolId: Float!): Tool
@@ -590,9 +591,16 @@ type SavedTool {
 type SavedToolData {
   createdAt: DateTime!
   id: ID!
+  tool: ToolData!
   toolId: Int!
   updatedAt: DateTime!
   user: UserData!
+}
+
+type SavedToolList {
+  data: [SavedToolData!]
+  error: GraphQLError
+  pagination: Pagination
 }
 
 input SearchListedAiToolInput {

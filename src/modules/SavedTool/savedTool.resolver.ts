@@ -1,8 +1,10 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SavedToolService } from './savedTool.service';
 import { CreateSavedTool } from './dto/create-saved-tool.dto';
 import { UpdateSavedTool } from './dto/update-saved-tool.dto';
-import { SavedTool } from '@src/models/global.model';
+import { CtxType, SavedTool, SavedToolList } from '@src/models/global.model';
+import { AuthGuard } from '@src/guards/auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver('SavedTool')
 export class SavedToolResolver {
@@ -24,6 +26,13 @@ export class SavedToolResolver {
   @Query(() => SavedTool)
   async getSavedToolById(@Args('id') id: number) {
     return this.savedToolService.getSavedToolById(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Query(() => SavedToolList)
+  async getSavedToolsByUserToken(@Context() ctx: CtxType) {
+    const userId = ctx.user.sub;
+    return this.savedToolService.getSavedToolsByUserId(userId);
   }
 
   @Mutation(() => SavedTool)

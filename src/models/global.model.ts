@@ -168,37 +168,6 @@ export class CommentList extends BaseResponse {
   data?: CommentData[];
 }
 
-// SavedTool related types
-@ObjectType()
-export class SavedToolData {
-  @Field(() => ID)
-  id: number;
-
-  @Field(() => Int)
-  toolId: number;
-
-  @Field(() => UserData)
-  user: UserData;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-}
-
-@ObjectType()
-export class SavedTool extends BaseResponse {
-  @Field(() => SavedToolData, { nullable: true })
-  data?: SavedToolData;
-}
-
-@ObjectType()
-export class SavedToolList extends BaseResponse {
-  @Field(() => [SavedToolData], { nullable: true })
-  data?: SavedToolData[];
-}
-
 // Token related types
 @ObjectType()
 export class ApiTokenData {
@@ -499,6 +468,39 @@ export class ListedAiToolList extends BaseResponse {
 export class ToolMetadata extends BaseResponse {
   @Field(() => ToolMetadataData, { nullable: true })
   data?: ToolMetadataData;
+}
+
+// SavedTool related types
+@ObjectType()
+export class SavedToolData {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => Int)
+  toolId: number;
+
+  @Field(() => UserData)
+  user: UserData;
+  @Field(() => ToolData)
+  tool: ToolData;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
+@ObjectType()
+export class SavedTool extends BaseResponse {
+  @Field(() => SavedToolData, { nullable: true })
+  data?: SavedToolData;
+}
+
+@ObjectType()
+export class SavedToolList extends BaseResponse {
+  @Field(() => [SavedToolData], { nullable: true })
+  data?: SavedToolData[];
 }
 
 // Context type for authentication

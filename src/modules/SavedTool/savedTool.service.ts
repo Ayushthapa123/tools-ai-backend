@@ -42,6 +42,21 @@ export class SavedToolService {
       error: null,
     };
   }
+  async getSavedToolsByUserId(userId: number) {
+    const savedTools = await this.prisma.savedTool.findMany({
+      where: { userId },
+      include: {
+        tool: true,
+        user: true,
+      },
+    });
+    console.log('savedTools', userId, savedTools);
+
+    return {
+      data: savedTools,
+      error: null,
+    };
+  }
 
   async updateSavedTool(updateSavedTool: UpdateSavedTool) {
     const { id } = updateSavedTool;
